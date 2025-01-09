@@ -3,7 +3,11 @@ let toml = pkgs.formats.toml { };
 in {
   systemd.user.startServices = "sd-switch";
 
-  programs = { gpg.enable = true; };
+  programs = {
+
+    # sway.enable = true;
+    gpg.enable = true;
+  };
 
   # GPG agent.
   services.gpg-agent = {
@@ -69,7 +73,7 @@ in {
       tenv # OpenTofu, Terraform, Terragrunt and Atmos version manager written in Go
 
       # Version Control
-      gitMinimal # Git version control system
+      git # Git version control system
       git-absorb # Automatically fixup commits
       lazygit # Simple terminal UI for Git commands
 

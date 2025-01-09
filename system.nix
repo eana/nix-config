@@ -46,6 +46,8 @@
       jack.enable = true;
     };
     xserver.enable = true;
+    xserver.displayManager.gdm.enable = true;
+    xserver.displayManager.gdm.wayland = true;
     printing.enable = true;
     libinput.enable = true;
     dbus.enable = true;

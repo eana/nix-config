@@ -12,13 +12,16 @@
     disko.inputs.nixpkgs.follows = "nixpkgs";
   };
 
-  outputs = { self, nixpkgs, home-manager, disko }: {
+  outputs = { self, nixpkgs, home-manager, disko, }: {
     nixosConfigurations.nixbox = nixpkgs.lib.nixosSystem {
       system = "x86_64-linux";
       modules = [
         ./system.nix
         home-manager.nixosModules.home-manager
-        { home-manager.users.jonas = import ./home.nix; }
+        ({ config, lib, pkgs, ... }: {
+          home-manager.users.jonas =
+            import ./home.nix { inherit pkgs lib config; };
+        })
         disko.nixosModules.disko
       ];
     };
