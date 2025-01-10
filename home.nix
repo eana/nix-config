@@ -339,9 +339,7 @@
         * {
           border: none;
           border-radius: 4px;
-          /* `otf-font-awesome` is required to be installed for icons */
-          /* https://github.com/Alexays/Waybar/issues/115#issuecomment-655655954 */
-          font-family: "Font Awesome 5 Free";
+          font-family: "Font Awesome 6 Free";
           font-size: 14px;
           min-height: 0;
         }
