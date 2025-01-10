@@ -933,6 +933,28 @@
       d2 # Modern diagram scripting language
     ];
 
+    file = {
+      ".config" = {
+        source = ./.config;
+        recursive = true;
+      };
+
+      "Yaru-dark-gdm" = {
+        source = ./Yaru-dark-gdm;
+        recursive = true;
+      };
+
+      ".local" = {
+        source = ./.local;
+        recursive = true;
+      };
+
+      "gtk-3.0" = {
+        source = ./gtk-3.0;
+        recursive = true;
+      };
+    };
+
     stateVersion = "24.05";
   };
 }
