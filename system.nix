@@ -87,7 +87,32 @@
   programs.ssh.startAgent = true;
 
   environment = {
-    systemPackages = with pkgs; [ sway curl gparted blueman ];
+    systemPackages = with pkgs; [
+      # Browsers
+      firefox # A free and open-source web browser developed by Mozilla
+      google-chrome # A fast, secure, and free web browser built for the modern web by Google
+
+      # Terminal Emulators
+      foot # A fast, lightweight and minimalistic Wayland terminal emulator
+
+      # Utilities
+      blueman # A GTK+ Bluetooth manager
+      curl # A command-line tool for transferring data with URLs
+      dive # A tool for exploring a Docker image, layer contents, and discovering ways to shrink the size of your Docker/OCI image
+      docker-compose # A tool for defining and running multi-container Docker applications
+      gparted # A free partition editor for graphically managing disk partitions
+      podman-tui # A terminal user interface for managing Podman containers
+
+      # IDEs
+      jetbrains.idea-community-bin # The free and open-source edition of IntelliJ IDEA, an IDE for Java development
+      vscode # Visual Studio Code, a source-code editor developed by Microsoft
+
+      # Window Managers
+      sway # A tiling Wayland compositor and a drop-in replacement for the i3 window manager for X11
+
+      # Shells
+      zsh-powerlevel10k # A theme for Zsh that emphasizes speed, flexibility, and out-of-the-box experience
+    ];
     variables = {
       EDITOR = "nvim";
       MOZ_ENABLE_WAYLAND = "1";
