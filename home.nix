@@ -6,6 +6,20 @@
   programs = {
     gpg.enable = true;
 
+    foot = {
+      enable = true;
+      settings = {
+        main = {
+          term = "xterm-256color";
+
+          font = "MesloLGS NF:size=8";
+          dpi-aware = "yes";
+        };
+
+        mouse = { hide-when-typing = "yes"; };
+      };
+    };
+
     zsh = {
       enable = true;
       enableCompletion = true;
