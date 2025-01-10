@@ -3,11 +3,8 @@ let toml = pkgs.formats.toml { };
 in {
   systemd.user.startServices = "sd-switch";
 
-  programs = {
-
-    # sway.enable = true;
-    gpg.enable = true;
-  };
+  programs = { gpg.enable = true; };
+  wayland.windowManager.sway.enable = true;
 
   # GPG agent.
   services.gpg-agent = {
