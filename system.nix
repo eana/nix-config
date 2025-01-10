@@ -84,6 +84,7 @@
   users.defaultUserShell = pkgs.zsh;
 
   programs.sway.enable = true;
+  programs.ssh.startAgent = true;
 
   environment = {
     systemPackages = with pkgs; [ sway curl gparted blueman ];
