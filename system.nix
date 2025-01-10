@@ -63,7 +63,7 @@
   fonts = {
     enableDefaultPackages = true;
     packages = with pkgs;
-      [ font-awesome powerline-fonts powerline-symbols ]
+      [ font-awesome powerline-fonts powerline-symbols meslo-lgs-nf ]
       ++ builtins.filter lib.attrsets.isDerivation
       (builtins.attrValues pkgs.nerd-fonts);
   };
