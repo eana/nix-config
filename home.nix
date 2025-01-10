@@ -277,7 +277,7 @@
 
           "network#ethernet" = {
             interface = "e*";
-            format-ethernet = "🖧 ";
+            format-ethernet = "";
             format-wifi = "";
             format-linked = "";
             format-disconnected = "";
