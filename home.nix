@@ -71,6 +71,7 @@ in {
 
       # Version Control
       git # Git version control system
+      tig # Text-mode interface for Git
       git-absorb # Automatically fixup commits
       lazygit # Simple terminal UI for Git commands
 
