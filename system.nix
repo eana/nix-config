@@ -73,6 +73,10 @@
     extraGroups = [ "wheel" ];
   };
 
+  # Use zsh as your default shell.
+  programs.zsh.enable = true;
+  users.defaultUserShell = pkgs.zsh;
+
   programs.sway.enable = true;
 
   environment = {
