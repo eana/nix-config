@@ -62,10 +62,16 @@
 
   fonts = {
     enableDefaultPackages = true;
-    packages = with pkgs;
-      [ font-awesome powerline-fonts powerline-symbols meslo-lgs-nf ]
-      ++ builtins.filter lib.attrsets.isDerivation
-      (builtins.attrValues pkgs.nerd-fonts);
+    packages = with pkgs; [
+      font-awesome
+      meslo-lgs-nf
+      nerd-fonts.dejavu-sans-mono
+      nerd-fonts.jetbrains-mono
+      nerd-fonts.space-mono
+      powerline-fonts
+      powerline-symbols
+      source-code-pro
+    ];
   };
 
   users.users.jonas = {
