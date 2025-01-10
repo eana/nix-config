@@ -119,6 +119,11 @@
     };
   };
 
+  programs.nix-ld = {
+    enable = true;
+    libraries = config.hardware.graphics.extraPackages;
+  };
+
   nixpkgs.config.allowUnfree = true;
 
   system.stateVersion = "24.05";
