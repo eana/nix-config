@@ -80,7 +80,7 @@
   programs.sway.enable = true;
 
   environment = {
-    systemPackages = with pkgs; [ sway neovim curl gparted blueman ];
+    systemPackages = with pkgs; [ sway curl gparted blueman ];
     variables = {
       EDITOR = "nvim";
       MOZ_ENABLE_WAYLAND = "1";

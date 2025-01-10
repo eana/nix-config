@@ -93,6 +93,13 @@
       };
     };
 
+    neovim = {
+      enable = true;
+      vimAlias = true;
+      withNodeJs = true;
+      defaultEditor = true;
+    };
+
     fuzzel = {
       enable = true;
       settings = {
