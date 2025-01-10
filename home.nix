@@ -57,11 +57,6 @@
       # Enable syntax highlighting
       syntaxHighlighting.enable = true;
 
-      sessionVariables = {
-        LIBGL_ALWAYS_INDIRECT = 1;
-        LESS = "-iXFR";
-      };
-
       initExtraFirst = ''
         # zmodload zsh/zprof
         skip_global_compinit=1
@@ -1058,6 +1053,9 @@
 
       # Diagramming tools
       d2 # Modern diagram scripting language
+
+      # Containers
+      podman
     ];
 
     file = {
@@ -1082,6 +1080,13 @@
       };
 
       ".p10k.zsh" = { source = ./.p10k.zsh; };
+    };
+
+    sessionVariables = {
+      LIBGL_ALWAYS_INDIRECT = 1;
+      LESS = "-iXFR";
+      DOCKER_HOST = "unix://$XDG_RUNTIME_DIR/podman/podman.sock";
+      KPT_FN_RUNTIME = "podman";
     };
 
     stateVersion = "24.05";
