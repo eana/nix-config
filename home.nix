@@ -1077,34 +1077,96 @@
     '';
   };
 
-  # GPG agent.
-  services.gpg-agent = {
-    enable = true;
-    # Use GPG for SSH.
-    # enableSshSupport = true;
+  services = {
+    gpg-agent = {
+      enable = true;
 
-    defaultCacheTtl = 86400;
-    maxCacheTtl = 86400;
-    pinentryPackage = pkgs.pinentry-tty;
-  };
+      defaultCacheTtl = 86400;
+      maxCacheTtl = 86400;
+      pinentryPackage = pkgs.pinentry-tty;
+    };
 
-  services.gammastep = {
-    enable = true;
-    tray = true;
+    gammastep = {
+      enable = true;
 
-    provider = "manual";
-    latitude = 59.3;
-    longitude = 18.0;
+      tray = true;
 
-    temperature.day = 5700;
-    temperature.night = 3600;
+      provider = "manual";
+      latitude = 59.3;
+      longitude = 18.0;
 
-    settings = {
-      general = {
-        fade = 1;
-        gamma = 0.8;
-        adjustment-method = "wayland";
+      temperature.day = 5700;
+      temperature.night = 3600;
+
+      settings = {
+        general = {
+          fade = 1;
+          gamma = 0.8;
+          adjustment-method = "wayland";
+        };
       };
+    };
+
+    kanshi = {
+      enable = true;
+
+      settings = [
+        {
+          profile = {
+            name = "laptopOnly";
+            outputs = [{
+              criteria = "eDP-1";
+              status = "enable";
+              position = "0,0";
+              mode = "1920x1080";
+              scale = 0.7;
+            }];
+          };
+        }
+        {
+          profile = {
+            name = "screenOnly";
+            outputs = [
+              {
+                criteria = "eDP-1";
+                status = "disable";
+              }
+
+              {
+                # Dell Inc. DELL U2718Q FN84K0120PNL (DP-1 via HDMI)
+                criteria = "DP-1";
+                status = "enable";
+                position = "0,0";
+                mode = "3840x2160";
+                scale = 1.0;
+              }
+            ];
+          };
+        }
+        {
+          profile = {
+            name = "laptopAndScreen";
+            outputs = [
+              {
+                # Dell Inc. DELL U2718Q FN84K0120PNL (DP-1 via HDMI)
+                criteria = "DP-1";
+                status = "enable";
+                position = "0,0";
+                mode = "3840x2160";
+                scale = 1.0;
+              }
+
+              {
+                criteria = "eDP-1";
+                status = "enable";
+                position = "860,2160";
+                mode = "1920x1080";
+                scale = 0.7;
+              }
+            ];
+          };
+        }
+      ];
     };
   };
 
