@@ -73,7 +73,7 @@
   fonts = {
     enableDefaultPackages = true;
     packages = with pkgs; [
-      font-awesome
+      font-awesome_5
       meslo-lgs-nf
       nerd-fonts.dejavu-sans-mono
       nerd-fonts.jetbrains-mono
