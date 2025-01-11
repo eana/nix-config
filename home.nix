@@ -3,6 +3,34 @@
 {
   systemd.user.startServices = "sd-switch";
 
+  systemd.user.services.copyq = {
+    Unit = {
+      Description = "CopyQ clipboard management daemon";
+      PartOf = [ "graphical-session.target" ];
+      After = [ "graphical-session.target" ];
+    };
+    Service = {
+      ExecStart = "${pkgs.copyq}/bin/copyq";
+      Restart = "on-failure";
+      Environment = [ "QT_QPA_PLATFORM=xcb" ];
+    };
+    Install.WantedBy = [ "sway-session.target" ];
+  };
+
+  systemd.user.services.telegram = {
+    Unit = {
+      Description = "Telegram Desktop";
+      PartOf = [ "graphical-session.target" ];
+      After = [ "graphical-session.target" ];
+    };
+    Service = {
+      ExecStart = "${pkgs.telegram-desktop}/bin/telegram-desktop -startintray";
+      Restart = "on-failure";
+      Environment = [ "QT_QPA_PLATFORM=xcb" ];
+    };
+    Install.WantedBy = [ "sway-session.target" ];
+  };
+
   programs = {
     gpg.enable = true;
 
@@ -690,6 +718,7 @@
   wayland.windowManager.sway = {
     enable = true;
     wrapperFeatures.gtk = true;
+    systemd.enable = true;
 
     config = {
       bars = [ ];
