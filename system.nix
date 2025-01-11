@@ -35,6 +35,13 @@
     };
   };
 
+  systemd.sleep.extraConfig = ''
+    AllowSuspend=no
+    AllowHibernation=no
+    AllowHybridSleep=no
+    AllowSuspendThenHibernate=no
+  '';
+
   networking = {
     hostName = "nixbox";
     networkmanager.enable = true;
@@ -74,6 +81,8 @@
     libinput.enable = true;
     dbus.enable = true;
     openssh.enable = true;
+
+    logind.lidSwitchExternalPower = "ignore";
 
     ollama = {
       enable = true;
