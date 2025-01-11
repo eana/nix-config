@@ -490,7 +490,7 @@
         * {
           border: none;
           border-radius: 4px;
-          font-family: "Font Awesome 6 Free";
+          font-family: "Font Awesome 5 Free";
           font-size: 14px;
           min-height: 0;
         }
