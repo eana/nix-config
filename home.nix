@@ -1215,7 +1215,7 @@
       fzf # Fuzzy finder
       go # Go programming language
       gotools # Tools for Go programming
-      tig # Text-mode interface for Git
+      ripgrep # Search tool
       nix-prefetch-git # Prefetch Git repositories
       pre-commit # Framework for managing pre-commit hooks
 
@@ -1263,6 +1263,9 @@
 
       # Communication
       telegram-desktop # Desktop client for Telegram
+
+      # Other
+      neofetch # System information tool
     ];
 
     file = {
