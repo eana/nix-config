@@ -1236,6 +1236,7 @@
       light # Screen brightness control
       pavucontrol # PulseAudio volume control
       waybar # Status bar for Sway
+      libnotify # Desktop notifications
       networkmanagerapplet # Network manager applet
       mako # Notification daemon
       earlyoom # Early OOM killer
