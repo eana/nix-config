@@ -1107,7 +1107,10 @@
       d2 # Modern diagram scripting language
 
       # Containers
-      podman
+      podman # Tool for managing OCI containers
+
+      # Communication
+      telegram-desktop # Desktop client for Telegram
     ];
 
     file = {
