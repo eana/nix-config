@@ -59,15 +59,34 @@
       jack.enable = true;
     };
 
-    xserver.enable = true;
-    xserver.displayManager.gdm.enable = true;
-    xserver.displayManager.gdm.wayland = true;
-    xserver.videoDrivers = [ "nvidia" ];
+    xserver = {
+      enable = true;
+      displayManager = {
+        gdm = {
+          enable = true;
+          wayland = true;
+        };
+      };
+      videoDrivers = [ "nvidia" ];
+    };
 
     printing.enable = true;
     libinput.enable = true;
     dbus.enable = true;
     openssh.enable = true;
+
+    ollama = {
+      enable = true;
+      acceleration = "cuda";
+      host = "0.0.0.0";
+      port = 11434;
+    };
+
+    open-webui = {
+      enable = true;
+      host = "0.0.0.0";
+      port = 11343;
+    };
   };
 
   fonts = {
