@@ -17,6 +17,13 @@
     };
     enableAllFirmware = true;
     graphics.enable = true;
+    nvidia = {
+      prime = {
+        nvidiaBusId = "PCI:1:0:0";
+        intelBusId = "PCI:0:2:0";
+      };
+      modesetting.enable = false;
+    };
   };
 
   boot = {
@@ -51,9 +58,12 @@
       pulse.enable = true;
       jack.enable = true;
     };
+
     xserver.enable = true;
     xserver.displayManager.gdm.enable = true;
     xserver.displayManager.gdm.wayland = true;
+    xserver.videoDrivers = [ "nvidia" ];
+
     printing.enable = true;
     libinput.enable = true;
     dbus.enable = true;
