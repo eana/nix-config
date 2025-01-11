@@ -134,7 +134,7 @@
       # GPG signing.
       signing = {
         signByDefault = true;
-        key = "69394C553C750B8C";
+        key = "C01D2E8FCFCB6358";
       };
 
       aliases = {
@@ -173,6 +173,14 @@
           enabled = "true";
           autoUpdate = "true";
         };
+
+        diff = {
+          sopsdiffer = { textconv = "sops -d"; };
+          tool = "meld";
+        };
+
+        difftool.prompt = false;
+        difftool.meld.cmd = "meld $LOCAL $REMOTE";
       };
     };
 
@@ -1262,6 +1270,7 @@
       nil # Nix language server
       nixfmt-classic # Nix code formatter
       nix-tree # Visualize Nix dependencies
+      meld # Visual diff and merge tool
       gnumake # Build automation tool
       gcc # GNU Compiler Collection
       tree-sitter # Incremental parsing system
@@ -1319,6 +1328,7 @@
 
       # Other
       neofetch # System information tool
+      sops # Secrets management tool
     ];
 
     file = {
