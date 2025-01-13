@@ -29,6 +29,34 @@ let
     config = { };
     pkgs = pkgs;
   };
+
+  background =
+    "~/.local/share/backgrounds/hannah-grace-dSqWwzrLJaQ-unsplash.jpg";
+
+  amixer = "${pkgs.alsa-utils}/bin/amixer";
+  bluetooth-applet = "${pkgs.blueman}/bin/blueman-applet";
+  copyq = "${pkgs.copyq}/bin/copyq";
+  earlyoom = "${pkgs.earlyoom}/bin/earlyoom";
+  foot = "${pkgs.foot}/bin/foot";
+  fuzzel = "${pkgs.fuzzel}/bin/fuzzel";
+  google-chrome = "${pkgs.google-chrome}/bin/google-chrome";
+  grim = "${pkgs.grim}/bin/grim";
+  light = "${pkgs.light}/bin/light";
+  mako = "${pkgs.mako}/bin/mako";
+  nautilus = "${pkgs.nautilus}/bin/nautilus";
+  notify-send = "${pkgs.libnotify}/bin/notify-send -t 30000";
+  pavucontrol = "${pkgs.pavucontrol}/bin/pavucontrol";
+  playerctl = "${pkgs.playerctl}/bin/playerctl";
+  slurp = "${pkgs.slurp}/bin/slurp";
+  swaybg = "${pkgs.swaybg}/bin/swaybg";
+  swayidle = "${pkgs.swayidle}/bin/swayidle";
+  swaylock = "${pkgs.swaylock}/bin/swaylock -c 000000";
+  swaymsg = "${pkgs.sway}/bin/swaymsg";
+  swaynag = "${pkgs.sway}/bin/swaynag";
+  telegram-desktop = "${pkgs.telegram-desktop}/bin/telegram-desktop";
+  waybar = "${pkgs.waybar}/bin/waybar";
+  wl-copy = "${pkgs.wl-clipboard-rs}/bin/wl-copy";
+  wl-paste = "${pkgs.wl-clipboard-rs}/bin/wl-paste";
 in {
   systemd.user.startServices = "sd-switch";
 
@@ -39,7 +67,7 @@ in {
       After = [ "graphical-session.target" ];
     };
     Service = {
-      ExecStart = "${pkgs.copyq}/bin/copyq";
+      ExecStart = "${copyq}";
       Restart = "on-failure";
       Environment = [ "QT_QPA_PLATFORM=xcb" ];
     };
@@ -53,9 +81,22 @@ in {
       After = [ "graphical-session.target" ];
     };
     Service = {
-      ExecStart = "${pkgs.telegram-desktop}/bin/telegram-desktop -startintray";
+      ExecStart = "${telegram-desktop} -startintray";
       Restart = "on-failure";
       Environment = [ "QT_QPA_PLATFORM=xcb" ];
+    };
+    Install.WantedBy = [ "sway-session.target" ];
+  };
+
+  systemd.user.services.bluetooth-applet = {
+    Unit = {
+      Description = "Blueman Applet";
+      PartOf = [ "graphical-session.target" ];
+      After = [ "graphical-session.target" ];
+    };
+    Service = {
+      ExecStart = "${bluetooth-applet}";
+      Restart = "on-failure";
     };
     Install.WantedBy = [ "sway-session.target" ];
   };
@@ -88,7 +129,7 @@ in {
         bind-key -T copy-mode-vi 'v' send -X begin-selection     # Begin selection in copy mode.
         bind-key -T copy-mode-vi 'C-v' send -X rectangle-toggle  # Begin selection in copy mode.
         # Yank selection in copy mode.
-        bind -T copy-mode-vi y send-keys -X copy-pipe-and-cancel '{{#if (eq os "windows-wsl")}}clip.exe{{else}}wl-copy{{/if}}'
+        bind -T copy-mode-vi y send-keys -X copy-pipe-and-cancel '{{#if (eq os "windows-wsl")}}clip.exe{{else}}${wl-paste}{{/if}}'
 
         # Restoring pane contents
         set -g @resurrect-capture-pane-contents 'on'
@@ -425,8 +466,8 @@ in {
               ~/.config/waybar/modules/scratchpad_indicator
             '';
             format = "{} ";
-            on-click-right = "swaymsg 'scratchpad show'";
-            on-click = "swaymsg 'move scratchpad'";
+            on-click-right = "${swaymsg} 'scratchpad show'";
+            on-click = "${swaymsg} 'move scratchpad'";
           };
 
           "custom/separator" = {
@@ -468,7 +509,7 @@ in {
               "default" = [ "" "" ];
             };
             scroll-step = 1;
-            on-click = "pavucontrol";
+            on-click = "${pavucontrol}";
           };
 
           "backlight" = {
@@ -568,7 +609,7 @@ in {
             tooltip = false;
             format = "";
             on-click =
-              "swaynag -t warning -m 'Power Menu Options' -b 'Poweroff' 'systemctl poweroff' -b 'Reboot' 'systemctl reboot' -b 'Suspend' 'systemctl suspend' -b 'Logout' 'swaymsg exit'";
+              "${swaynag} -t warning -m 'Power Menu Options' -b 'Poweroff' 'systemctl poweroff' -b 'Reboot' 'systemctl reboot' -b 'Suspend' 'systemctl suspend' -b 'Logout' '${swaymsg} exit'";
           };
 
         };
@@ -803,19 +844,19 @@ in {
       set $ws7 7
 
       # Locker
-      set $locker swaylock -c 000000
+      set $locker ${swaylock}
 
       # Terminal emulator
-      set $term foot
+      set $term ${foot}
 
       # Application launcher
-      set $menu fuzzel -w 60 | xargs swaymsg exec --
+      set $menu ${fuzzel} -w 60 | xargs ${swaymsg} exec --
 
       # File manager
-      set $filer nautilus
+      set $filer ${nautilus}
 
       # Browser
-      set $browser google-chrome-stable
+      set $browser ${google-chrome}
 
       # For gtk applications settings
       set $gnomeschema org.gnome.desktop.interface
@@ -825,7 +866,7 @@ in {
       # Monitors
 
       # Set the screen brightness to 20%
-      exec --no-startup-id /usr/bin/light -s sysfs/backlight/gmux_backlight -S 20
+      exec --no-startup-id ${light} -s sysfs/backlight/gmux_backlight -S 20
 
       # Font
       font pango: SF Pro Text 10
@@ -839,7 +880,7 @@ in {
       gaps inner 2
 
       # Default wallpaper
-      exec --no-startup-id "swaybg -i ~/.local/share/backgrounds/hannah-grace-dSqWwzrLJaQ-unsplash.jpg -m fill"
+      exec --no-startup-id "${swaybg} -i ${background} -m fill"
 
       # Keyboard layout
       input type:keyboard {
@@ -872,7 +913,7 @@ in {
 
       ### Window rules ###
 
-      # Link some programs to workspaces (swaymsg -t get_tree)
+      # Link some programs to workspaces (${swaymsg} -t get_tree)
       # Examples:
       # assign [app_id=$browser] workspace 1
       # assign [app_id=$term] workspace 2
@@ -950,31 +991,31 @@ in {
       bindsym --to-code $mod+l exec $locker
 
       # Start CopyQ
-      bindsym --to-code $mod+h exec "copyq show"
+      bindsym --to-code $mod+h exec "${copyq} show"
 
       # Color picker
-      bindsym --to-code $mod+p exec swaynag -t mtype -m "$(grim -g "$(slurp -p)" -t ppm - | convert - -format '%[pixel:p{0,0}]' txt:-)" && notify-send -t 30000 "Color picked"
+      bindsym --to-code $mod+p exec ${swaynag} -t mtype -m "$(${grim} -g "$(${slurp} -p)" -t ppm - | convert - -format '%[pixel:p{0,0}]' txt:-)" && ${notify-send} "Color picked"
 
       # Take a screenshot to clipboard (whole screen)
-      bindsym --to-code Print exec grim - | wl-copy && notify-send -t 30000 "Screenshot of whole screen saved to clipboard"
+      bindsym --to-code Print exec ${grim} - | ${wl-paste} && ${notify-send} "Screenshot of whole screen saved to clipboard"
 
       # Take a screenshot of selected region to clipboard
-      bindsym --to-code $mod+Print exec grim -g "$(slurp)" - | wl-copy && notify-send -t 30000 "Screenshot of selected region saved to clipboard"
+      bindsym --to-code $mod+Print exec ${grim} -g "$(${slurp})" - | ${wl-paste} && ${notify-send} "Screenshot of selected region saved to clipboard"
 
       # Take a screenshot of selected region and saved the ocr-ed text to clipboard
-      bindsym --to-code $mod+t exec grim -g "$(slurp)" -t png - | tesseract - - | wl-copy && notify-send -t 30000 "Screenshot of selected region and saved the ocr-ed text to clipboard"
+      bindsym --to-code $mod+t exec ${grim} -g "$(${slurp})" -t png - | tesseract - - | ${wl-paste} && ${notify-send} "Screenshot of selected region and saved the ocr-ed text to clipboard"
 
       # Take a screenshot of focused window to clipboard
-      bindsym --to-code $mod+Shift+Print exec grim -g "$(swaymsg -t get_tree | jq -r '.. | select(.focused?) | .rect | "\(.x),\(.y) \(.width)x\(.height)"')" - | wl-copy && notify-send -t 30000 "Screenshot of active window saved to clipboard"
+      bindsym --to-code $mod+Shift+Print exec ${grim} -g "$(${swaymsg} -t get_tree | jq -r '.. | select(.focused?) | .rect | "\(.x),\(.y) \(.width)x\(.height)"')" - | ${wl-paste} && ${notify-send} "Screenshot of active window saved to clipboard"
 
       # Take a screenshot (whole screen)
-      bindsym --to-code Ctrl+Print exec grim ~/Pictures/screenshots/screenshot-"$(date +%s)".png && notify-send -t 30000 "Screenshot of whole screen saved to folder"
+      bindsym --to-code Ctrl+Print exec ${grim} ~/Pictures/screenshots/screenshot-"$(date +%s)".png && ${notify-send} "Screenshot of whole screen saved to folder"
 
       # Take a screenshot of selected region
-      bindsym --to-code $mod+Ctrl+Print exec grim -g "$(slurp)" ~/Pictures/screenshots/screenshot-"$(date +%s)".png && notify-send -t 30000 "Screenshot of selected region saved to folder"
+      bindsym --to-code $mod+Ctrl+Print exec ${grim} -g "$(${slurp})" ~/Pictures/screenshots/screenshot-"$(date +%s)".png && ${notify-send} "Screenshot of selected region saved to folder"
 
       # Take a screenshot of focused window
-      bindsym --to-code $mod+Ctrl+Shift+Print exec grim -g "$(swaymsg -t get_tree | jq -r '.. | select(.focused?) | .rect | "\(.x),\(.y) \(.width)x\(.height)"')" ~/Pictures/screenshot-"$(date +%s)".png && notify-send -t 30000 "Screenshot of active window saved to folder"
+      bindsym --to-code $mod+Ctrl+Shift+Print exec ${grim} -g "$(${swaymsg} -t get_tree | jq -r '.. | select(.focused?) | .rect | "\(.x),\(.y) \(.width)x\(.height)"')" ~/Pictures/screenshot-"$(date +%s)".png && notify-send -t 30000 "Screenshot of active window saved to folder"
 
       # Move your focus around
       bindsym --to-code $mod+Left focus left
@@ -1011,27 +1052,26 @@ in {
       bindsym $mod+Ctrl+Left workspace prev
 
       # Media keys Volume Settings
-      bindsym XF86AudioRaiseVolume exec pamixer -i 5 # to increase 5%
-      bindsym XF86AudioLowerVolume exec pamixer -d 5 # to decrease 5%
-      bindsym XF86AudioMute exec amixer sset Master toggle
+      bindsym XF86AudioRaiseVolume exec ${amixer} -q set Master 5+ unmute
+      bindsym XF86AudioLowerVolume exec ${amixer} -q set Master 5- unmute 
       # Media keys like Brightness|Mute|Play|Stop
-      bindsym XF86AudioMicMute exec pactl set-source-mute @DEFAULT_SOURCE@ toggle
-      bindsym XF86MonBrightnessUp exec light -s sysfs/backlight/gmux_backlight  -A 5
-      bindsym XF86MonBrightnessDown exec light -s sysfs/backlight/gmux_backlight -U 5
-      bindsym XF86KbdBrightnessUp exec light -s sysfs/leds/smc::kbd_backlight -A 5
-      bindsym XF86KbdBrightnessDown exec light -s sysfs/leds/smc::kbd_backlight -U 5
+      bindsym XF86AudioMute exec ${amixer} -q set Master toggle && ${amixer} -q set Capture toggle
+      bindsym XF86MonBrightnessUp exec ${light} -s sysfs/backlight/gmux_backlight  -A 5
+      bindsym XF86MonBrightnessDown exec ${light} -s sysfs/backlight/gmux_backlight -U 5
+      bindsym XF86KbdBrightnessUp exec ${light} -s sysfs/leds/smc::kbd_backlight -A 5
+      bindsym XF86KbdBrightnessDown exec ligh${light} -s sysfs/leds/smc::kbd_backlight -U 5
       # Same playback bindings for Keyboard media keys
-      bindsym XF86AudioPlay exec playerctl play-pause
-      bindsym XF86AudioNext exec playerctl next
-      bindsym XF86AudioPrev exec playerctl previous#
+      bindsym XF86AudioPlay exec ${playerctl} play-pause
+      bindsym XF86AudioNext exec ${playerctl} next
+      bindsym XF86AudioPrev exec ${playerctl} previous
 
       # Layout stuff:
 
       # You can "split" the current object of your focus with
       # $mod+c or $mod+v, for horizontal and vertical splits
       # respectively.
-      bindsym --to-code --to-code $mod+c splith; exec notify-send -t 30000 "Split horizontaly"
-      bindsym --to-code --to-code $mod+v splitv; exec notify-send -t 30000 "Split verticaly"
+      bindsym --to-code --to-code $mod+c splith; exec ${notify-send} "Split horizontaly"
+      bindsym --to-code --to-code $mod+v splitv; exec ${notify-send} "Split verticaly"
 
       # Switch the current container between different layout styles
       bindsym --to-code $mod+F3 layout stacking
@@ -1085,19 +1125,19 @@ in {
       bindsym --to-code $mod+Shift+s sticky toggle
 
       # Exit sway (logs you out of your Wayland session)
-      bindsym --to-code $mod+Delete exec swaynag -t mtype -m \
+      bindsym --to-code $mod+Delete exec ${swaynag} -t mtype -m \
         'You pressed the exit shortcut. What do you want?' \
         -b 'Poweroff' 'systemctl poweroff' \
         -b 'Reboot' 'systemctl reboot' \
         -b 'Sleep' 'systemctl suspend' \
-        -b 'Logout' 'swaymsg exit'
+        -b 'Logout' '${swaymsg} exit'
 
       # Shutdown/Logout menu
       set $mode_system System (l) lock, (e) exit, (s) suspend, (r) reboot, (Shift+s) Shutdown
       mode "$mode_system" {
-        bindsym b exec swaymsg exit
+        bindsym b exec ${swaymsg} exit
         bindsym l exec $locker, mode "default"
-        bindsym e exec swaymsg exit, mode "default"
+        bindsym e exec ${swaymsg} exit, mode "default"
         bindsym s exec systemctl suspend, mode "default"
         bindsym r exec systemctl reboot, mode "default"
         bindsym Shift+s exec systemctl poweroff -i, mode "default"
@@ -1110,35 +1150,30 @@ in {
       bindsym $mod+Shift+e mode "$mode_system"
 
       ### Disable laptop's screen when the lid is closed
-      # swaymsg -t get_outputs
+      # ${swaymsg} -t get_outputs
       bindswitch lid:on output eDP-1 disable
       bindswitch lid:off output eDP-1 enable
 
       ### Status bar ###
 
       bar {
-        swaybar_command waybar
+        swaybar_command ${waybar}
       }
 
       include /etc/sway/config.d/*
 
       ### Autostart ### (to fix time - timedatectl set-ntp true)
 
-      exec killall /usr/bin/earlyoom
-      exec sh -c "/usr/bin/earlyoom -r 0 -m 2,1 --prefer '^Web Content$' --avoid '^(sway|waybar|pacman|packagekitd|gnome-shell|gnome-session-c|gnome-session-b|lighdm|sddm|sddm-helper|gdm|gdm-wayland-ses|gdm-session-wor|gdm-x-session|Xorg|Xwayland|systemd|systemd-logind|dbus-daemon|dbus-broker|cinnamon|cinnamon-sessio|kwin_x11|kwin_wayland|plasmashell|ksmserver|plasma_session|startplasma-way|xfce4-session|mate-session|marco|lxqt-session|openbox)'"
+      exec killall ${earlyoom}
+      exec sh -c "${earlyoom} -r 0 -m 2,1 --prefer '^Web Content$' --avoid '^(sway|waybar|pacman|packagekitd|gnome-shell|gnome-session-c|gnome-session-b|lighdm|sddm|sddm-helper|gdm|gdm-wayland-ses|gdm-session-wor|gdm-x-session|Xorg|Xwayland|systemd|systemd-logind|dbus-daemon|dbus-broker|cinnamon|cinnamon-sessio|kwin_x11|kwin_wayland|plasmashell|ksmserver|plasma_session|startplasma-way|xfce4-session|mate-session|marco|lxqt-session|openbox)'"
       exec sleep 5
-      exec --no-startup-id blueman-applet
-      exec_always killall pulseaudio
-      exec_always sh -c "pulseaudio --daemonize"
-      exec --no-startup-id /usr/bin/gammastep-indicator
-      exec --no-startup-id /usr/bin/copyq
-      exec mako
+      exec ${mako}
       exec ~/.config/sway/modules/critical_battery_beeper/critical_battery_beeper.py
-      exec swayidle -w \
-        timeout 300 'swaylock -f -c 000000' \
-        timeout 600 'swaymsg "output * dpms off"' \
-        resume 'swaymsg "output * dpms on"' \
-        before-sleep 'swaylock  -c 000000'
+      exec ${swayidle} -w \
+        timeout 300 '${swaylock} -f' \
+        timeout 600 '${swaymsg} "output * dpms off"' \
+        resume '${swaymsg} "output * dpms on"' \
+        before-sleep '${swaylock}'
 
       # Gtk applications settings
       exec_always {
@@ -1265,25 +1300,13 @@ in {
     packages = with pkgs; [
       # SwayWM
       wl-clipboard # Clipboard support for Wayland
-      fuzzel # Fuzzy search for mako
-      swaylock # Screen locker
-      swaybg # Wallpaper utility
-      grim # Screenshot utility
-      slurp # Select a region for screenshots
-      light # Screen brightness control
-      pavucontrol # PulseAudio volume control
-      waybar # Status bar for Sway
       libnotify # Desktop notifications
       networkmanagerapplet # Network manager applet
-      mako # Notification daemon
-      earlyoom # Early OOM killer
       gammastep # Screen temperature control
       kanshi # Dynamic display configuration
 
       # File management
       gthumb # Image browser and viewer
-      nautilus # File manager
-      copyq # Clipboard manager
       wget # Download utility
       axel # Download utility
       unzip # Unzip utility
@@ -1351,9 +1374,6 @@ in {
 
       # Containers
       podman # Tool for managing OCI containers
-
-      # Communication
-      telegram-desktop # Desktop client for Telegram
 
       # Other
       neofetch # System information tool
