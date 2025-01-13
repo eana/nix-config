@@ -64,15 +64,6 @@ in {
       openFirewall = true;
     };
     blueman.enable = true;
-    pipewire = {
-      enable = true;
-      alsa = {
-        enable = true;
-        support32Bit = true;
-      };
-      pulse.enable = true;
-      jack.enable = true;
-    };
 
     displayManager = { defaultSession = "sway"; };
 
@@ -127,7 +118,7 @@ in {
 
   users.users.jonas = {
     isNormalUser = true;
-    extraGroups = [ "wheel" ];
+    extraGroups = [ "wheel" "video" ];
   };
 
   # Use zsh as your default shell.
