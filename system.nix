@@ -4,7 +4,7 @@ let
   stateVersion = "24.05";
   hostName = "nixbox";
 in {
-  imports = [ ./hardware-configuration.nix ./disko.nix ];
+  imports = [ ./hardware-configuration.nix ./disko.nix ./gdm.nix ];
 
   nix = {
     package = pkgs.nixVersions.stable;
