@@ -41,7 +41,7 @@ let
   fuzzel = "${pkgs.fuzzel}/bin/fuzzel";
   google-chrome = "${pkgs.google-chrome}/bin/google-chrome";
   grim = "${pkgs.grim}/bin/grim";
-  light = "${pkgs.light}/bin/light";
+  light = "${pkgs.brightnessctl}/bin/brightnessctl";
   mako = "${pkgs.mako}/bin/mako";
   nautilus = "${pkgs.nautilus}/bin/nautilus";
   notify-send = "${pkgs.libnotify}/bin/notify-send -t 30000";
@@ -429,6 +429,7 @@ in {
             "custom/separator"
             "pulseaudio"
             "backlight"
+            "custom/separator"
             "battery"
             "custom/separator"
             "cpu"
@@ -878,7 +879,7 @@ in {
       # Monitors
 
       # Set the screen brightness to 20%
-      exec --no-startup-id ${light} -s sysfs/backlight/gmux_backlight -S 20
+      exec --no-startup-id ${light} -d intel_backlight set 20%
 
       # Font
       font pango: SF Pro Text 10
@@ -1068,10 +1069,10 @@ in {
       bindsym XF86AudioLowerVolume exec ${amixer} -q set Master 5- unmute 
       # Media keys like Brightness|Mute|Play|Stop
       bindsym XF86AudioMute exec ${amixer} -q set Master toggle && ${amixer} -q set Capture toggle
-      bindsym XF86MonBrightnessUp exec ${light} -s sysfs/backlight/gmux_backlight  -A 5
-      bindsym XF86MonBrightnessDown exec ${light} -s sysfs/backlight/gmux_backlight -U 5
-      bindsym XF86KbdBrightnessUp exec ${light} -s sysfs/leds/smc::kbd_backlight -A 5
-      bindsym XF86KbdBrightnessDown exec ligh${light} -s sysfs/leds/smc::kbd_backlight -U 5
+      bindsym XF86MonBrightnessUp exec ${light} -d intel_backlight set +5%
+      bindsym XF86MonBrightnessDown exec ${light} -d intel_backlight set 5%-
+      bindsym XF86KbdBrightnessUp exec ${light} -d dell::kbd_backlight set +5%
+      bindsym XF86KbdBrightnessDown exec ligh${light} dell::kbd_backlight set 5%-
       # Same playback bindings for Keyboard media keys
       bindsym XF86AudioPlay exec ${playerctl} play-pause
       bindsym XF86AudioNext exec ${playerctl} next
