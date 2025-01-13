@@ -53,6 +53,8 @@ let
   swaylock = "${pkgs.swaylock}/bin/swaylock -c 000000";
   swaymsg = "${pkgs.sway}/bin/swaymsg";
   swaynag = "${pkgs.sway}/bin/swaynag";
+  system-config-printer =
+    "${pkgs.system-config-printer}/bin/system-config-printer";
   telegram-desktop = "${pkgs.telegram-desktop}/bin/telegram-desktop";
   waybar = "${pkgs.waybar}/bin/waybar";
   wl-copy = "${pkgs.wl-clipboard-rs}/bin/wl-copy";
@@ -422,6 +424,9 @@ in {
           modules-center = [ "sway/mode" ];
           modules-right = [
             "sway/language"
+            "custom/separator"
+            "custom/printer"
+            "custom/separator"
             "pulseaudio"
             "backlight"
             "battery"
@@ -489,6 +494,13 @@ in {
           "sway/language" = {
             format = "  {short}";
             tooltip = false;
+          };
+
+          "custom/printer" = {
+            tooltip-format = "{}";
+            interval = 60;
+            format = "";
+            on-click = "${system-config-printer}";
           };
 
           "pulseaudio" = {
