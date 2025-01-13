@@ -924,28 +924,28 @@
       bindsym --to-code $mod+h exec "copyq show"
 
       # Color picker
-      bindsym --to-code $mod+p exec swaynag -t mtype -m "$(grim -g "$(slurp -p)" -t ppm - | convert - -format '%[pixel:p{0,0}]' txt:-)" && notify-send "Color picked"
+      bindsym --to-code $mod+p exec swaynag -t mtype -m "$(grim -g "$(slurp -p)" -t ppm - | convert - -format '%[pixel:p{0,0}]' txt:-)" && notify-send -t 30000 "Color picked"
 
       # Take a screenshot to clipboard (whole screen)
-      bindsym --to-code Print exec grim - | wl-copy && notify-send "Screenshot of whole screen saved to clipboard"
+      bindsym --to-code Print exec grim - | wl-copy && notify-send -t 30000 "Screenshot of whole screen saved to clipboard"
 
       # Take a screenshot of selected region to clipboard
-      bindsym --to-code $mod+Print exec grim -g "$(slurp)" - | wl-copy && notify-send "Screenshot of selected region saved to clipboard"
+      bindsym --to-code $mod+Print exec grim -g "$(slurp)" - | wl-copy && notify-send -t 30000 "Screenshot of selected region saved to clipboard"
 
       # Take a screenshot of selected region and saved the ocr-ed text to clipboard
-      bindsym --to-code $mod+t exec grim -g "$(slurp)" -t png - | tesseract - - | wl-copy && notify-send "Screenshot of selected region and saved the ocr-ed text to clipboard"
+      bindsym --to-code $mod+t exec grim -g "$(slurp)" -t png - | tesseract - - | wl-copy && notify-send -t 30000 "Screenshot of selected region and saved the ocr-ed text to clipboard"
 
       # Take a screenshot of focused window to clipboard
-      bindsym --to-code $mod+Shift+Print exec grim -g "$(swaymsg -t get_tree | jq -r '.. | select(.focused?) | .rect | "\(.x),\(.y) \(.width)x\(.height)"')" - | wl-copy && notify-send "Screenshot of active window saved to clipboard"
+      bindsym --to-code $mod+Shift+Print exec grim -g "$(swaymsg -t get_tree | jq -r '.. | select(.focused?) | .rect | "\(.x),\(.y) \(.width)x\(.height)"')" - | wl-copy && notify-send -t 30000 "Screenshot of active window saved to clipboard"
 
       # Take a screenshot (whole screen)
-      bindsym --to-code Ctrl+Print exec grim ~/Pictures/screenshots/screenshot-"$(date +%s)".png && notify-send "Screenshot of whole screen saved to folder"
+      bindsym --to-code Ctrl+Print exec grim ~/Pictures/screenshots/screenshot-"$(date +%s)".png && notify-send -t 30000 "Screenshot of whole screen saved to folder"
 
       # Take a screenshot of selected region
-      bindsym --to-code $mod+Ctrl+Print exec grim -g "$(slurp)" ~/Pictures/screenshots/screenshot-"$(date +%s)".png && notify-send "Screenshot of selected region saved to folder"
+      bindsym --to-code $mod+Ctrl+Print exec grim -g "$(slurp)" ~/Pictures/screenshots/screenshot-"$(date +%s)".png && notify-send -t 30000 "Screenshot of selected region saved to folder"
 
       # Take a screenshot of focused window
-      bindsym --to-code $mod+Ctrl+Shift+Print exec grim -g "$(swaymsg -t get_tree | jq -r '.. | select(.focused?) | .rect | "\(.x),\(.y) \(.width)x\(.height)"')" ~/Pictures/screenshot-"$(date +%s)".png && notify-send "Screenshot of active window saved to folder"
+      bindsym --to-code $mod+Ctrl+Shift+Print exec grim -g "$(swaymsg -t get_tree | jq -r '.. | select(.focused?) | .rect | "\(.x),\(.y) \(.width)x\(.height)"')" ~/Pictures/screenshot-"$(date +%s)".png && notify-send -t 30000 "Screenshot of active window saved to folder"
 
       # Move your focus around
       bindsym --to-code $mod+Left focus left
@@ -1001,8 +1001,8 @@
       # You can "split" the current object of your focus with
       # $mod+c or $mod+v, for horizontal and vertical splits
       # respectively.
-      bindsym --to-code --to-code $mod+c splith; exec notify-send "Split horizontaly"
-      bindsym --to-code --to-code $mod+v splitv; exec notify-send "Split verticaly"
+      bindsym --to-code --to-code $mod+c splith; exec notify-send -t 30000 "Split horizontaly"
+      bindsym --to-code --to-code $mod+v splitv; exec notify-send -t 30000 "Split verticaly"
 
       # Switch the current container between different layout styles
       bindsym --to-code $mod+F3 layout stacking
@@ -1179,7 +1179,7 @@
               status = "enable";
               position = "0,0";
               mode = "1920x1080";
-              scale = 0.7;
+              scale = 1.0;
             }];
           };
         }
@@ -1208,20 +1208,20 @@
             name = "laptopAndScreen";
             outputs = [
               {
-                # Dell Inc. DELL U2718Q FN84K0120PNL (DP-1 via HDMI)
-                criteria = "DP-1";
+                criteria = "eDP-1";
                 status = "enable";
                 position = "0,0";
-                mode = "3840x2160";
+                mode = "1920x1080";
                 scale = 1.0;
               }
 
               {
-                criteria = "eDP-1";
+                # Dell Inc. DELL U2718Q FN84K0120PNL (DP-1 via HDMI)
+                criteria = "DP-1";
                 status = "enable";
-                position = "860,2160";
-                mode = "1920x1080";
-                scale = 0.7;
+                position = "1920,0";
+                mode = "3840x2160";
+                scale = 1.0;
               }
             ];
           };
