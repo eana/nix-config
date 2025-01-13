@@ -1,6 +1,35 @@
 { config, lib, pkgs, ... }:
-
-{
+let
+  # A cleaner approach would be to define the stateVersion and other shared constants in a separate file, say constants.nix:
+  #
+  # # constants.nix
+  # {
+  #   stateVersion = "24.05";
+  #   hostName = "nixbox";
+  # }
+  #
+  # Then, import this file in both system.nix and home.nix:
+  #
+  # # system.nix
+  # { config, pkgs, ... }:
+  # let
+  #   constants = import ./constants.nix;
+  # in {
+  #   system.stateVersion = constants.stateVersion;
+  # }
+  #
+  # # home.nix
+  # { config, lib, pkgs, ... }:
+  # let
+  #   constants = import ./constants.nix;
+  # in {
+  #   home.stateVersion = constants.stateVersion;
+  # }
+  systemConfig = import ./system.nix {
+    config = { };
+    pkgs = pkgs;
+  };
+in {
   systemd.user.startServices = "sd-switch";
 
   systemd.user.services.copyq = {
@@ -1362,6 +1391,6 @@
       KPT_FN_RUNTIME = "podman";
     };
 
-    stateVersion = "24.05";
+    stateVersion = systemConfig.system.stateVersion;
   };
 }

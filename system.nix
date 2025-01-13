@@ -1,6 +1,9 @@
 { config, pkgs, ... }:
-
-{
+let
+  # Do not change this value! This tracks when NixOS was installed on your system.
+  stateVersion = "24.05";
+  hostName = "nixbox";
+in {
   imports = [ ./hardware-configuration.nix ./disko.nix ];
 
   nix = {
@@ -43,7 +46,7 @@
   '';
 
   networking = {
-    hostName = "nixbox";
+    hostName = hostName;
     networkmanager.enable = true;
   };
 
@@ -179,5 +182,5 @@
 
   nixpkgs.config.allowUnfree = true;
 
-  system.stateVersion = "24.05";
+  system.stateVersion = stateVersion;
 }
