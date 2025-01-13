@@ -58,6 +58,11 @@ in {
   };
 
   services = {
+    avahi = {
+      enable = true;
+      nssmdns4 = true;
+      openFirewall = true;
+    };
     blueman.enable = true;
     pipewire = {
       enable = true;
@@ -85,6 +90,7 @@ in {
     };
 
     printing.enable = true;
+    printing.drivers = [ pkgs.canon-cups-ufr2 ];
     libinput.enable = true;
     dbus.enable = true;
     openssh.enable = true;
