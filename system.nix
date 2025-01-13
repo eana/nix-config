@@ -69,14 +69,18 @@ in {
       jack.enable = true;
     };
 
+    displayManager = { defaultSession = "sway"; };
+
     xserver = {
       enable = true;
       displayManager = {
         gdm = {
           enable = true;
           wayland = true;
+          settings = { greeter = { IncludeAll = true; }; };
         };
       };
+      desktopManager.gnome.enable = true;
       videoDrivers = [ "nvidia" ];
     };
 
