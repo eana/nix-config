@@ -44,13 +44,13 @@ let
   light = "${pkgs.brightnessctl}/bin/brightnessctl";
   mako = "${pkgs.mako}/bin/mako";
   nautilus = "${pkgs.nautilus}/bin/nautilus";
-  notify-send = "${pkgs.libnotify}/bin/notify-send -t 30000";
+  notify-send = "${pkgs.libnotify}/bin/notify-send --expire-time 30000";
   pavucontrol = "${pkgs.pavucontrol}/bin/pavucontrol";
   playerctl = "${pkgs.playerctl}/bin/playerctl";
   slurp = "${pkgs.slurp}/bin/slurp";
   swaybg = "${pkgs.swaybg}/bin/swaybg";
   swayidle = "${pkgs.swayidle}/bin/swayidle";
-  swaylock = "${pkgs.swaylock}/bin/swaylock -c 000000";
+  swaylock = "${pkgs.swaylock}/bin/swaylock --color 000000";
   swaymsg = "${pkgs.sway}/bin/swaymsg";
   swaynag = "${pkgs.sway}/bin/swaynag";
   system-config-printer =
@@ -877,7 +877,7 @@ in {
       set $term ${foot}
 
       # Application launcher
-      set $menu ${fuzzel} -w 60 | xargs ${swaymsg} exec --
+      set $menu ${fuzzel} --width 60 | xargs ${swaymsg} exec --
 
       # File manager
       set $filer ${nautilus}
@@ -893,7 +893,7 @@ in {
       # Monitors
 
       # Set the screen brightness to 20%
-      exec --no-startup-id ${light} -d intel_backlight set 20%
+      exec --no-startup-id ${light} --device intel_backlight set 20%
 
       # Font
       font pango: SF Pro Text 10
@@ -907,7 +907,7 @@ in {
       gaps inner 2
 
       # Default wallpaper
-      exec --no-startup-id "${swaybg} -i ${background} -m fill"
+      exec --no-startup-id "${swaybg} --image ${background} --mode fill"
 
       # Keyboard layout
       input type:keyboard {
@@ -1079,14 +1079,14 @@ in {
       bindsym $mod+Ctrl+Left workspace prev
 
       # Media keys Volume Settings
-      bindsym XF86AudioRaiseVolume exec ${amixer} -q set Master 5+ unmute
-      bindsym XF86AudioLowerVolume exec ${amixer} -q set Master 5- unmute 
+      bindsym XF86AudioRaiseVolume exec ${amixer} --quiet set Master 5+ unmute
+      bindsym XF86AudioLowerVolume exec ${amixer} --quiet set Master 5- unmute
       # Media keys like Brightness|Mute|Play|Stop
-      bindsym XF86AudioMute exec ${amixer} -q set Master toggle && ${amixer} -q set Capture toggle
-      bindsym XF86MonBrightnessUp exec ${light} -d intel_backlight set +5%
-      bindsym XF86MonBrightnessDown exec ${light} -d intel_backlight set 5%-
-      bindsym XF86KbdBrightnessUp exec ${light} -d dell::kbd_backlight set +5%
-      bindsym XF86KbdBrightnessDown exec ligh${light} dell::kbd_backlight set 5%-
+      bindsym XF86AudioMute exec ${amixer} --quiet set Master toggle && ${amixer} --quiet set Capture toggle
+      bindsym XF86MonBrightnessUp exec ${light} --device intel_backlight set +5%
+      bindsym XF86MonBrightnessDown exec ${light} --device intel_backlight set 5%-
+      bindsym XF86KbdBrightnessUp exec ${light} --device dell::kbd_backlight set +5%
+      bindsym XF86KbdBrightnessDown exec ${light} --device dell::kbd_backlight set 5%-
       # Same playback bindings for Keyboard media keys
       bindsym XF86AudioPlay exec ${playerctl} play-pause
       bindsym XF86AudioNext exec ${playerctl} next
@@ -1152,12 +1152,12 @@ in {
       bindsym --to-code $mod+Shift+s sticky toggle
 
       # Exit sway (logs you out of your Wayland session)
-      bindsym --to-code $mod+Delete exec ${swaynag} -t mtype -m \
+      bindsym --to-code $mod+Delete exec ${swaynag} --type mtype --message \
         'You pressed the exit shortcut. What do you want?' \
-        -b 'Poweroff' 'systemctl poweroff' \
-        -b 'Reboot' 'systemctl reboot' \
-        -b 'Sleep' 'systemctl suspend' \
-        -b 'Logout' '${swaymsg} exit'
+        --button 'Poweroff' 'systemctl poweroff' \
+        --button 'Reboot' 'systemctl reboot' \
+        --button 'Sleep' 'systemctl suspend' \
+        --button 'Logout' '${swaymsg} exit'
 
       # Shutdown/Logout menu
       set $mode_system System (l) lock, (e) exit, (s) suspend, (r) reboot, (Shift+s) Shutdown
@@ -1196,7 +1196,7 @@ in {
       exec sleep 5
       exec ${mako}
       exec ${swayidle} -w \
-        timeout 300 '${swaylock} -f' \
+        timeout 300 '${swaylock} --daemonize' \
         timeout 600 '${swaymsg} "output * dpms off"' \
         resume '${swaymsg} "output * dpms on"' \
         before-sleep '${swaylock}'
