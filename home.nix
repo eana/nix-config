@@ -103,6 +103,20 @@ in {
     Install.WantedBy = [ "sway-session.target" ];
   };
 
+  systemd.user.services.swaynag-battery = {
+    Unit = {
+      Description = "Low battery notification";
+      PartOf = "graphical-session.target";
+      After = [ "graphical-session.target" ];
+    };
+
+    Service = {
+      ExecStart = "${pkgs.swaynag-battery}/bin/swaynag-battery";
+      Restart = "on-failure";
+    };
+    Install.WantedBy = [ "sway-session.target" ];
+  };
+
   programs = {
     gpg.enable = true;
 
@@ -1181,7 +1195,6 @@ in {
       exec sh -c "${earlyoom} -r 0 -m 2,1 --prefer '^Web Content$' --avoid '^(sway|waybar|pacman|packagekitd|gnome-shell|gnome-session-c|gnome-session-b|lighdm|sddm|sddm-helper|gdm|gdm-wayland-ses|gdm-session-wor|gdm-x-session|Xorg|Xwayland|systemd|systemd-logind|dbus-daemon|dbus-broker|cinnamon|cinnamon-sessio|kwin_x11|kwin_wayland|plasmashell|ksmserver|plasma_session|startplasma-way|xfce4-session|mate-session|marco|lxqt-session|openbox)'"
       exec sleep 5
       exec ${mako}
-      exec ~/.config/sway/modules/critical_battery_beeper/critical_battery_beeper.py
       exec ${swayidle} -w \
         timeout 300 '${swaylock} -f' \
         timeout 600 '${swaymsg} "output * dpms off"' \
