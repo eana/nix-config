@@ -817,7 +817,6 @@ in {
         }
       '';
     };
-
   };
 
   wayland.windowManager.sway = {
@@ -1181,6 +1180,11 @@ in {
       bindswitch lid:on output eDP-1 disable
       bindswitch lid:off output eDP-1 enable
 
+      ### Disable/Enable the laptop's screen when needed
+      ## The following configuration works
+      bindsym $mod+Ctrl+d exec ${swaymsg} output eDP-1 disable
+      bindsym $mod+Ctrl+e exec ${swaymsg} output eDP-1 enable
+
       ### Status bar ###
 
       bar {
@@ -1197,7 +1201,7 @@ in {
       exec ${mako}
       exec ${swayidle} -w \
         timeout 300 '${swaylock} --daemonize' \
-        timeout 600 '${swaymsg} "output * dpms off"' \
+        timeout 900 '${swaymsg} "output * dpms off"' \
         resume '${swaymsg} "output * dpms on"' \
         before-sleep '${swaylock}'
 
@@ -1220,10 +1224,6 @@ in {
 
       # Start polkit agent
       exec --no-startup-id /usr/libexec/polkit-gnome-authentication-agent-1
-
-      # Restart kanshi
-      exec --no-startup-id "systemctl --user restart kanshi.service"
-      bindsym --to-code $mod+k exec systemctl --user restart kanshi.service
     '';
   };
 
@@ -1259,61 +1259,44 @@ in {
 
     kanshi = {
       enable = true;
-
       settings = [
         {
           profile = {
-            name = "laptopOnly";
-            outputs = [{
-              criteria = "eDP-1";
-              status = "enable";
-              position = "0,0";
-              mode = "1920x1080";
-              scale = 1.0;
-            }];
-          };
-        }
-        {
-          profile = {
-            name = "screenOnly";
+            name = "MonitorAndLaptop";
+            exec = [
+              "${swaymsg} workspace 1, move workspace to output '\"Dell Inc. DELL U2718Q FN84K0120PNL\"'"
+              "${swaymsg} workspace 2, move workspace to output '\"Dell Inc. DELL U2718Q FN84K0120PNL\"'"
+              "${swaymsg} workspace 3, move workspace to output '\"Dell Inc. DELL U2718Q FN84K0120PNL\"'"
+            ];
             outputs = [
               {
-                criteria = "eDP-1";
-                status = "disable";
+                criteria = "Dell Inc. DELL U2718Q FN84K0120PNL";
+                status = "enable";
+                mode = "3840x2160";
+                position = "0,0";
+                scale = 1.0;
               }
 
               {
-                # Dell Inc. DELL U2718Q FN84K0120PNL (DP-1 via HDMI)
-                criteria = "DP-1";
+                criteria = "Sharp Corporation 0x1453 Unknown";
                 status = "enable";
-                position = "0,0";
-                mode = "3840x2160";
-                scale = 1.0;
-              }
-            ];
-          };
-        }
-        {
-          profile = {
-            name = "laptopAndScreen";
-            outputs = [
-              {
-                criteria = "eDP-1";
-                status = "enable";
-                position = "0,0";
                 mode = "1920x1080";
-                scale = 1.0;
-              }
-
-              {
-                # Dell Inc. DELL U2718Q FN84K0120PNL (DP-1 via HDMI)
-                criteria = "DP-1";
-                status = "enable";
-                position = "1920,0";
-                mode = "3840x2160";
-                scale = 1.0;
+                position = "540,2160";
+                scale = 0.7;
               }
             ];
+          };
+        }
+        {
+          profile = {
+            name = "LaptopOnly";
+            outputs = [{
+              criteria = "Sharp Corporation 0x1453 Unknown";
+              status = "enable";
+              mode = "1920x1080";
+              position = "540,2160";
+              scale = 0.7;
+            }];
           };
         }
       ];
