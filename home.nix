@@ -830,6 +830,11 @@ in {
       keybindings = { };
       # Mod1=<Alt>, Mod4=<Super>
       modifier = "Mod4";
+
+      startup = [{
+        command = "systemctl --user restart avizo";
+        always = true;
+      }];
     };
 
     swaynag = {
@@ -1078,14 +1083,19 @@ in {
       bindsym $mod+Ctrl+Left workspace prev
 
       # Media keys Volume Settings
-      bindsym XF86AudioRaiseVolume exec ${pactl} set-sink-volume 0 +5%
-      bindsym XF86AudioLowerVolume exec ${pactl} set-sink-volume 0 -5%
+      bindsym XF86AudioRaiseVolume exec volumectl -u up
+      bindsym XF86AudioLowerVolume exec volumectl -u down
+
       # Media keys like Brightness|Mute|Play|Stop
-      bindsym XF86AudioMute exec ${pactl} set-sink-mute 0 toggle
-      bindsym XF86MonBrightnessUp exec ${light} --device intel_backlight set +5%
-      bindsym XF86MonBrightnessDown exec ${light} --device intel_backlight set 5%-
+      bindsym XF86AudioMute exec volumectl toggle-mute
+      bindsym XF86AudioMicMute exec volumectl -m toggle-mute
+
+      bindsym XF86MonBrightnessUp exec lightctl up
+      bindsym XF86MonBrightnessDown exec lightctl down
+
       bindsym XF86KbdBrightnessUp exec ${light} --device dell::kbd_backlight set +5%
       bindsym XF86KbdBrightnessDown exec ${light} --device dell::kbd_backlight set 5%-
+
       # Same playback bindings for Keyboard media keys
       bindsym XF86AudioPlay exec ${playerctl} play-pause
       bindsym XF86AudioNext exec ${playerctl} next
@@ -1228,6 +1238,19 @@ in {
   };
 
   services = {
+    avizo = {
+      enable = true;
+      settings = {
+        default = {
+          time = 1.0;
+          y-offset = 0.5;
+          fade-in = 0.1;
+          fade-out = 0.2;
+          padding = 10;
+        };
+      };
+    };
+
     gpg-agent = {
       enable = true;
 
