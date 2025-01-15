@@ -1343,6 +1343,7 @@ in {
       # Media
       mpg123 # Audio player
       mpv # Video player
+      freetube # YouTube client
 
       # Development tools
       nil # Nix language server
