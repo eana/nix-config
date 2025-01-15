@@ -33,7 +33,6 @@ let
   background =
     "~/.local/share/backgrounds/hannah-grace-dSqWwzrLJaQ-unsplash.jpg";
 
-  amixer = "${pkgs.alsa-utils}/bin/amixer";
   bluetooth-applet = "${pkgs.blueman}/bin/blueman-applet";
   copyq = "${pkgs.copyq}/bin/copyq";
   earlyoom = "${pkgs.earlyoom}/bin/earlyoom";
@@ -45,6 +44,7 @@ let
   mako = "${pkgs.mako}/bin/mako";
   nautilus = "${pkgs.nautilus}/bin/nautilus";
   notify-send = "${pkgs.libnotify}/bin/notify-send --expire-time 30000";
+  pactl = "${pkgs.pulseaudio}/bin/pactl";
   pavucontrol = "${pkgs.pavucontrol}/bin/pavucontrol";
   playerctl = "${pkgs.playerctl}/bin/playerctl";
   slurp = "${pkgs.slurp}/bin/slurp";
@@ -1078,10 +1078,10 @@ in {
       bindsym $mod+Ctrl+Left workspace prev
 
       # Media keys Volume Settings
-      bindsym XF86AudioRaiseVolume exec ${amixer} --quiet set Master 5+ unmute
-      bindsym XF86AudioLowerVolume exec ${amixer} --quiet set Master 5- unmute
+      bindsym XF86AudioRaiseVolume exec ${pactl} set-sink-volume 0 +5%
+      bindsym XF86AudioLowerVolume exec ${pactl} set-sink-volume 0 -5%
       # Media keys like Brightness|Mute|Play|Stop
-      bindsym XF86AudioMute exec ${amixer} --quiet set Master toggle && ${amixer} --quiet set Capture toggle
+      bindsym XF86AudioMute exec ${pactl} set-sink-mute 0 toggle
       bindsym XF86MonBrightnessUp exec ${light} --device intel_backlight set +5%
       bindsym XF86MonBrightnessDown exec ${light} --device intel_backlight set 5%-
       bindsym XF86KbdBrightnessUp exec ${light} --device dell::kbd_backlight set +5%
