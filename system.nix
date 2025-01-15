@@ -75,6 +75,7 @@ in {
   networking = {
     hostName = hostName;
     networkmanager.enable = true;
+    enableIPv6 = false;
   };
 
   time.timeZone = "Europe/Stockholm";
