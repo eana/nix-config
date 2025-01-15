@@ -43,7 +43,7 @@ let
   light = "${pkgs.brightnessctl}/bin/brightnessctl";
   mako = "${pkgs.mako}/bin/mako";
   nautilus = "${pkgs.nautilus}/bin/nautilus";
-  notify-send = "${pkgs.libnotify}/bin/notify-send --expire-time 30000";
+  notify-send = "${pkgs.libnotify}/bin/notify-send --expire-time 15000";
   pactl = "${pkgs.pulseaudio}/bin/pactl";
   pavucontrol = "${pkgs.pavucontrol}/bin/pavucontrol";
   playerctl = "${pkgs.playerctl}/bin/playerctl";
