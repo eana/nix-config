@@ -183,9 +183,6 @@ in {
       jetbrains.idea-community-bin # The free and open-source edition of IntelliJ IDEA, an IDE for Java development
       vscode # Visual Studio Code, a source-code editor developed by Microsoft
 
-      # Window Managers
-      sway # A tiling Wayland compositor and a drop-in replacement for the i3 window manager for X11
-
       # Shells
       zsh-powerlevel10k # A theme for Zsh that emphasizes speed, flexibility, and out-of-the-box experience
     ];
