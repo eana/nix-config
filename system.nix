@@ -16,7 +16,7 @@ in {
   hardware = {
     bluetooth = {
       enable = true;
-      settings = { General = { Enable = "Source,Sink,Media,Socket"; }; };
+      settings.General.Enable = "Source,Sink,Media,Socket";
     };
     enableAllFirmware = true;
     graphics.enable = true;
@@ -88,10 +88,7 @@ in {
   security.rtkit.enable = true;
   services.pipewire = {
     enable = true;
-    alsa.enable = true;
-    alsa.support32Bit = true;
     pulse.enable = true;
-    # jack.enable = true;
   };
 
   services = {
