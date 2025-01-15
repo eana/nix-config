@@ -918,7 +918,7 @@ in {
       }
 
       # Touchpad configuration (swaymsg -t get_inputs)
-      input "1452:628:bcm5974" {
+      input "1739:31251:DLL06E5:01_06CB:7A13_Touchpad" {
         dwt enabled
         tap enabled
         natural_scroll disabled
