@@ -17,12 +17,14 @@
       system = "x86_64-linux";
       modules = [
         ./system.nix
-        home-manager.nixosModules.home-manager
-        ({ config, lib, pkgs, ... }: {
-          home-manager.users.jonas =
-            import ./home.nix { inherit pkgs lib config; };
-        })
         disko.nixosModules.disko
+        home-manager.nixosModules.home-manager
+        {
+          home-manager = {
+            useGlobalPkgs = true;
+            users.jonas = ./home.nix;
+          };
+        }
       ];
     };
   };
