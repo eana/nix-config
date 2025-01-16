@@ -1,35 +1,5 @@
-{ config, lib, pkgs, ... }:
+{ config, nixosConfig, lib, pkgs, ... }:
 let
-  # A cleaner approach would be to define the stateVersion and other shared constants in a separate file, say constants.nix:
-  #
-  # # constants.nix
-  # {
-  #   stateVersion = "24.05";
-  #   hostName = "nixbox";
-  # }
-  #
-  # Then, import this file in both system.nix and home.nix:
-  #
-  # # system.nix
-  # { config, pkgs, ... }:
-  # let
-  #   constants = import ./constants.nix;
-  # in {
-  #   system.stateVersion = constants.stateVersion;
-  # }
-  #
-  # # home.nix
-  # { config, lib, pkgs, ... }:
-  # let
-  #   constants = import ./constants.nix;
-  # in {
-  #   home.stateVersion = constants.stateVersion;
-  # }
-  systemConfig = import ./system.nix {
-    config = { };
-    pkgs = pkgs;
-  };
-
   background =
     "~/.local/share/backgrounds/hannah-grace-dSqWwzrLJaQ-unsplash.jpg";
 
@@ -1444,6 +1414,6 @@ in {
       KPT_FN_RUNTIME = "podman";
     };
 
-    stateVersion = systemConfig.system.stateVersion;
+    stateVersion = nixosConfig.system.stateVersion;
   };
 }
