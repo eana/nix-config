@@ -1,5 +1,13 @@
 # nixos
 
+## Things to do:
+
+- [ ] Handle ~/.ssh/config
+- [ ] Handle ~/.config/mpv
+- [ ] Multiuser config for git
+
+## How to install
+
 ```shell
 sudo nix --experimental-features "nix-command flakes" run nixpkgs#git clone https://github.com/eana/nixos
 cd ./nixos/
