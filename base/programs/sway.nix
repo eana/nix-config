@@ -23,6 +23,7 @@ let
   waybar = "${pkgs.waybar}/bin/waybar";
   wl-paste = "${pkgs.wl-clipboard-rs}/bin/wl-paste";
 
+  modifier = "Mod4"; # Mod1=<Alt>, Mod4=<Super>
   menu = "${fuzzel} --width 60 | xargs ${swaymsg} exec --";
   gnomeschema = "org.gnome.desktop.interface"; # For gtk applications settings
 in {
@@ -30,8 +31,8 @@ in {
   wrapperFeatures.gtk = true;
   systemd.enable = true;
 
-  config = rec {
-    modifier = "Mod4"; # Mod1=<Alt>, Mod4=<Super>
+  config = {
+    inherit modifier;
     bars = [ ];
     modes = { };
 
