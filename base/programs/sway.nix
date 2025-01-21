@@ -10,6 +10,7 @@ let
   google-chrome = "${pkgs.google-chrome}/bin/google-chrome";
   grim = "${pkgs.grim}/bin/grim";
   light = "${pkgs.brightnessctl}/bin/brightnessctl";
+  magick = "${pkgs.imagemagick}/bin/magick";
   mako = "${pkgs.mako}/bin/mako";
   nautilus = "${pkgs.nautilus}/bin/nautilus";
   notify-send = "${pkgs.libnotify}/bin/notify-send --expire-time 15000";
@@ -20,8 +21,9 @@ let
   swaylock = "${pkgs.swaylock}/bin/swaylock --color 000000";
   swaymsg = "${pkgs.sway}/bin/swaymsg";
   swaynag = "${pkgs.sway}/bin/swaynag";
+  tesseract = "${pkgs.tesseract}/bin/tesseract";
   waybar = "${pkgs.waybar}/bin/waybar";
-  wl-paste = "${pkgs.wl-clipboard-rs}/bin/wl-paste";
+  wl-copy = "${pkgs.wl-clipboard}/bin/wl-copy";
 
   modifier = "Mod4"; # Mod1=<Alt>, Mod4=<Super>
   menu = "${fuzzel} --width 60 | xargs ${swaymsg} exec --";
@@ -51,35 +53,43 @@ in {
       # Maybe these should be moved back to extraConfig
       # Color picker
       "${modifier}+p" = ''
-        exec ${swaynag} -t mtype -m "$(${grim} -g "$(${slurp} -p)" -t ppm - | convert - -format '%[pixel:p{0,0}]' txt:-)" && ${notify-send} "Color picked"'';
+        exec ${grim} -g "$(${slurp} -p)" -t ppm - | ${magick} convert - -format '%[pixel:p{0,0}]' txt:- | ${wl-copy} && ${notify-send} "Color picked and saved to clipboard"
+      '';
 
       # Take a screenshot to clipboard (whole screen)
       "Print" = ''
-        exec ${grim} - | ${wl-paste} && ${notify-send} "Screenshot of whole screen saved to clipboard"'';
+        exec ${grim} - | ${wl-copy} && ${notify-send} "Screenshot of whole screen saved to clipboard"
+      '';
 
       # Take a screenshot of selected region to clipboard
       "${modifier}+Print" = ''
-        exec ${grim} -g "$(${slurp})" - | ${wl-paste} && ${notify-send} "Screenshot of selected region saved to clipboard"'';
+        exec ${grim} -g "$(${slurp})" - | ${wl-copy} && ${notify-send} "Screenshot of selected region saved to clipboard"
+      '';
 
       # Take a screenshot of selected region and saved the ocr-ed text to clipboard
       "${modifier}+t" = ''
-        exec ${grim} -g "$(${slurp})" -t png - | tesseract - - | ${wl-paste} && ${notify-send} "Screenshot of selected region and saved the ocr-ed text to clipboard"'';
+        exec ${grim} -g "$(${slurp})" -t png - | ${tesseract} - - | ${wl-copy} && ${notify-send} "Screenshot of selected region and saved the ocr-ed text to clipboard"
+      '';
 
       # Take a screenshot of focused window to clipboard
       "${modifier}+Shift+Print" = ''
-        exec ${grim} -g "$(${swaymsg} -t get_tree | jq -r '.. | select(.focused?) | .rect | "(.x),(.y) (.width)x(.height)"')" - | ${wl-paste} && ${notify-send} "Screenshot of active window saved to clipboard"'';
+        exec ${grim} -g "$(${swaymsg} -t get_tree | jq -r '.. | select(.focused?) | .rect | "(.x),(.y) (.width)x(.height)"')" - | ${wl-copy} && ${notify-send} "Screenshot of active window saved to clipboard"
+      '';
 
       # Take a screenshot (whole screen)
       "Ctrl+Print" = ''
-        exec ${grim} ~/Pictures/screenshots/screenshot-"$(date +%s)".png && ${notify-send} "Screenshot of whole screen saved to folder"'';
+        exec ${grim} ~/Pictures/screenshots/screenshot-"$(date +%s)".png && ${notify-send} "Screenshot of whole screen saved to folder"
+      '';
 
       # Take a screenshot of selected region
       "${modifier}+Ctrl+Print" = ''
-        exec ${grim} -g "$(${slurp})" ~/Pictures/screenshots/screenshot-"$(date +%s)".png && ${notify-send} "Screenshot of selected region saved to folder"'';
+        exec ${grim} -g "$(${slurp})" ~/Pictures/screenshots/screenshot-"$(date +%s)".png && ${notify-send} "Screenshot of selected region saved to folder"
+      '';
 
       # Take a screenshot of focused window
       "${modifier}+Ctrl+Shift+Print" = ''
-        exec ${grim} -g "$(${swaymsg} -t get_tree | jq -r '.. | select(.focused?) | .rect | "(.x),(.y) (.width)x(.height)"')" ~/Pictures/screenshot-"$(date +%s)".png && notify-send -t 30000 "Screenshot of active window saved to folder"'';
+        exec ${grim} -g "$(${swaymsg} -t get_tree | jq -r '.. | select(.focused?) | .rect | "(.x),(.y) (.width)x(.height)"')" ~/Pictures/screenshot-"$(date +%s)".png && notify-send -t 30000 "Screenshot of active window saved to folder"
+      '';
 
       # Move your focus around
       "${modifier}+Left" = "focus left";
