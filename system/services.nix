@@ -13,7 +13,9 @@
   };
   blueman.enable = true;
 
-  displayManager = { defaultSession = "sway"; };
+  displayManager = {
+    defaultSession = "sway";
+  };
 
   xserver = {
     enable = true;
@@ -21,7 +23,11 @@
       gdm = {
         enable = true;
         wayland = true;
-        settings = { greeter = { IncludeAll = true; }; };
+        settings = {
+          greeter = {
+            IncludeAll = true;
+          };
+        };
       };
     };
     desktopManager.gnome.enable = true;
@@ -39,4 +45,3 @@
 
   logind.lidSwitchExternalPower = "ignore";
 }
-

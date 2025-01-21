@@ -1,6 +1,8 @@
 { pkgs }:
-let swaymsg = "${pkgs.sway}/bin/swaymsg";
-in {
+let
+  swaymsg = "${pkgs.sway}/bin/swaymsg";
+in
+{
   enable = true;
   settings = [
     {
@@ -33,13 +35,15 @@ in {
     {
       profile = {
         name = "LaptopOnly";
-        outputs = [{
-          criteria = "Sharp Corporation 0x1453 Unknown";
-          status = "enable";
-          mode = "1920x1080";
-          position = "540,2160";
-          scale = 0.7;
-        }];
+        outputs = [
+          {
+            criteria = "Sharp Corporation 0x1453 Unknown";
+            status = "enable";
+            mode = "1920x1080";
+            position = "540,2160";
+            scale = 0.7;
+          }
+        ];
       };
     }
   ];

@@ -33,6 +33,8 @@
       dim1 = "db4b4b";
     };
 
-    mouse = { hide-when-typing = "yes"; };
+    mouse = {
+      hide-when-typing = "yes";
+    };
   };
 }

@@ -3,9 +3,13 @@ let
   # Do not change this value! This tracks when NixOS was installed on your system.
   stateVersion = "24.05";
   hostName = "nixbox";
-in {
-  imports =
-    [ ./system/hardware-configuration.nix ./system/disko.nix ./system/gdm.nix ];
+in
+{
+  imports = [
+    ./system/hardware-configuration.nix
+    ./system/disko.nix
+    ./system/gdm.nix
+  ];
 
   nix = {
     package = pkgs.nixVersions.stable;
@@ -108,7 +112,10 @@ in {
 
   users.users.jonas = {
     isNormalUser = true;
-    extraGroups = [ "wheel" "video" ];
+    extraGroups = [
+      "wheel"
+      "video"
+    ];
   };
 
   # Use zsh as your default shell.

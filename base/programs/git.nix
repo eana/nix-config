@@ -17,13 +17,11 @@
     "co" = "checkout";
     "lol" =
       "log --graph --abbrev-commit --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)%an <%ae>%Creset' --date=relative";
-    "in" =
-      "!git fetch && git log --pretty=oneline --abbrev-commit --graph ..@{u}";
+    "in" = "!git fetch && git log --pretty=oneline --abbrev-commit --graph ..@{u}";
     "out" = "log --pretty=oneline --abbrev-commit --graph @{u}..";
     "unstage" = "reset HEAD --";
     "last" = "log -1 HEAD";
-    "alias" =
-      "!git config --get-regexp 'alias.*' | colrm 1 6 | sed 's/[ ]/ = \"/'";
+    "alias" = "!git config --get-regexp 'alias.*' | colrm 1 6 | sed 's/[ ]/ = \"/'";
     "mb" = "merge-base master HEAD";
     "ma" = "merge-base main HEAD";
     "mb-rebase" = "!git rebase -i $(git mb)";
@@ -33,8 +31,7 @@
     "pfl" = "push --force-with-lease";
     "ppr" = "pull --all --prune --rebase";
     "au" = "add --update";
-    "locate" =
-      "!f() { git ls-tree -r --name-only HEAD | grep -i --color -E $1 - ; } ; f";
+    "locate" = "!f() { git ls-tree -r --name-only HEAD | grep -i --color -E $1 - ; } ; f";
     "pushall" = "!git remote | xargs -L1 git push --all";
     "pull" = "pull --all --prune --rebase";
   };
@@ -51,7 +48,9 @@
     };
 
     diff = {
-      sopsdiffer = { textconv = "sops -d"; };
+      sopsdiffer = {
+        textconv = "sops -d";
+      };
       tool = "meld";
     };
 

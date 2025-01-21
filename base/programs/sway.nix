@@ -1,7 +1,6 @@
 { pkgs }:
 let
-  background =
-    "~/.local/share/backgrounds/hannah-grace-dSqWwzrLJaQ-unsplash.jpg";
+  background = "~/.local/share/backgrounds/hannah-grace-dSqWwzrLJaQ-unsplash.jpg";
 
   copyq = "${pkgs.copyq}/bin/copyq";
   earlyoom = "${pkgs.earlyoom}/bin/earlyoom";
@@ -28,7 +27,8 @@ let
   modifier = "Mod4"; # Mod1=<Alt>, Mod4=<Super>
   menu = "${fuzzel} --width 60 | xargs ${swaymsg} exec --";
   gnomeschema = "org.gnome.desktop.interface"; # For gtk applications settings
-in {
+in
+{
   enable = true;
   wrapperFeatures.gtk = true;
   systemd.enable = true;
@@ -136,10 +136,8 @@ in {
       "XF86MonBrightnessUp" = "exec lightctl up";
       "XF86MonBrightnessDown" = "exec lightctl down";
 
-      "XF86KbdBrightnessUp" =
-        "exec ${light} --device dell::kbd_backlight set +5%";
-      "XF86KbdBrightnessDown" =
-        "exec ${light} --device dell::kbd_backlight set 5%-";
+      "XF86KbdBrightnessUp" = "exec ${light} --device dell::kbd_backlight set +5%";
+      "XF86KbdBrightnessDown" = "exec ${light} --device dell::kbd_backlight set 5%-";
 
       # Same playback bindings for Keyboard media keys
       "XF86AudioPlay" = "exec ${playerctl} play-pause";

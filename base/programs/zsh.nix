@@ -63,15 +63,17 @@
     # zprof
   '';
 
-  plugins = [{
-    name = "zsh-fzf-history-search";
-    src = pkgs.fetchFromGitHub {
-      owner = "joshskidmore";
-      repo = "zsh-fzf-history-search";
-      rev = "d5a9730b5b4cb0b39959f7f1044f9c52743832ba";
-      sha256 = "1dm1asa4ff5r42nadmj0s6hgyk1ljrckw7val8fz2n0892b8h2mm";
-    };
-  }];
+  plugins = [
+    {
+      name = "zsh-fzf-history-search";
+      src = pkgs.fetchFromGitHub {
+        owner = "joshskidmore";
+        repo = "zsh-fzf-history-search";
+        rev = "d5a9730b5b4cb0b39959f7f1044f9c52743832ba";
+        sha256 = "1dm1asa4ff5r42nadmj0s6hgyk1ljrckw7val8fz2n0892b8h2mm";
+      };
+    }
+  ];
 
   shellAliases = {
     gapp = "gcloud auth application-default login";
