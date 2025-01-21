@@ -3,9 +3,9 @@ let
   pavucontrol = "${pkgs.pavucontrol}/bin/pavucontrol";
   swaymsg = "${pkgs.sway}/bin/swaymsg";
   swaynag = "${pkgs.sway}/bin/swaynag";
-  system-config-printer =
-    "${pkgs.system-config-printer}/bin/system-config-printer";
-in {
+  system-config-printer = "${pkgs.system-config-printer}/bin/system-config-printer";
+in
+{
   enable = true;
   settings = {
     mainBar = {
@@ -88,7 +88,9 @@ in {
         };
       };
 
-      "sway/window" = { max-length = 50; };
+      "sway/window" = {
+        max-length = 50;
+      };
 
       "sway/language" = {
         format = "  {short}";
@@ -117,7 +119,10 @@ in {
           "phone" = "";
           "portable" = "";
           "car" = "";
-          "default" = [ "" "" ];
+          "default" = [
+            ""
+            ""
+          ];
         };
         scroll-step = 1;
         on-click = "${pavucontrol}";
@@ -126,7 +131,10 @@ in {
       "backlight" = {
         device = "intel_backlight";
         format = "{percent}% {icon}";
-        format-icons = [ "" "" ];
+        format-icons = [
+          ""
+          ""
+        ];
       };
 
       "battery" = {
@@ -137,7 +145,13 @@ in {
         format = "{icon} {capacity}%";
         format-charging = " {icon} {capacity}%";
         format-full = " {icon} {capacity}%";
-        format-icons = [ "" "" "" "" "" ];
+        format-icons = [
+          ""
+          ""
+          ""
+          ""
+          ""
+        ];
         format-time = "{H}h{M}m";
         interval = 30;
         on-click = "gnome-power-statistics";
@@ -219,8 +233,7 @@ in {
       "custom/poweroff" = {
         tooltip = false;
         format = "";
-        on-click =
-          "${swaynag} -t warning -m 'Power Menu Options' -b 'Poweroff' 'systemctl poweroff' -b 'Reboot' 'systemctl reboot' -b 'Suspend' 'systemctl suspend' -b 'Logout' '${swaymsg} exit'";
+        on-click = "${swaynag} -t warning -m 'Power Menu Options' -b 'Poweroff' 'systemctl poweroff' -b 'Reboot' 'systemctl reboot' -b 'Suspend' 'systemctl suspend' -b 'Logout' '${swaymsg} exit'";
       };
 
     };
