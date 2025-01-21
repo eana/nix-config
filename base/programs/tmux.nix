@@ -1,6 +1,8 @@
 { pkgs }:
-let wl-paste = "${pkgs.wl-clipboard-rs}/bin/wl-paste";
-in {
+let
+  wl-paste = "${pkgs.wl-clipboard-rs}/bin/wl-paste";
+in
+{
   # General Settings
   enable = true;
   shortcut = "a";
@@ -89,4 +91,3 @@ in {
     bind-key -n End send Escape "[4~"
   '';
 }
-
