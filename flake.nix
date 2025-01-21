@@ -10,19 +10,32 @@
     # disko
     disko.url = "github:nix-community/disko";
     disko.inputs.nixpkgs.follows = "nixpkgs";
+
+    # Apple's fonts
+    apple-fonts = {
+      url = "github:Lyndeno/apple-fonts.nix";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
-  outputs = { self, nixpkgs, home-manager, disko, }: {
-    nixosConfigurations.nixbox = nixpkgs.lib.nixosSystem {
-      system = "x86_64-linux";
+  outputs = inputs: {
+    formatter.x86_64-linux =
+      inputs.nixpkgs.legacyPackages.x86_64-linux.nixfmt-rfc-style;
+
+    nixosConfigurations.nixbox = let system = "x86_64-linux";
+    in inputs.nixpkgs.lib.nixosSystem {
+      inherit system;
       modules = [
         ./system.nix
-        disko.nixosModules.disko
-        home-manager.nixosModules.home-manager
+        inputs.disko.nixosModules.disko
+        inputs.home-manager.nixosModules.home-manager
         {
           home-manager = {
             useGlobalPkgs = true;
-            users.jonas = ./home.nix;
+            users.jonas = {
+              imports = [ ./home.nix ];
+              home.packages = [ inputs.apple-fonts.packages.${system}.sf-pro ];
+            };
           };
         }
       ];

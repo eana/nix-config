@@ -1,7 +1,8 @@
-{ config, nixosConfig, lib, pkgs, ... }:
+{ inputs, config, nixosConfig, lib, pkgs, ... }:
 
 {
   systemd.user = import ./base/systemd.nix { inherit pkgs; };
+
   programs = {
     foot = import ./base/programs/foot.nix { inherit pkgs; };
     fuzzel = import ./base/programs/fuzzel.nix { inherit pkgs; };
