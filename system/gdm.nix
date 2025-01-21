@@ -1,9 +1,14 @@
-{ pkgs, lib, config, ... }:
+{
+  pkgs,
+  lib,
+  config,
+  ...
+}:
 
 let
   monitorsXmlContent = builtins.readFile ./monitors.xml;
   monitorsConfig = pkgs.writeText "gdm_monitors.xml" monitorsXmlContent;
-in {
-  systemd.tmpfiles.rules =
-    [ "L+ /run/gdm/.config/monitors.xml - - - - ${monitorsConfig}" ];
+in
+{
+  systemd.tmpfiles.rules = [ "L+ /run/gdm/.config/monitors.xml - - - - ${monitorsConfig}" ];
 }
