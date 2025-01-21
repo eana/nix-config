@@ -22,6 +22,7 @@
     gpg-agent = import ./base/services/gpg-agent.nix { inherit pkgs; };
     gammastep = import ./base/services/gammastep.nix { inherit pkgs; };
     kanshi = import ./base/services/kanshi.nix { inherit pkgs; };
+    ollama = import ./base/services/ollama.nix { inherit pkgs; };
   };
 
   # Install packages for user.
