@@ -22,22 +22,198 @@ let
   swaynag = "${pkgs.sway}/bin/swaynag";
   waybar = "${pkgs.waybar}/bin/waybar";
   wl-paste = "${pkgs.wl-clipboard-rs}/bin/wl-paste";
+
+  menu = "${fuzzel} --width 60 | xargs ${swaymsg} exec --";
+  gnomeschema = "org.gnome.desktop.interface"; # For gtk applications settings
 in {
   enable = true;
   wrapperFeatures.gtk = true;
   systemd.enable = true;
 
-  config = {
+  config = rec {
+    modifier = "Mod4"; # Mod1=<Alt>, Mod4=<Super>
     bars = [ ];
     modes = { };
-    keybindings = { };
-    # Mod1=<Alt>, Mod4=<Super>
-    modifier = "Mod4";
 
-    startup = [{
-      command = "systemctl --user restart avizo";
-      always = true;
-    }];
+    keybindings = {
+      "${modifier}+Shift+r" = "reload"; # Reload the configuration file
+      "${modifier}+Return" = "exec ${foot}"; # Start a terminal
+      "${modifier}+q" = "kill"; # Kill focused window
+      "${modifier}+d" = "exec ${menu}"; # Start your launcher
+      "${modifier}+n" = "exec ${foot} -e nmtui-connect"; # Launch wifi choice
+      "${modifier}+w" = "exec ${google-chrome}"; # Start browser
+      "${modifier}+e" = "exec ${nautilus}"; # Start file manager
+      "${modifier}+0" = "exec ${swaylock}"; # Lock screen
+      "${modifier}+l" = "exec ${swaylock}"; # Lock screen
+      "${modifier}+h" = "exec ${copyq} show"; # Start CopyQ
+
+      # Maybe these should be moved back to extraConfig
+      # Color picker
+      "${modifier}+p" = ''
+        exec ${swaynag} -t mtype -m "$(${grim} -g "$(${slurp} -p)" -t ppm - | convert - -format '%[pixel:p{0,0}]' txt:-)" && ${notify-send} "Color picked"'';
+
+      # Take a screenshot to clipboard (whole screen)
+      "Print" = ''
+        exec ${grim} - | ${wl-paste} && ${notify-send} "Screenshot of whole screen saved to clipboard"'';
+
+      # Take a screenshot of selected region to clipboard
+      "${modifier}+Print" = ''
+        exec ${grim} -g "$(${slurp})" - | ${wl-paste} && ${notify-send} "Screenshot of selected region saved to clipboard"'';
+
+      # Take a screenshot of selected region and saved the ocr-ed text to clipboard
+      "${modifier}+t" = ''
+        exec ${grim} -g "$(${slurp})" -t png - | tesseract - - | ${wl-paste} && ${notify-send} "Screenshot of selected region and saved the ocr-ed text to clipboard"'';
+
+      # Take a screenshot of focused window to clipboard
+      "${modifier}+Shift+Print" = ''
+        exec ${grim} -g "$(${swaymsg} -t get_tree | jq -r '.. | select(.focused?) | .rect | "(.x),(.y) (.width)x(.height)"')" - | ${wl-paste} && ${notify-send} "Screenshot of active window saved to clipboard"'';
+
+      # Take a screenshot (whole screen)
+      "Ctrl+Print" = ''
+        exec ${grim} ~/Pictures/screenshots/screenshot-"$(date +%s)".png && ${notify-send} "Screenshot of whole screen saved to folder"'';
+
+      # Take a screenshot of selected region
+      "${modifier}+Ctrl+Print" = ''
+        exec ${grim} -g "$(${slurp})" ~/Pictures/screenshots/screenshot-"$(date +%s)".png && ${notify-send} "Screenshot of selected region saved to folder"'';
+
+      # Take a screenshot of focused window
+      "${modifier}+Ctrl+Shift+Print" = ''
+        exec ${grim} -g "$(${swaymsg} -t get_tree | jq -r '.. | select(.focused?) | .rect | "(.x),(.y) (.width)x(.height)"')" ~/Pictures/screenshot-"$(date +%s)".png && notify-send -t 30000 "Screenshot of active window saved to folder"'';
+
+      # Move your focus around
+      "${modifier}+Left" = "focus left";
+      "${modifier}+Down" = "focus down";
+      "${modifier}+Up" = "focus up";
+      "${modifier}+Right" = "focus right";
+
+      # Move the focused window with the same, but add Shift
+      "${modifier}+Shift+Left" = "move left";
+      "${modifier}+Shift+Down" = "move down";
+      "${modifier}+Shift+Up" = "move up";
+      "${modifier}+Shift+Right" = "move right";
+
+      # Switch to workspace
+      "${modifier}+1" = "workspace 1";
+      "${modifier}+2" = "workspace 2";
+      "${modifier}+3" = "workspace 3";
+      "${modifier}+4" = "workspace 4";
+      "${modifier}+5" = "workspace 5";
+      "${modifier}+6" = "workspace 6";
+      "${modifier}+7" = "workspace 7";
+
+      # Move focused container to workspace
+      "${modifier}+Shift+1" = "move container to workspace 1";
+      "${modifier}+Shift+2" = "move container to workspace 2";
+      "${modifier}+Shift+3" = "move container to workspace 3";
+      "${modifier}+Shift+4" = "move container to workspace 4";
+      "${modifier}+Shift+5" = "move container to workspace 5";
+      "${modifier}+Shift+6" = "move container to workspace 6";
+      "${modifier}+Shift+7" = "move container to workspace 7";
+
+      # Switch to the next/previous workspace
+      "${modifier}+Ctrl+Right" = "workspace next";
+      "${modifier}+Ctrl+Left" = "workspace prev";
+
+      # Media keys Volume Settings
+      "XF86AudioRaiseVolume" = "exec volumectl -u up";
+      "XF86AudioLowerVolume" = "exec volumectl -u down";
+
+      # Media keys like Brightness|Mute|Play|Stop
+      "XF86AudioMute" = "exec volumectl toggle-mute";
+      "XF86AudioMicMute" = "exec volumectl -m toggle-mute";
+
+      "XF86MonBrightnessUp" = "exec lightctl up";
+      "XF86MonBrightnessDown" = "exec lightctl down";
+
+      "XF86KbdBrightnessUp" =
+        "exec ${light} --device dell::kbd_backlight set +5%";
+      "XF86KbdBrightnessDown" =
+        "exec ${light} --device dell::kbd_backlight set 5%-";
+
+      # Same playback bindings for Keyboard media keys
+      "XF86AudioPlay" = "exec ${playerctl} play-pause";
+      "XF86AudioNext" = "exec ${playerctl} next";
+      "XF86AudioPrev" = "exec ${playerctl} previous";
+
+      # Layout stuff:
+      "${modifier}+c" = "splith; exec ${notify-send} 'Split horizontaly'";
+      "${modifier}+v" = "splitv; exec ${notify-send} 'Split verticaly'";
+
+      # Switch the current container between different layout styles
+      "${modifier}+F3" = "layout stacking";
+      "${modifier}+F2" = "layout tabbed";
+      "${modifier}+F1" = "layout toggle split";
+
+      # Make the current focus fullscreen
+      "${modifier}+f" = "fullscreen";
+
+      # Toggle the current focus between tiling and floating mode
+      "${modifier}+space" = "floating toggle";
+
+      # Swap focus between the tiling area and the floating area
+      "${modifier}+Shift+space" = "focus mode_toggle";
+
+      # Move focus to the parent container
+      "${modifier}+m" = "focus parent";
+
+      # Sway has a "scratchpad", which is a bag of holding for windows.
+      # You can send windows there and get them back later.
+
+      # Move the currently focused window to the scratchpad
+      "${modifier}+minus" = "move scratchpad";
+
+      # Show the next scratchpad window or hide the focused scratchpad window.
+      # If there are multiple scratchpad windows, this command cycles through them.
+      "${modifier}+Shift+minus" = "scratchpad show";
+
+      ### Disable/Enable the laptop's screen when needed
+      ## The following configuration works
+      "${modifier}+Ctrl+d" = "exec ${swaymsg} output eDP-1 disable";
+      "${modifier}+Ctrl+e" = "exec ${swaymsg} output eDP-1 enable";
+
+    };
+
+    startup = [
+      {
+        command = "systemctl --user restart avizo";
+        always = true;
+      }
+      {
+        command = "${light} --device intel_backlight set 20%";
+        always = true;
+      }
+      {
+        command = "${swaybg} --image ${background} --mode fill";
+        always = true;
+      }
+    ];
+
+    # swaymsg -t get_inputs
+    input = {
+      # Keyboard layout
+      "type:keyboard" = {
+        repeat_delay = "300";
+        repeat_rate = "40";
+        xkb_layout = "us,se";
+        xkb_options = "grp:alt_shift_toggle";
+        xkb_numlock = "enabled";
+      };
+
+      # Touchpad configuration
+      "1739:31251:DLL06E5:01_06CB:7A13_Touchpad" = {
+        dwt = "enabled";
+        tap = "enabled";
+        natural_scroll = "disabled";
+        middle_emulation = "enabled";
+      };
+
+      "1133:49257:Logitech_USB_Laser_Mouse" = {
+        # disable mouse acceleration (enabled by default; to set it manually, use "adaptive" instead of "flat")
+        accel_profile = "flat";
+        # set mouse sensitivity (between -1 and 1)
+        pointer_accel = "-0.1";
+      };
+    };
   };
 
   swaynag = {
@@ -63,44 +239,8 @@ in {
   };
 
   extraConfig = ''
-    ### Variables ###
-
-    # Logo key
-    set $mod Mod4
-
-    # Workspace names
-    set $ws1 1
-    set $ws2 2
-    set $ws3 3
-    set $ws4 4
-    set $ws5 5
-    set $ws6 6
-    set $ws7 7
-
-    # Locker
-    set $locker ${swaylock}
-
-    # Terminal emulator
-    set $term ${foot}
-
-    # Application launcher
-    set $menu ${fuzzel} --width 60 | xargs ${swaymsg} exec --
-
-    # File manager
-    set $filer ${nautilus}
-
-    # Browser
-    set $browser ${google-chrome}
-
-    # For gtk applications settings
-    set $gnomeschema org.gnome.desktop.interface
-
     ### Settings ###
-
-    # Monitors
-
-    # Set the screen brightness to 20%
-    exec --no-startup-id ${light} --device intel_backlight set 20%
+    set $mod Mod4
 
     # Font
     font pango: SF Pro Text 10
@@ -112,31 +252,6 @@ in {
     smart_borders on
     smart_gaps on
     gaps inner 2
-
-    # Default wallpaper
-    exec --no-startup-id "${swaybg} --image ${background} --mode fill"
-
-    # Keyboard layout
-    input type:keyboard {
-      repeat_delay 300
-      repeat_rate 40
-      xkb_layout us,se
-      xkb_options grp:alt_shift_toggle
-      xkb_numlock enabled
-    }
-
-    # Touchpad configuration (swaymsg -t get_inputs)
-    input "1739:31251:DLL06E5:01_06CB:7A13_Touchpad" {
-      dwt enabled
-      tap enabled
-      natural_scroll disabled
-      middle_emulation enabled
-    }
-
-    input "1133:49257:Logitech_USB_Laser_Mouse" {
-      accel_profile "flat" # disable mouse acceleration (enabled by default; to set it manually, use "adaptive" instead of "flat")
-      pointer_accel -0.1 # set mouse sensitivity (between -1 and 1)
-    }
 
     # Drag floating windows by holding down $mod and left mouse button.
     # Resize them with right mouse button + $mod.
@@ -199,147 +314,6 @@ in {
 
     ### Key bindings ###
 
-    # Reload the configuration file
-    bindsym --to-code $mod+Shift+r reload
-
-    # Start a terminal
-    bindsym --to-code $mod+Return exec $term
-
-    # Kill focused window
-    bindsym --to-code $mod+q kill
-
-    # Start your launcher
-    bindsym --to-code $mod+d exec $menu
-
-    # Launch wifi choice
-    bindsym --to-code $mod+n exec $term -e nmtui-connect
-
-    # Start browser
-    bindsym --to-code $mod+w exec $browser
-
-    # Start file manager
-    bindsym --to-code $mod+e exec $filer
-
-    # Lock screen
-    bindsym --to-code $mod+0 exec $locker
-    bindsym --to-code $mod+l exec $locker
-
-    # Start CopyQ
-    bindsym --to-code $mod+h exec "${copyq} show"
-
-    # Color picker
-    bindsym --to-code $mod+p exec ${swaynag} -t mtype -m "$(${grim} -g "$(${slurp} -p)" -t ppm - | convert - -format '%[pixel:p{0,0}]' txt:-)" && ${notify-send} "Color picked"
-
-    # Take a screenshot to clipboard (whole screen)
-    bindsym --to-code Print exec ${grim} - | ${wl-paste} && ${notify-send} "Screenshot of whole screen saved to clipboard"
-
-    # Take a screenshot of selected region to clipboard
-    bindsym --to-code $mod+Print exec ${grim} -g "$(${slurp})" - | ${wl-paste} && ${notify-send} "Screenshot of selected region saved to clipboard"
-
-    # Take a screenshot of selected region and saved the ocr-ed text to clipboard
-    bindsym --to-code $mod+t exec ${grim} -g "$(${slurp})" -t png - | tesseract - - | ${wl-paste} && ${notify-send} "Screenshot of selected region and saved the ocr-ed text to clipboard"
-
-    # Take a screenshot of focused window to clipboard
-    bindsym --to-code $mod+Shift+Print exec ${grim} -g "$(${swaymsg} -t get_tree | jq -r '.. | select(.focused?) | .rect | "\(.x),\(.y) \(.width)x\(.height)"')" - | ${wl-paste} && ${notify-send} "Screenshot of active window saved to clipboard"
-
-    # Take a screenshot (whole screen)
-    bindsym --to-code Ctrl+Print exec ${grim} ~/Pictures/screenshots/screenshot-"$(date +%s)".png && ${notify-send} "Screenshot of whole screen saved to folder"
-
-    # Take a screenshot of selected region
-    bindsym --to-code $mod+Ctrl+Print exec ${grim} -g "$(${slurp})" ~/Pictures/screenshots/screenshot-"$(date +%s)".png && ${notify-send} "Screenshot of selected region saved to folder"
-
-    # Take a screenshot of focused window
-    bindsym --to-code $mod+Ctrl+Shift+Print exec ${grim} -g "$(${swaymsg} -t get_tree | jq -r '.. | select(.focused?) | .rect | "\(.x),\(.y) \(.width)x\(.height)"')" ~/Pictures/screenshot-"$(date +%s)".png && notify-send -t 30000 "Screenshot of active window saved to folder"
-
-    # Move your focus around
-    bindsym --to-code $mod+Left focus left
-    bindsym --to-code $mod+Down focus down
-    bindsym --to-code $mod+Up focus up
-    bindsym --to-code $mod+Right focus right
-
-    # Move the focused window with the same, but add Shift
-    bindsym --to-code $mod+Shift+Left move left
-    bindsym --to-code $mod+Shift+Down move down
-    bindsym --to-code $mod+Shift+Up move up
-    bindsym --to-code $mod+Shift+Right move right
-
-    # Switch to workspace
-    bindsym --to-code $mod+1 workspace $ws1
-    bindsym --to-code $mod+2 workspace $ws2
-    bindsym --to-code $mod+3 workspace $ws3
-    bindsym --to-code $mod+4 workspace $ws4
-    bindsym --to-code $mod+5 workspace $ws5
-    bindsym --to-code $mod+6 workspace $ws6
-    bindsym --to-code $mod+7 workspace $ws7
-
-    # Move focused container to workspace
-    bindsym --to-code $mod+Shift+1 move container to workspace $ws1
-    bindsym --to-code $mod+Shift+2 move container to workspace $ws2
-    bindsym --to-code $mod+Shift+3 move container to workspace $ws3
-    bindsym --to-code $mod+Shift+4 move container to workspace $ws4
-    bindsym --to-code $mod+Shift+5 move container to workspace $ws5
-    bindsym --to-code $mod+Shift+6 move container to workspace $ws6
-    bindsym --to-code $mod+Shift+7 move container to workspace $ws7
-
-    # Switch to the next/previous workspace
-    bindsym $mod+Ctrl+Right workspace next
-    bindsym $mod+Ctrl+Left workspace prev
-
-    # Media keys Volume Settings
-    bindsym XF86AudioRaiseVolume exec volumectl -u up
-    bindsym XF86AudioLowerVolume exec volumectl -u down
-
-    # Media keys like Brightness|Mute|Play|Stop
-    bindsym XF86AudioMute exec volumectl toggle-mute
-    bindsym XF86AudioMicMute exec volumectl -m toggle-mute
-
-    bindsym XF86MonBrightnessUp exec lightctl up
-    bindsym XF86MonBrightnessDown exec lightctl down
-
-    bindsym XF86KbdBrightnessUp exec ${light} --device dell::kbd_backlight set +5%
-    bindsym XF86KbdBrightnessDown exec ${light} --device dell::kbd_backlight set 5%-
-
-    # Same playback bindings for Keyboard media keys
-    bindsym XF86AudioPlay exec ${playerctl} play-pause
-    bindsym XF86AudioNext exec ${playerctl} next
-    bindsym XF86AudioPrev exec ${playerctl} previous
-
-    # Layout stuff:
-
-    # You can "split" the current object of your focus with
-    # $mod+c or $mod+v, for horizontal and vertical splits
-    # respectively.
-    bindsym --to-code --to-code $mod+c splith; exec ${notify-send} "Split horizontaly"
-    bindsym --to-code --to-code $mod+v splitv; exec ${notify-send} "Split verticaly"
-
-    # Switch the current container between different layout styles
-    bindsym --to-code $mod+F3 layout stacking
-    bindsym --to-code $mod+F2 layout tabbed
-    bindsym --to-code $mod+F1 layout toggle split
-
-    # Make the current focus fullscreen
-    bindsym --to-code $mod+f fullscreen
-
-    # Toggle the current focus between tiling and floating mode
-    bindsym --to-code $mod+space floating toggle
-
-    # Swap focus between the tiling area and the floating area
-    bindsym --to-code $mod+Shift+space focus mode_toggle
-
-    # Move focus to the parent container
-    bindsym --to-code $mod+m focus parent
-
-    # Scratchpad:
-
-    # Sway has a "scratchpad", which is a bag of holding for windows.
-    # You can send windows there and get them back later.
-
-    # Move the currently focused window to the scratchpad
-    bindsym --to-code $mod+minus move scratchpad
-
-    # Show the next scratchpad window or hide the focused scratchpad window.
-    # If there are multiple scratchpad windows, this command cycles through them.
-    bindsym --to-code $mod+Shift+minus scratchpad show
 
     # Resizing containers:
 
@@ -393,11 +367,6 @@ in {
     bindswitch lid:on output eDP-1 disable
     bindswitch lid:off output eDP-1 enable
 
-    ### Disable/Enable the laptop's screen when needed
-    ## The following configuration works
-    bindsym $mod+Ctrl+d exec ${swaymsg} output eDP-1 disable
-    bindsym $mod+Ctrl+e exec ${swaymsg} output eDP-1 enable
-
     ### Status bar ###
 
     bar {
@@ -420,10 +389,10 @@ in {
 
     # Gtk applications settings
     exec_always {
-      gsettings set $gnomeschema gtk-theme 'Yaru-dark'
-      gsettings set $gnomeschema icon-theme 'Yaru'
-      gsettings set $gnomeschema cursor-theme 'xcursor-breeze'
-      gsettings set $gnomeschema font-name 'SF Pro Text Regular 10'
+      gsettings set ${gnomeschema} gtk-theme 'Yaru-dark'
+      gsettings set ${gnomeschema} icon-theme 'Yaru'
+      gsettings set ${gnomeschema} cursor-theme 'xcursor-breeze'
+      gsettings set ${gnomeschema} font-name 'SF Pro Text Regular 10'
     }
 
     # Theme colors                                                  #f4692e
