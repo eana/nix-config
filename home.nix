@@ -1,4 +1,11 @@
-{ inputs, config, nixosConfig, lib, pkgs, ... }:
+{
+  inputs,
+  config,
+  nixosConfig,
+  lib,
+  pkgs,
+  ...
+}:
 
 {
   systemd.user = import ./base/systemd.nix { inherit pkgs; };
@@ -14,8 +21,7 @@
     zsh = import ./base/programs/zsh.nix { inherit pkgs; };
   };
 
-  wayland.windowManager.sway =
-    import ./base/programs/sway.nix { inherit pkgs; };
+  wayland.windowManager.sway = import ./base/programs/sway.nix { inherit pkgs; };
 
   services = {
     avizo = import ./base/services/avizo.nix { inherit pkgs; };
@@ -56,7 +62,7 @@
 
       # Development Tools
       nil # Nix language server
-      nixfmt-classic # Nix code formatter
+      nixfmt-rfc-style # Nix code formatter
       nix-tree # Visualize Nix dependencies
       meld # Visual diff and merge tool
       gnumake # Build automation tool
@@ -145,7 +151,9 @@
         recursive = true;
       };
 
-      ".p10k.zsh" = { source = ./assets/.p10k.zsh; };
+      ".p10k.zsh" = {
+        source = ./assets/.p10k.zsh;
+      };
     };
 
     sessionVariables = {
