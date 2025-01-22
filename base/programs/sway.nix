@@ -26,7 +26,6 @@ let
 
   modifier = "Mod4"; # Mod1=<Alt>, Mod4=<Super>
   menu = "${fuzzel} --width 60 | xargs ${swaymsg} exec --";
-  gnomeschema = "org.gnome.desktop.interface"; # For gtk applications settings
 in
 {
   enable = true;
@@ -37,6 +36,11 @@ in
     inherit modifier;
     bars = [ ];
     modes = { };
+
+    fonts = {
+      names = [ "SF Pro Text" ];
+      size = 12.0;
+    };
 
     keybindings = {
       "${modifier}+Shift+r" = "reload"; # Reload the configuration file
@@ -233,7 +237,7 @@ in
         border = "#285577";
         button-background = "#31363b";
         text = "#ffffff";
-        font = "SF Pro Text Regular 10";
+        font = "SF Pro Text 11";
         edge = "top";
         message-padding = "8";
         button-padding = "6";
@@ -391,13 +395,6 @@ in
       before-sleep '${swaylock}'
 
     # Gtk applications settings
-    exec_always {
-      gsettings set ${gnomeschema} gtk-theme 'Yaru-dark'
-      gsettings set ${gnomeschema} icon-theme 'Yaru'
-      gsettings set ${gnomeschema} cursor-theme 'xcursor-breeze'
-      gsettings set ${gnomeschema} font-name 'SF Pro Text Regular 10'
-    }
-
     # Theme colors                                                  #f4692e
     #       class               border      background  text        indicator   child_border
     client.background           n/a         #ffffff     n/a         n/a         n/a
