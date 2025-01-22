@@ -28,6 +28,31 @@
     ollama = import ./base/services/ollama.nix { inherit pkgs; };
   };
 
+  dconf = {
+    settings = {
+      "org/gnome/desktop/interface" = {
+        font-name = "SF Pro Text 11";
+        monospace-font-name = "Source Code Pro 12";
+        document-font-name = "Cantarell 12";
+      };
+    };
+  };
+
+  gtk =
+    let
+      theme = {
+        package = pkgs.yaru-theme;
+        name = "Yaru-prussiangreen";
+      };
+    in
+    {
+      enable = true;
+      iconTheme = theme;
+      theme = theme;
+      gtk3.extraConfig.gtk-application-prefer-dark-theme = 0;
+      gtk4.extraConfig.gtk-application-prefer-dark-theme = 0;
+    };
+
   # Install packages for user.
   # Search for packages here: https://search.nixos.org/packages
   home = {
@@ -137,18 +162,8 @@
         recursive = true;
       };
 
-      "Yaru-dark-gdm" = {
-        source = ./assets/Yaru-dark-gdm;
-        recursive = true;
-      };
-
       ".local" = {
         source = ./assets/.local;
-        recursive = true;
-      };
-
-      "gtk-3.0" = {
-        source = ./assets/gtk-3.0;
         recursive = true;
       };
 
