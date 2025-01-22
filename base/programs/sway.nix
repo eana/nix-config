@@ -248,12 +248,6 @@ in
   };
 
   extraConfig = ''
-    ### Settings ###
-    set $mod Mod4
-
-    # Font
-    font pango: SF Pro Text 10
-
     # Borders
     default_border pixel 2
     # default_floating_border pixel 2
@@ -262,12 +256,12 @@ in
     smart_gaps on
     gaps inner 2
 
-    # Drag floating windows by holding down $mod and left mouse button.
-    # Resize them with right mouse button + $mod.
+    # Drag floating windows by holding down ${modifier} and left mouse button.
+    # Resize them with right mouse button + ${modifier}.
     # Despite the name, also works for non-floating windows.
     # Change normal to inverse to use left mouse button for resizing and right
     # mouse button for dragging.
-    floating_modifier $mod normal
+    floating_modifier ${modifier} normal
 
     ### Window rules ###
 
@@ -341,13 +335,13 @@ in
       bindsym --to-code Escape mode "default"
     }
 
-    bindsym --to-code $mod+r mode "resize"
+    bindsym --to-code ${modifier}+r mode "resize"
 
     # Sticky window
-    bindsym --to-code $mod+Shift+s sticky toggle
+    bindsym --to-code ${modifier}+Shift+s sticky toggle
 
     # Exit sway (logs you out of your Wayland session)
-    bindsym --to-code $mod+Delete exec ${swaynag} --type mtype --message \
+    bindsym --to-code ${modifier}+Delete exec ${swaynag} --type mtype --message \
       'You pressed the exit shortcut. What do you want?' \
       --button 'Poweroff' 'systemctl poweroff' \
       --button 'Reboot' 'systemctl reboot' \
@@ -369,7 +363,7 @@ in
       bindsym Escape mode "default"
     }
 
-    bindsym $mod+Shift+e mode "$mode_system"
+    bindsym ${modifier}+Shift+e mode "$mode_system"
 
     ### Disable laptop's screen when the lid is closed
     # ${swaymsg} -t get_outputs
