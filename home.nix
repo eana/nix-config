@@ -41,6 +41,7 @@
       slurp # Select a region in Wayland
       swaybg # Wallpaper tool for Sway
       swayidle # Idle management daemon for Sway
+      imagemagick # Image manipulation tool
 
       # File Management
       gthumb # Image browser and viewer
@@ -112,6 +113,9 @@
 
       # Containers
       podman # Tool for managing OCI containers
+
+      # Fonts
+      cantarell-fonts # Cantarell font family
 
       # Other
       neofetch # System information tool
