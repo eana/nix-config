@@ -240,10 +240,10 @@ in
 
   style = ''
     * {
-      border: none;
+      border: 0;
       border-radius: 4px;
       font-family: "Font Awesome 5 Free";
-      font-size: 14px;
+      font-size: 16px;
       min-height: 0;
     }
 
