@@ -72,9 +72,9 @@
       ripgrep # Search tool
       nix-prefetch-git # Prefetch Git repositories
       pre-commit # Framework for managing pre-commit hooks
-
-      # Cloud and Kubernetes Tools
-      tenv # OpenTofu, Terraform, Terragrunt, and Atmos version manager written in Go
+      terraform # Infrastructure as code tool
+      terraform-docs # Terraform documentation generator
+      checkov # Static code analysis tool for Terraform
 
       # Version Control
       tig # Text-mode interface for Git
