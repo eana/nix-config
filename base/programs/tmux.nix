@@ -55,6 +55,41 @@ in
     # This is the value of the TERM environment variable inside tmux
     set -g default-terminal "screen-256color"
 
+    # Handle tmux nested session
+    # https://medium.freecodecamp.org/tmux-in-practice-local-and-nested-remote-tmux-sessions-4f7ba5db8795
+    set -g status-bg colour40
+    # for tmux < 2.9
+    #setw -g window-status-current-bg colour40
+    # for tmux > 2.9
+    setw -g window-status-current-style bg=colour40
+
+    bind -n C-t new-window -a
+    bind -n S-left  prev
+    bind -n S-right next
+    bind -n S-C-left  swap-window -t -1
+    bind -n S-C-right swap-window -t +1
+
+    bind -n M-F11 set -qg status-bg colour25
+    bind -n M-F12 set -qg status-bg colour40
+    bind -n S-up \
+        send-keys M-F12 \; \
+        set -qg status-bg colour25 \; \
+        unbind -n S-left \; \
+        unbind -n S-right \; \
+        unbind -n S-C-left \; \
+        unbind -n S-C-right \; \
+        unbind -n C-t \; \
+        set -qg prefix C-b
+    bind -n S-down \
+        send-keys M-F11 \; \
+        set -qg status-bg colour40 \; \
+        bind -n S-left  prev \; \
+        bind -n S-right next \; \
+        bind -n S-C-left swap-window -t -1 \; \
+        bind -n S-C-right swap-window -t +1 \; \
+        bind -n C-t new-window -a -c "#{pane_current_path}" \; \
+        set -qg prefix C-a
+
     # Renumber windows in tmux
     set-option -g renumber-windows on
 
