@@ -23,8 +23,10 @@ in
           }
 
           {
+            # Disable the laptop screen by default
+            # If needed, it can be enabled with ${modifier}+Ctrl+e
             criteria = "Sharp Corporation 0x1453 Unknown";
-            status = "enable";
+            status = "disable";
             mode = "1920x1080";
             position = "540,2160";
             scale = 0.7;
