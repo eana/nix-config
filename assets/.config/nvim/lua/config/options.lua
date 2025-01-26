@@ -31,9 +31,9 @@ options.termguicolors = true
 
 options.completeopt = "menuone,noselect"
 
-options.swapfile = false
+options.swapfile = true
 options.autoread = true
-options.undofile = false
+options.undofile = true
 
 -- Change cursor color
 -- options.guicursor = "n-v-c:block-Cursor/lCursor"
