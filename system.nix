@@ -1,4 +1,9 @@
-{ config, pkgs, ... }:
+{
+  config,
+  lib,
+  pkgs,
+  ...
+}:
 let
   # Do not change this value! This tracks when NixOS was installed on your system.
   stateVersion = "24.05";
@@ -82,7 +87,38 @@ in
 
   networking = {
     hostName = hostName;
-    networkmanager.enable = true;
+    networkmanager = {
+      enable = true;
+      dispatcherScripts = [
+        {
+          type = "basic";
+          source =
+            pkgs.writeText "wifi-wired-exclusive" # bash
+              ''
+                export LC_ALL=C
+                PATH=${lib.makeBinPath [ pkgs.networkmanager ]}:$PATH
+
+                enable_disable_wifi ()
+                {
+                    result=$(nmcli dev | grep "ethernet" | grep -w "connected")
+                    if [ -n "$result" ]; then
+                        nmcli radio wifi off
+                    else
+                        nmcli radio wifi on
+                    fi
+                }
+
+                if [ "$2" = "up" ]; then
+                    enable_disable_wifi
+                fi
+
+                if [ "$2" = "down" ]; then
+                    enable_disable_wifi
+                fi
+              '';
+        }
+      ];
+    };
     enableIPv6 = false;
   };
 
