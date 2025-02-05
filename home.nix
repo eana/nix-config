@@ -16,6 +16,24 @@
     tmux = import ./base/programs/tmux.nix { inherit pkgs; };
     waybar = import ./base/programs/waybar.nix { inherit pkgs; };
     zsh = import ./base/programs/zsh.nix { inherit pkgs; };
+
+    neovide = {
+      enable = true;
+      settings = {
+        fork = false;
+        frame = "full";
+        idle = true;
+        maximized = false;
+        neovim-bin = "${pkgs.neovim}/bin/nvim";
+        no-multigrid = false;
+        srgb = false;
+        tabs = true;
+        theme = "auto";
+        title-hidden = true;
+        vsync = true;
+        wsl = false;
+      };
+    };
   };
 
   wayland.windowManager.sway = import ./base/programs/sway.nix { inherit pkgs; };

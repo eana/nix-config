@@ -98,3 +98,6 @@ options.wildignore:append({
   "zaibatsu.vim",
   "zellner.vim",
 })
+
+-- Load neovide configuration
+require("config.neovide").setup()
