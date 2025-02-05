@@ -135,6 +135,7 @@ in
   fonts = {
     enableDefaultPackages = true;
     packages = with pkgs; [
+      fira-code
       font-awesome_5
       meslo-lgs-nf
       nerd-fonts.dejavu-sans-mono
