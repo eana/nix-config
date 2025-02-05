@@ -1,5 +1,6 @@
 { pkgs }:
 let
+  jq = "${pkgs.jq}/bin/jq";
   pavucontrol = "${pkgs.pavucontrol}/bin/pavucontrol";
   swaymsg = "${pkgs.sway}/bin/swaymsg";
   swaynag = "${pkgs.sway}/bin/swaynag";
@@ -67,7 +68,7 @@ in
       "custom/scratchpad-indicator" = {
         interval = 3;
         exec = ''
-          ~/.config/waybar/modules/scratchpad_indicator
+          ${swaymsg} -t get_tree | ${jq} 'select(.name == "root") | .nodes[] | select(.name == "__i3") | .nodes[] | select(.name == "__i3_scratch") | .floating_nodes | length'
         '';
         format = "{} ";
         on-click-right = "${swaymsg} 'scratchpad show'";
