@@ -172,6 +172,7 @@
       playerctl # Media player controller
       system-config-printer # Printer configuration tool
       telegram-desktop # Telegram client
+      fuse-emulator # ZX Spectrum emulator
     ];
 
     file = {

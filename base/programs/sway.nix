@@ -289,6 +289,7 @@ in
     # Disable swayidle while an app is in fullscreen
     for_window [shell=".*"] inhibit_idle fullscreen
 
+    for_window [class="Fuse"] floating enable
     # for_window [class="feh"] floating enable
     # for_window [title="alsamixer"] floating enable border pixel 1
     # for_window [class="calamares"] floating enable border normal
