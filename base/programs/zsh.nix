@@ -21,6 +21,18 @@
       zstyle :bracketed-paste-magic paste-init pasteinit
       zstyle :bracketed-paste-magic paste-finish pastefinish
       ### Fix slowness of pastes
+
+      ax() {
+        local profile
+        profile="$(sed -n -e 's/^\[profile \(.*\)\]/\1/p' ~/.aws/config | fzf --tac --no-sort)"
+        # https://github.com/cytopia/aws-export-profile
+        eval $(~/bin/aws-export-profile "$profile")
+        if [ -n "$profile" ]; then
+          export AWS_PROFILE="$profile"
+          export AWS_DEFAULT_PROFILE="$profile"
+          export AWS_PAGER=""
+        fi
+      }
     '';
   };
 
