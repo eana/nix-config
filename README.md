@@ -5,6 +5,7 @@
 - [ ] Handle ~/.ssh/config
 - [ ] Handle ~/.config/mpv
 - [ ] Multiuser config for git
+- [ ] Add aws-export-profile -- https://github.com/cytopia/aws-export-profile
 
 ## How to install
 
