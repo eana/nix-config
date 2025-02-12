@@ -117,7 +117,7 @@
       pre-commit # Framework for managing pre-commit hooks
       terraform # Infrastructure as code tool
       terraform-docs # Terraform documentation generator
-      checkov # Static code analysis tool for Terraform
+      # checkov # Static code analysis tool for Terraform
 
       # Version Control
       tig # Text-mode interface for Git
