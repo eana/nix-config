@@ -101,7 +101,7 @@ in
   '';
 
   networking = {
-    hostName = hostName;
+    inherit hostName;
     networkmanager = {
       enable = true;
       dispatcherScripts = [
@@ -170,12 +170,15 @@ in
     ];
   };
 
-  # Use zsh as your default shell.
-  programs.zsh.enable = true;
-  users.defaultUserShell = pkgs.zsh;
+  programs = {
+    # Use zsh as your default shell.
+    zsh.enable = true;
 
-  programs.sway.enable = true;
-  programs.ssh.startAgent = true;
+    sway.enable = true;
+    ssh.startAgent = true;
+  };
+
+  users.defaultUserShell = pkgs.zsh;
 
   environment = {
     systemPackages = with pkgs; [
