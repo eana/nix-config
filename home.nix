@@ -175,6 +175,7 @@
       fuse-emulator # ZX Spectrum emulator
       oath-toolkit # OATH one-time password tool
       awscli2 # AWS command-line interface
+      direnv # Environment switcher
     ];
 
     file = {
