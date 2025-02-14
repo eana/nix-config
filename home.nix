@@ -3,7 +3,12 @@
   pkgs,
   ...
 }:
-
+let
+  theme = {
+    package = pkgs.yaru-theme;
+    name = "Yaru-prussiangreen";
+  };
+in
 {
   systemd.user = import ./base/systemd.nix { inherit pkgs; };
 
@@ -34,6 +39,11 @@
         wsl = false;
       };
     };
+
+    direnv = {
+      enable = true;
+      nix-direnv.enable = true;
+    };
   };
 
   wayland.windowManager.sway = import ./base/programs/sway.nix { inherit pkgs; };
@@ -56,20 +66,14 @@
     };
   };
 
-  gtk =
-    let
-      theme = {
-        package = pkgs.yaru-theme;
-        name = "Yaru-prussiangreen";
-      };
-    in
-    {
-      enable = true;
-      iconTheme = theme;
-      theme = theme;
-      gtk3.extraConfig.gtk-application-prefer-dark-theme = 0;
-      gtk4.extraConfig.gtk-application-prefer-dark-theme = 0;
-    };
+  gtk = {
+    enable = true;
+
+    inherit theme;
+    iconTheme = theme;
+    gtk3.extraConfig.gtk-application-prefer-dark-theme = 0;
+    gtk4.extraConfig.gtk-application-prefer-dark-theme = 0;
+  };
 
   # Install packages for user.
   # Search for packages here: https://search.nixos.org/packages
@@ -201,6 +205,6 @@
       KPT_FN_RUNTIME = "podman";
     };
 
-    stateVersion = nixosConfig.system.stateVersion;
+    inherit (nixosConfig.system) stateVersion;
   };
 }
