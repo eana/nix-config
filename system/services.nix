@@ -1,5 +1,3 @@
-{ pkgs }:
-
 {
   pipewire = {
     enable = true;
