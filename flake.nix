@@ -37,6 +37,13 @@
               ${pkgs.pre-commit}/bin/pre-commit install
             '';
           };
+
+          devshells.default = {
+            packages = with pkgs; [
+              deadnix
+              statix
+            ];
+          };
         };
 
       flake = {

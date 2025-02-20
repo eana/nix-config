@@ -13,32 +13,14 @@ in
   systemd.user = import ./base/systemd.nix { inherit pkgs; };
 
   programs = {
-    foot = import ./base/programs/foot.nix { inherit pkgs; };
-    fuzzel = import ./base/programs/fuzzel.nix { inherit pkgs; };
-    git = import ./base/programs/git.nix { inherit pkgs; };
-    neovim = import ./base/programs/neovim.nix { inherit pkgs; };
-    swaylock = import ./base/programs/swaylock.nix { inherit pkgs; };
+    foot = import ./base/programs/foot.nix;
+    fuzzel = import ./base/programs/fuzzel.nix;
+    git = import ./base/programs/git.nix;
+    neovim = import ./base/programs/neovim.nix;
+    swaylock = import ./base/programs/swaylock.nix;
     tmux = import ./base/programs/tmux.nix { inherit pkgs; };
     waybar = import ./base/programs/waybar.nix { inherit pkgs; };
     zsh = import ./base/programs/zsh.nix { inherit pkgs; };
-
-    neovide = {
-      enable = true;
-      settings = {
-        fork = false;
-        frame = "full";
-        idle = true;
-        maximized = false;
-        neovim-bin = "${pkgs.neovim}/bin/nvim";
-        no-multigrid = false;
-        srgb = false;
-        tabs = true;
-        theme = "auto";
-        title-hidden = true;
-        vsync = true;
-        wsl = false;
-      };
-    };
 
     direnv = {
       enable = true;
@@ -49,11 +31,11 @@ in
   wayland.windowManager.sway = import ./base/programs/sway.nix { inherit pkgs; };
 
   services = {
-    avizo = import ./base/services/avizo.nix { inherit pkgs; };
+    avizo = import ./base/services/avizo.nix;
     gpg-agent = import ./base/services/gpg-agent.nix { inherit pkgs; };
-    gammastep = import ./base/services/gammastep.nix { inherit pkgs; };
+    gammastep = import ./base/services/gammastep.nix;
     kanshi = import ./base/services/kanshi.nix { inherit pkgs; };
-    ollama = import ./base/services/ollama.nix { inherit pkgs; };
+    ollama = import ./base/services/ollama.nix;
   };
 
   dconf = {
