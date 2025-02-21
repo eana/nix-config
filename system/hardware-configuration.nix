@@ -15,14 +15,16 @@
     initrd = {
       availableKernelModules = [
         "xhci_pci"
+        "ehci_pci"
         "ahci"
         "nvme"
         "usb_storage"
         "usbhid"
         "sd_mod"
         "rtsx_pci_sdmmc"
+        "usbcore"
       ];
-      kernelModules = [ ];
+      kernelModules = [ "usbhid" ];
     };
     kernelModules = [ "kvm-intel" ];
     extraModulePackages = [ ];
