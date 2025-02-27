@@ -8,6 +8,21 @@ let
     package = pkgs.yaru-theme;
     name = "Yaru-prussiangreen";
   };
+
+  aws-export-profile = pkgs.stdenv.mkDerivation {
+    name = "aws-export-profile";
+    src = pkgs.fetchFromGitHub {
+      owner = "cytopia";
+      repo = "aws-export-profile";
+      rev = "0.7"; # or a specific commit/tag
+      sha256 = "sha256-hvQzKXHfeyN4qm6kEAG/xuIqmHhL8GKpvn8aE+gTMDE=";
+    };
+    installPhase = ''
+      mkdir -p $out/bin
+      cp aws-export-profile $out/bin/aws-export-profile.sh
+      chmod +x $out/bin/aws-export-profile.sh
+    '';
+  };
 in
 {
   systemd.user = import ./base/systemd.nix { inherit pkgs; };
@@ -103,6 +118,7 @@ in
       pre-commit # Framework for managing pre-commit hooks
       terraform # Infrastructure as code tool
       terraform-docs # Terraform documentation generator
+      aws-export-profile # AWS profile exporter
       # checkov # Static code analysis tool for Terraform
 
       # Version Control
