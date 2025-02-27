@@ -24,7 +24,17 @@
 
       ax() {
         local profile
-        profile="$(sed -n -e 's/^\[profile \(.*\)\]/\1/p' ~/.aws/config | fzf --tac --no-sort)"
+
+        profile="$( (echo "UNSET ALL"; sed -n -e 's/^\[profile \(.*\)\]/\1/p' ~/.aws/config) | fzf --tac --no-sort)"
+
+        if [ "$profile" = "UNSET ALL" ]; then
+          for var in $(env | grep '^AWS_' | cut -d= -f1); do
+            unset "$var"
+          done
+          echo "Unset all AWS environment variables."
+          return
+        fi
+
         # https://github.com/cytopia/aws-export-profile
         eval $(~/bin/aws-export-profile "$profile")
         if [ -n "$profile" ]; then
