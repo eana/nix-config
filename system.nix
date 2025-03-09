@@ -167,6 +167,7 @@ in
     extraGroups = [
       "wheel"
       "video"
+      "ydotool"
     ];
   };
 
@@ -176,6 +177,7 @@ in
 
     sway.enable = true;
     ssh.startAgent = true;
+    ydotool.enable = true;
   };
 
   users.defaultUserShell = pkgs.zsh;

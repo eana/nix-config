@@ -178,6 +178,12 @@ in
       oath-toolkit # OATH one-time password tool
       awscli2 # AWS command-line interface
       direnv # Environment switcher
+
+      # Bitwarden
+      pinentry-tty # Pinentry for Bitwarden
+      rbw # Bitwarden CLI
+      rofi # Window switcher, application launcher, and dmenu replacement
+      rofi-rbw-wayland # Bitwarden integration for Rofi
     ];
 
     file = {
