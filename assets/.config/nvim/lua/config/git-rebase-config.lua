@@ -4,13 +4,18 @@ vim.api.nvim_create_autocmd("FileType", {
   callback = function()
     local map = vim.api.nvim_buf_set_keymap
     local opts = { noremap = true, silent = true }
-    map(0, "n", "r", ":s/^pick /reword /<CR>", opts)
-    map(0, "n", "e", ":s/^pick /edit /<CR>", opts)
-    map(0, "n", "s", ":s/^pick /squash /<CR>", opts)
-    map(0, "n", "f", ":s/^pick /fixup /<CR>", opts)
-    map(0, "n", "b", ":s/^pick /break /<CR>", opts)
-    map(0, "n", "d", ":s/^pick /drop /<CR>", opts)
-    map(0, "n", "p", ":s/^pick /pick /<CR>", opts)
+    local actions = {
+      r = "reword",
+      e = "edit",
+      s = "squash",
+      f = "fixup",
+      b = "break",
+      d = "drop",
+      p = "pick",
+    }
+    for key, action in pairs(actions) do
+      map(0, "n", key, ":s/^\\v(reword|edit|squash|fixup|break|drop|pick)/" .. action .. "/<CR>:nohlsearch<CR>", opts)
+    end
   end,
 })
 
