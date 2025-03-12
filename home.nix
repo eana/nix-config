@@ -56,7 +56,7 @@ in
   dconf = {
     settings = {
       "org/gnome/desktop/interface" = {
-        font-name = "SF Pro Text 11";
+        font-name = "Helvetica Neue LT Std 11.5";
         monospace-font-name = "Source Code Pro 12";
         document-font-name = "Cantarell 12";
       };

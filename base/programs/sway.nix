@@ -38,8 +38,8 @@ in
     modes = { };
 
     fonts = {
-      names = [ "SF Pro Text" ];
-      size = 12.0;
+      names = [ "Helvetica Neue LT Std" ];
+      size = 13.0;
     };
 
     keybindings = {
@@ -237,7 +237,7 @@ in
         border = "#285577";
         button-background = "#31363b";
         text = "#ffffff";
-        font = "SF Pro Text 11";
+        font = "Helvetica Neue LT Std 12";
         edge = "top";
         message-padding = "8";
         button-padding = "6";
