@@ -38,7 +38,7 @@ in
     modes = { };
 
     fonts = {
-      names = [ "SF Pro Text" ];
+      names = [ "Helvetica Neue LT Std" ];
       size = 12.0;
     };
 
@@ -237,7 +237,7 @@ in
         border = "#285577";
         button-background = "#31363b";
         text = "#ffffff";
-        font = "SF Pro Text 11";
+        font = "Helvetica Neue LT Std 11";
         edge = "top";
         message-padding = "8";
         button-padding = "6";

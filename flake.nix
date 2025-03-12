@@ -5,7 +5,6 @@
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
     home-manager.url = "github:nix-community/home-manager";
     disko.url = "github:nix-community/disko";
-    # apple-fonts.url = "github:Lyndeno/apple-fonts.nix";
 
     flake-parts = {
       url = "github:hercules-ci/flake-parts";
@@ -68,7 +67,6 @@
                 useGlobalPkgs = true;
                 users.jonas = {
                   imports = [ ./home.nix ];
-                  # home.packages = [ inputs.apple-fonts.packages.${nixbox-arch}.sf-pro ];
                 };
               };
             }
