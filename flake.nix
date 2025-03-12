@@ -5,9 +5,18 @@
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
     home-manager.url = "github:nix-community/home-manager";
     disko.url = "github:nix-community/disko";
-    apple-fonts.url = "github:Lyndeno/apple-fonts.nix";
-    flake-parts.url = "github:hercules-ci/flake-parts";
-    dev-flake.url = "github:terlar/dev-flake";
+    # apple-fonts.url = "github:Lyndeno/apple-fonts.nix";
+
+    flake-parts = {
+      url = "github:hercules-ci/flake-parts";
+      inputs.nixpkgs-lib.url = "github:nix-community/nixpkgs.lib";
+    };
+
+    dev-flake = {
+      url = "github:terlar/dev-flake";
+      inputs.nixpkgs.follows = "nixpkgs";
+      inputs.flake-parts.follows = "flake-parts";
+    };
   };
 
   outputs =
@@ -59,7 +68,7 @@
                 useGlobalPkgs = true;
                 users.jonas = {
                   imports = [ ./home.nix ];
-                  home.packages = [ inputs.apple-fonts.packages.${nixbox-arch}.sf-pro ];
+                  # home.packages = [ inputs.apple-fonts.packages.${nixbox-arch}.sf-pro ];
                 };
               };
             }
