@@ -145,7 +145,7 @@ in
   };
 
   security.rtkit.enable = true;
-  services = import ./system/services.nix;
+  services = import ./system/services.nix { inherit pkgs; };
 
   fonts = {
     enableDefaultPackages = true;

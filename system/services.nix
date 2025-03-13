@@ -1,3 +1,5 @@
+{ pkgs }:
+
 {
   pipewire = {
     enable = true;
@@ -36,19 +38,10 @@
     # ];
   };
 
-  # This fails to build with the following error:
-  # ERROR: noBrokenSymlinks: the symlink /nix/store/nwxj5wdhp35b2niwl6xw4qapsngbkfnn-canon-cups-ufr2-6.00/lib/libuictlufr2r.so points to a missing target /nix/store/nwxj5wdhp35b2niwl6xw4qapsngbkfnn-canon-cups-ufr2-6.00/lib/libuictlufr2r.so.1.0.0
-  # ERROR: noBrokenSymlinks: the symlink /nix/store/nwxj5wdhp35b2niwl6xw4qapsngbkfnn-canon-cups-ufr2-6.00/lib/libuictlufr2r.so.1 points to a missing target /nix/store/nwxj5wdhp35b2niwl6xw4qapsngbkfnn-canon-cups-ufr2-6.00/lib/libuictlufr2r.so.1.0.0
-  # ERROR: noBrokenSymlinks: found 2 dangling symlinks and 0 reflexive symlinks
-  # Re-enable when this PR is merged:
-  # https://github.com/NixOS/nixpkgs/pull/381315
-  #
-  # Additional info:
-  # https://github.com/NixOS/nixpkgs/issues/380572
-  # printing = {
-  #   enable = true;
-  #   drivers = [ pkgs.canon-cups-ufr2 ];
-  # };
+  printing = {
+    enable = true;
+    drivers = [ pkgs.canon-cups-ufr2 ];
+  };
 
   libinput.enable = true;
   dbus.enable = true;
