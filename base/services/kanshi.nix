@@ -19,7 +19,7 @@ in
             status = "enable";
             mode = "3840x2160";
             position = "0,0";
-            scale = 1.0;
+            scale = 1.1;
           }
 
           {
@@ -29,7 +29,7 @@ in
             status = "disable";
             mode = "1920x1080";
             position = "540,2160";
-            scale = 0.7;
+            scale = 0.8;
           }
         ];
       };
@@ -43,7 +43,7 @@ in
             status = "enable";
             mode = "1920x1080";
             position = "540,2160";
-            scale = 0.7;
+            scale = 0.8;
           }
         ];
       };
