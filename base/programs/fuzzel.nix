@@ -2,8 +2,8 @@
   enable = true;
   settings = {
     main = {
-      font = "monospace:size=10";
-      dpi-aware = "yes";
+      font = "Helvetica Neue LT Std:size=14";
+      dpi-aware = "no";
     };
   };
 }
