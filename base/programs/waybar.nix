@@ -36,6 +36,7 @@ in
         "custom/separator"
         "network#wireguard"
         "network#ovpn"
+        "network#proton"
         "network#wifi"
         "network#ethernet"
         "network#disconnected"
@@ -211,6 +212,14 @@ in
 
       "network#ovpn" = {
         interface = "tun*";
+        format = "🔒";
+        format-disconnected = "";
+        tooltip-format = "{ifname}: {ipaddr}/{cidr}";
+        on-click = "nm-connection-editor";
+      };
+
+      "network#proton" = {
+        interface = "proton*";
         format = "🔒";
         format-disconnected = "";
         tooltip-format = "{ifname}: {ipaddr}/{cidr}";
