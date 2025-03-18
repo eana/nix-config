@@ -14,7 +14,7 @@ let
     src = pkgs.fetchFromGitHub {
       owner = "cytopia";
       repo = "aws-export-profile";
-      rev = "0.7"; # or a specific commit/tag
+      rev = "a08ed774a36e5a7386adf645652a4af7b972e208"; # specific commit/tag
       sha256 = "sha256-hvQzKXHfeyN4qm6kEAG/xuIqmHhL8GKpvn8aE+gTMDE=";
     };
     installPhase = ''
