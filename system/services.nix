@@ -1,6 +1,13 @@
 { pkgs }:
 
 {
+  # fstrim requires this to work
+  # sudo cryptsetup --allow-discards --persistent refresh nixos
+  fstrim = {
+    enable = true;
+    interval = "weekly";
+  };
+
   pipewire = {
     enable = true;
     pulse.enable = true;
