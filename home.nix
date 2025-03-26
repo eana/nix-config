@@ -119,7 +119,6 @@ in
       terraform # Infrastructure as code tool
       terraform-docs # Terraform documentation generator
       aws-export-profile # AWS profile exporter
-      checkov # Static code analysis tool for Terraform
 
       # Version Control
       tig # Text-mode interface for Git
