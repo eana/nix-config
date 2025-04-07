@@ -1,6 +1,9 @@
 { pkgs }:
 let
+  gnome-calendar = "${pkgs.gnome-calendar}/bin/gnome-calendar";
+  gnome-power-statistics = "${pkgs.gnome-power-manager}/bin/gnome-power-statistics";
   jq = "${pkgs.jq}/bin/jq";
+  nm-connection-editor = "${pkgs.networkmanagerapplet}/bin/nm-connection-editor";
   pavucontrol = "${pkgs.pavucontrol}/bin/pavucontrol";
   swaymsg = "${pkgs.sway}/bin/swaymsg";
   swaynag = "${pkgs.sway}/bin/swaynag";
@@ -156,7 +159,7 @@ in
         ];
         format-time = "{H}h{M}m";
         interval = 30;
-        on-click = "gnome-power-statistics";
+        on-click = "${gnome-power-statistics}";
       };
 
       "cpu" = {
@@ -179,7 +182,7 @@ in
         format-wifi = "";
         format-linked = "";
         format-disconnected = "";
-        on-click = "nm-connection-editor";
+        on-click = "${nm-connection-editor}";
       };
 
       "network#ethernet" = {
@@ -189,7 +192,7 @@ in
         format-linked = "";
         format-disconnected = "";
         tooltip-format = "{ifname}: {ipaddr}/{cidr}";
-        on-click = "nm-connection-editor";
+        on-click = "${nm-connection-editor}";
       };
 
       "network#wifi" = {
@@ -199,7 +202,7 @@ in
         format-linked = "";
         format-disconnected = "";
         tooltip-format = "{essid}: {ifname}: {ipaddr}/{cidr}";
-        on-click = "nm-connection-editor";
+        on-click = "${nm-connection-editor}";
       };
 
       "network#wireguard" = {
@@ -207,7 +210,7 @@ in
         format = "🔒";
         format-disconnected = "";
         tooltip-format = "{ifname}: {ipaddr}/{cidr}";
-        on-click = "nm-connection-editor";
+        on-click = "${nm-connection-editor}";
       };
 
       "network#ovpn" = {
@@ -215,7 +218,7 @@ in
         format = "🔒";
         format-disconnected = "";
         tooltip-format = "{ifname}: {ipaddr}/{cidr}";
-        on-click = "nm-connection-editor";
+        on-click = "${nm-connection-editor}";
       };
 
       "network#proton" = {
@@ -223,7 +226,7 @@ in
         format = "🔒";
         format-disconnected = "";
         tooltip-format = "{ifname}: {ipaddr}/{cidr}";
-        on-click = "nm-connection-editor";
+        on-click = "${nm-connection-editor}";
       };
 
       "clock" = {
@@ -232,7 +235,7 @@ in
         tooltip-format = ''
           <big>{:%Y %B}</big>
           <tt><big>{calendar}</big></tt>'';
-        on-click = "/usr/bin/gnome-calendar";
+        on-click = "${gnome-calendar}";
       };
 
       "tray" = {
