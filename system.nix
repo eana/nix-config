@@ -234,6 +234,11 @@ in
     };
   };
 
+  zramSwap = {
+    enable = true;
+    memoryPercent = 50;
+  };
+
   nixpkgs.config.allowUnfree = true;
 
   system.stateVersion = stateVersion;
