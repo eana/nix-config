@@ -111,13 +111,13 @@ in
       gcc # GNU Compiler Collection
       tree-sitter # Incremental parsing system
       fzf # Fuzzy finder
-      go # Go programming language
-      gotools # Tools for Go programming
+      # go # Go programming language
+      # gotools # Tools for Go programming
       ripgrep # Search tool
-      nix-prefetch-git # Prefetch Git repositories
+      # nix-prefetch-git # Prefetch Git repositories
       pre-commit # Framework for managing pre-commit hooks
-      terraform # Infrastructure as code tool
-      terraform-docs # Terraform documentation generator
+      # terraform # Infrastructure as code tool
+      # terraform-docs # Terraform documentation generator
       aws-export-profile # AWS profile exporter
 
       # Version Control
@@ -178,6 +178,7 @@ in
       awscli2 # AWS command-line interface
       protonvpn-cli_2 # ProtonVPN command-line interface
       direnv # Environment switcher
+      aider-chat # AI-powered code review tool
 
       # Bitwarden
       pinentry-tty # Pinentry for Bitwarden
