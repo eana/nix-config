@@ -14,7 +14,6 @@
     general = {
       fade = 1;
       gamma = 0.8;
-      adjustment-method = "wayland";
     };
   };
 }
