@@ -66,7 +66,10 @@
               home-manager = {
                 useGlobalPkgs = true;
                 users.jonas = {
-                  imports = [ ./home.nix ];
+                  imports = [
+                    ./home.nix
+                    ./modules/openra.nix
+                  ];
                 };
               };
             }

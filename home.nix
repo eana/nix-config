@@ -212,4 +212,12 @@ in
 
     inherit (nixosConfig.system) stateVersion;
   };
+
+  module.openra = {
+    enable = true;
+    release = "release-20250330";
+    appimageSha256 = "sha256-PLccdCgYjIUm3YkWmT/Bb6F7pfKKNZaKgmfz258hhv4=";
+    iconUrl = "https://raw.githubusercontent.com/OpenRA/OpenRA/refs/tags/release-20250330/mods/ra/icon.png";
+    iconSha256 = "sha256-6IadsH5NGKXZ3gye3JYVTCDC/uPwy3BRXhuAp5+10qA=";
+  };
 }
