@@ -59,20 +59,10 @@
   # Enable syntax highlighting
   syntaxHighlighting.enable = true;
 
-  initExtraFirst = ''
+  initContent = ''
     # zmodload zsh/zprof
     skip_global_compinit=1
-  '';
 
-  completionInit = ''
-    autoload -Uz compinit
-    for dump in ~/.zcompdump(N.mh+24); do
-      compinit
-    done
-    compinit -C
-  '';
-
-  initExtra = ''
     # rofi-rbw
     bindkey "^[b" run_rofi
     function run_rofi(){
@@ -89,6 +79,14 @@
     [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
 
     # zprof
+  '';
+
+  completionInit = ''
+    autoload -Uz compinit
+    for dump in ~/.zcompdump(N.mh+24); do
+      compinit
+    done
+    compinit -C
   '';
 
   plugins = [
