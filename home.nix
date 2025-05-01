@@ -37,6 +37,10 @@ in
     waybar = import ./base/programs/waybar.nix { inherit pkgs; };
     zsh = import ./base/programs/zsh.nix { inherit pkgs; };
 
+    zellij = {
+      enable = true;
+    };
+
     direnv = {
       enable = true;
       nix-direnv.enable = true;
