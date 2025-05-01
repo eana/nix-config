@@ -220,8 +220,22 @@ in
   module.openra = {
     enable = true;
     release = "release-20250330";
-    appimageSha256 = "sha256-PLccdCgYjIUm3YkWmT/Bb6F7pfKKNZaKgmfz258hhv4=";
-    iconUrl = "https://raw.githubusercontent.com/OpenRA/OpenRA/refs/tags/release-20250330/mods/ra/icon.png";
-    iconSha256 = "sha256-6IadsH5NGKXZ3gye3JYVTCDC/uPwy3BRXhuAp5+10qA=";
+    variants = {
+      "red-alert" = {
+        enable = true;
+        appimageSha256 = "sha256-PLccdCgYjIUm3YkWmT/Bb6F7pfKKNZaKgmfz258hhv4=";
+        iconSha256 = "sha256-6IadsH5NGKXZ3gye3JYVTCDC/uPwy3BRXhuAp5+10qA=";
+      };
+      "dune" = {
+        enable = true;
+        appimageSha256 = "sha256-dYWYa/DNSI3rrsP634U8GQEAPv+UXbrV3pWwtr14Gmc=";
+        iconSha256 = "sha256-vpXer6ZhUWr3RUmNNY8gvxIFMjZRa/E9jGSjNziMysQ=";
+      };
+      "tiberian-dawn" = {
+        enable = true;
+        appimageSha256 = "sha256-s9IC0b9wG+WYnEHCVtGb0rF4hpTfAeNDrehlzxGQcGs=";
+        iconSha256 = "sha256-vpXer6ZhUWr3RUmNNY8gvxIFMjZRa/E9jGSjNziMysQ=";
+      };
+    };
   };
 }
