@@ -219,7 +219,7 @@ in
 
   module.mhalo = {
     enable = true;
-    swayKeybinding = "Mod4+Shift+h";
+    swayKeybinding = "Mod4+Shift+m";
   };
 
   module.openra = {
