@@ -68,6 +68,7 @@
                 users.jonas = {
                   imports = [
                     ./home.nix
+                    ./modules/mhalo.nix
                     ./modules/openra.nix
                   ];
                 };

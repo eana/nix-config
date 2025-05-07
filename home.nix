@@ -217,6 +217,11 @@ in
     inherit (nixosConfig.system) stateVersion;
   };
 
+  module.mhalo = {
+    enable = true;
+    swayKeybinding = "Mod4+Shift+m";
+  };
+
   module.openra = {
     enable = true;
     release = "release-20250330";
