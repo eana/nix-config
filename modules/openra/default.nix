@@ -29,7 +29,7 @@ let
 
   enabledVariants = filterAttrs (name: _: cfg.variants.${name}.enable or false) variants;
 
-  mkVariant =
+  mkDesktopPackage =
     variant: variantCfg:
     let
       desktop = pkgs.callPackage ./desktop.nix {
@@ -42,28 +42,29 @@ let
           ;
       };
     in
-    [
-      (pkgs.callPackage ./package.nix {
-        inherit
-          lib
-          pkgs
-          variant
-          variantCfg
-          cfg
-          ;
-      })
-      (pkgs.runCommand "openra-${variant}-desktop"
-        {
-          nativeBuildInputs = [ pkgs.copyDesktopItems ];
-          desktopItems = [ desktop.desktopItem ];
-        }
-        ''
-          mkdir -p $out/share/icons/hicolor/64x64/apps
-          cp ${desktop.icon} $out/share/icons/hicolor/64x64/apps/openra-${variant}.png
-          copyDesktopItems
-        ''
-      )
-    ];
+    pkgs.runCommand "openra-${variant}-desktop"
+      {
+        nativeBuildInputs = [ pkgs.copyDesktopItems ];
+        desktopItems = [ desktop.desktopItem ];
+      }
+      ''
+        mkdir -p $out/share/icons/hicolor/64x64/apps
+        cp ${desktop.icon} $out/share/icons/hicolor/64x64/apps/openra-${variant}.png
+        copyDesktopItems
+      '';
+
+  mkVariant = variant: variantCfg: [
+    (pkgs.callPackage ./package.nix {
+      inherit
+        lib
+        pkgs
+        variant
+        variantCfg
+        cfg
+        ;
+    })
+    (mkDesktopPackage variant variantCfg)
+  ];
 
 in
 {

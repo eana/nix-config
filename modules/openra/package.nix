@@ -8,10 +8,7 @@
 
 pkgs.runCommand "openra-${variant}"
   {
-    buildInputs = [
-      pkgs.makeWrapper
-      pkgs.appimage-run
-    ];
+    buildInputs = [ pkgs.makeWrapper ];
     nativeBuildInputs = with pkgs; [
       icu
       libunwind
@@ -24,8 +21,8 @@ pkgs.runCommand "openra-${variant}"
   }
   ''
     mkdir -p $out/bin
-    cp $src $out/bin/openra-${variant}.AppImage
-    chmod +x $out/bin/openra-${variant}.AppImage
+    install -Dm755 $src $out/bin/openra-${variant}.AppImage
+
     makeWrapper ${pkgs.appimage-run}/bin/appimage-run $out/bin/openra-${variant} \
       --prefix LD_LIBRARY_PATH : "${
         lib.makeLibraryPath (
