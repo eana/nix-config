@@ -4,7 +4,7 @@
     main = {
       term = "xterm-256color";
 
-      font = "MesloLGS NF:size=8";
+      font = "MesloLGS NF:size=9";
       dpi-aware = "yes";
     };
 
