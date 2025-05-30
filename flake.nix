@@ -59,7 +59,7 @@
         nixosConfigurations.nixbox = inputs.nixpkgs.lib.nixosSystem {
           system = nixbox-arch;
           modules = [
-            ./system.nix
+            ./system/nixbox.nix
             inputs.disko.nixosModules.disko
             inputs.home-manager.nixosModules.home-manager
             {
