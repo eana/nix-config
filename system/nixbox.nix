@@ -11,9 +11,9 @@ let
 in
 {
   imports = [
-    ./system/hardware-configuration.nix
-    ./system/disko.nix
-    ./system/gdm.nix
+    ./linux/hardware-configuration.nix
+    ./linux/disko.nix
+    ./linux/gdm.nix
   ];
 
   nix = {
@@ -131,7 +131,7 @@ in
   };
 
   security.rtkit.enable = true;
-  services = import ./system/services.nix { inherit pkgs; };
+  services = import ./linux/services.nix { inherit pkgs; };
 
   fonts = {
     enableDefaultPackages = true;
