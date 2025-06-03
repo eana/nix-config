@@ -56,20 +56,38 @@
 
       flake = {
         formatter.x86_64-linux = inputs.nixpkgs.legacyPackages.x86_64-linux.nixfmt-rfc-style;
+
         nixosConfigurations.nixbox = inputs.nixpkgs.lib.nixosSystem {
           system = nixbox-arch;
           modules = [
-            ./system/nixbox.nix
+            ./hosts/nixbox/default.nix
             inputs.disko.nixosModules.disko
             inputs.home-manager.nixosModules.home-manager
             {
               home-manager = {
                 useGlobalPkgs = true;
+                useUserPackages = true;
                 users.jonas = {
                   imports = [
-                    ./home.nix
-                    ./modules/mhalo
-                    ./modules/openra
+                    ./home/users/jonas/default.nix
+
+                    # Linux-specific modules
+                    ./modules/avizo/default.nix
+                    ./modules/foot/default.nix
+                    ./modules/fuzzel/default.nix
+                    ./modules/gammastep/default.nix
+                    ./modules/git/default.nix
+                    ./modules/gpg-agent/default.nix
+                    ./modules/kanshi/default.nix
+                    ./modules/mhalo/default.nix
+                    ./modules/neovim/default.nix
+                    ./modules/ollama/default.nix
+                    ./modules/openra/default.nix
+                    ./modules/sway/default.nix
+                    ./modules/swaylock/default.nix
+                    ./modules/tmux/default.nix
+                    ./modules/waybar/default.nix
+                    ./modules/zsh/default.nix
                   ];
                 };
               };
