@@ -11,9 +11,10 @@ let
 in
 {
   imports = [
-    ./linux/hardware-configuration.nix
     ./linux/disko.nix
     ./linux/gdm.nix
+    ./linux/hardware-configuration.nix
+    ./linux/nvidia.nix
   ];
 
   nix = {
@@ -23,6 +24,8 @@ in
     '';
   };
 
+  hardware.nvidiaPrime.enable = true;
+
   hardware = {
     bluetooth = {
       enable = true;
@@ -30,22 +33,9 @@ in
     };
     enableAllFirmware = true;
     graphics.enable = true;
-    nvidia = {
-      open = false;
-      prime = {
-        # ❯ nix-shell -p pciutils --run "lspci -nn | grep -E 'VGA|3D'"
-        # 00:02.0 VGA compatible controller [0300]: Intel Corporation HD Graphics 530 [8086:191b] (rev 06)
-        # 01:00.0 3D controller [0302]: NVIDIA Corporation GM107GLM [Quadro M1000M] [10de:13b1] (rev a2)
-        nvidiaBusId = "PCI:1:0:0";
-        intelBusId = "PCI:0:2:0";
-      };
-      modesetting.enable = false;
-    };
   };
 
   boot = {
-    kernelPackages = pkgs.linuxPackages_latest;
-
     # I spotted this in the logs:
     # Jan 15 16:48:17 nixbox kernel: snd_soc_avs 0000:00:1f.3: Direct firmware load for intel/avs/hda-10ec0298-tplg.bin failed with error -2
     # Jan 15 16:48:17 nixbox kernel: snd_soc_avs 0000:00:1f.3: request topology "intel/avs/hda-10ec0298-tplg.bin" failed: -2

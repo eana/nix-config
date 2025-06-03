@@ -38,7 +38,6 @@
       };
     };
     desktopManager.gnome.enable = true;
-    videoDrivers = [ "nvidia" ];
   };
 
   printing = {
