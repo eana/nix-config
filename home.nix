@@ -168,6 +168,7 @@ in
       blueman # Bluetooth manager
       copyq # Clipboard manager
       earlyoom # Early OOM daemon
+      firefox # Web browser
       google-chrome # Web browser
       brightnessctl # Utility to control brightness
       pavucontrol # PulseAudio volume control

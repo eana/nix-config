@@ -161,13 +161,6 @@ in
 
   environment = {
     systemPackages = with pkgs; [
-      # Browsers
-      firefox # A free and open-source web browser developed by Mozilla
-      google-chrome # A fast, secure, and free web browser built for the modern web by Google
-
-      # Terminal Emulators
-      foot # A fast, lightweight and minimalistic Wayland terminal emulator
-
       # Utilities
       blueman # A GTK+ Bluetooth manager
       curl # A command-line tool for transferring data with URLs
