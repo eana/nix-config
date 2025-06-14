@@ -179,16 +179,20 @@ in
       description = "Shell aliases for Zsh";
     };
 
-    enableAutosuggestions = mkOption {
-      type = types.bool;
-      default = true;
-      description = "Whether to enable zsh-autosuggestions";
+    autosuggestion = {
+      enable = mkOption {
+        type = types.bool;
+        default = true;
+        description = "Whether to enable zsh-autosuggestions";
+      };
     };
 
-    enableSyntaxHighlighting = mkOption {
-      type = types.bool;
-      default = true;
-      description = "Whether to enable zsh-syntax-highlighting";
+    syntaxHighlighting = {
+      enable = mkOption {
+        type = types.bool;
+        default = true;
+        description = "Whether to enable zsh-syntax-highlighting";
+      };
     };
   };
 
@@ -219,8 +223,13 @@ in
         inherit (cfg.history) extended;
       };
 
-      inherit (cfg) enableAutosuggestions;
-      inherit (cfg) enableSyntaxHighlighting;
+      autosuggestion = {
+        inherit (cfg.autosuggestion) enable;
+      };
+
+      syntaxHighlighting = {
+        inherit (cfg.syntaxHighlighting) enable;
+      };
     };
   };
 }
