@@ -84,7 +84,6 @@
                     ./modules/ollama/default.nix
                     ./modules/openra/default.nix
                     ./modules/sway/default.nix
-                    ./modules/swaylock/default.nix
                     ./modules/tmux/default.nix
                     ./modules/waybar/default.nix
                     ./modules/zsh/default.nix

@@ -17,7 +17,26 @@ let
   defaultBackground = "~/.local/share/backgrounds/hannah-grace-dSqWwzrLJaQ-unsplash.jpg";
   defaultModifier = "Mod4";
 
-  defaultKeybindings = {
+  # Helper function to generate swaylock config
+  mkSwaylockConfig =
+    settings:
+    pkgs.writeText "swaylock-config" (
+      lib.concatStringsSep "\n" (
+        lib.mapAttrsToList (name: value: if value != null then "${name}=${toString value}" else "") settings
+      )
+    );
+
+  defaultSwaylockConfig = {
+    color = "000000";
+    indicator-radius = 55;
+    indicator-thickness = 7;
+    image = null;
+  };
+
+  swaylockConfigFile = mkSwaylockConfig cfg.swaylock.settings;
+
+  # Base keybindings
+  baseKeybindings = {
     "${defaultModifier}+Shift+r" = "reload";
     "${defaultModifier}+Return" = "exec ${pkgs.foot}/bin/foot";
     "${defaultModifier}+q" = "kill";
@@ -26,8 +45,6 @@ let
     "${defaultModifier}+n" = "exec ${pkgs.foot}/bin/foot -e nmtui-connect";
     "${defaultModifier}+w" = "exec ${pkgs.google-chrome}/bin/google-chrome";
     "${defaultModifier}+e" = "exec ${pkgs.nautilus}/bin/nautilus";
-    "${defaultModifier}+0" = "exec ${pkgs.swaylock}/bin/swaylock --color 000000";
-    "${defaultModifier}+l" = "exec ${pkgs.swaylock}/bin/swaylock --color 000000";
     "${defaultModifier}+h" = "exec ${pkgs.copyq}/bin/copyq show";
     "${defaultModifier}+p" =
       "exec ${pkgs.grim}/bin/grim -g \"$(${pkgs.slurp}/bin/slurp -p)\" -t ppm - | ${pkgs.imagemagick}/bin/magick convert - -format '%[pixel:p{0,0}]' txt:- | ${pkgs.wl-clipboard}/bin/wl-copy && ${pkgs.libnotify}/bin/notify-send --expire-time 15000 \"Color picked and saved to clipboard\"";
@@ -97,6 +114,12 @@ let
     "${defaultModifier}+Ctrl+e" = "exec ${pkgs.sway}/bin/swaymsg output eDP-1 enable";
   };
 
+  # Final keybindings with swaylock commands
+  keybindings = baseKeybindings // {
+    "${defaultModifier}+0" = "exec ${pkgs.swaylock}/bin/swaylock";
+    "${defaultModifier}+l" = "exec ${pkgs.swaylock}/bin/swaylock";
+  };
+
   defaultStartupCommands = [
     {
       command = "systemctl --user restart avizo";
@@ -107,7 +130,7 @@ let
       always = true;
     }
     {
-      command = "${pkgs.swaybg}/bin/swaybg --image ${defaultBackground} --mode fill";
+      command = "${pkgs.swaybg}/bin/swaybg --image ${cfg.background} --mode fill";
       always = true;
     }
   ];
@@ -212,7 +235,7 @@ let
     exec sleep 5
     exec ${pkgs.mako}/bin/mako
     exec ${pkgs.swayidle}/bin/swayidle -w \
-      timeout 300 '${pkgs.swaylock}/bin/swaylock --daemonize' \
+      timeout 300 '${pkgs.swaylock}/bin/swaylock' \
       timeout 900 '${pkgs.sway}/bin/swaymsg "output * dpms off"' \
       resume '${pkgs.sway}/bin/swaymsg "output * dpms on"' \
       before-sleep '${pkgs.swaylock}/bin/swaylock'
@@ -254,7 +277,7 @@ in
 
     keybindings = mkOption {
       type = types.attrsOf types.str;
-      default = defaultKeybindings;
+      default = keybindings;
       description = "Sway keybindings configuration";
     };
 
@@ -269,33 +292,72 @@ in
       default = defaultExtraConfig;
       description = "Additional Sway configuration";
     };
+
+    swaylock = {
+      enable = mkEnableOption "Swaylock screen locker";
+
+      settings = mkOption {
+        type = types.submodule {
+          options = {
+            color = mkOption {
+              type = types.str;
+              default = defaultSwaylockConfig.color;
+              description = "Background color for swaylock";
+            };
+
+            indicator-radius = mkOption {
+              type = types.int;
+              default = defaultSwaylockConfig.indicator-radius;
+              description = "Radius of the indicator circle";
+            };
+
+            indicator-thickness = mkOption {
+              type = types.int;
+              default = defaultSwaylockConfig.indicator-thickness;
+              description = "Thickness of the indicator circle";
+            };
+
+            image = mkOption {
+              type = types.nullOr types.str;
+              default = defaultSwaylockConfig.image;
+              description = "Path to background image for swaylock";
+            };
+          };
+        };
+        default = defaultSwaylockConfig;
+        description = "Swaylock configuration options";
+      };
+    };
   };
 
   config = lib.mkIf cfg.enable {
     xdg.configFile."mimeapps.list".source = mimeAppsFile;
-    home.file.".local/share/backgrounds".source = backgroundsDir;
+    home = {
+      file.".local/share/backgrounds".source = backgroundsDir;
+      file.".config/swaylock/config".source = swaylockConfigFile;
 
-    home.packages = with pkgs; [
-      swaylock
-      swayidle
-      swaybg
-      foot
-      fuzzel
-      grim
-      slurp
-      wl-clipboard
-      imagemagick
-      tesseract
-      jq
-      libnotify
-      brightnessctl
-      playerctl
-      earlyoom
-      mako
-      copyq
-      google-chrome
-      nautilus
-    ];
+      packages = with pkgs; [
+        swaylock
+        swayidle
+        swaybg
+        foot
+        fuzzel
+        grim
+        slurp
+        wl-clipboard
+        imagemagick
+        tesseract
+        jq
+        libnotify
+        brightnessctl
+        playerctl
+        earlyoom
+        mako
+        copyq
+        google-chrome
+        nautilus
+      ];
+    };
 
     wayland.windowManager.sway = {
       enable = true;
