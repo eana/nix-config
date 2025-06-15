@@ -473,7 +473,11 @@ in
       wantedBy = [ "graphical-session.target" ];
       partOf = [ "graphical-session.target" ];
       serviceConfig = {
-        ExecStart = "${cfg.package}/bin/waybar";
+        ExecStart = lib.concatStringsSep " " [
+          "${pkgs.procps}/bin/pkill -x waybar || true;"
+          "${pkgs.coreutils}/bin/sleep 0.5;"
+          "${cfg.package}/bin/waybar"
+        ];
         Restart = "on-failure";
         RestartSec = 5;
       };
