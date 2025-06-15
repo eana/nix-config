@@ -225,8 +225,11 @@ in
         };
       };
     };
-    sway.enable = true;
-    swaylock.enable = true;
+    sway = {
+      enable = true;
+      background = "~/.local/share/backgrounds/hannah-grace-dSqWwzrLJaQ-unsplash.jpg";
+      swaylock.enable = true;
+    };
     tmux.enable = true;
     waybar = {
       enable = true;
