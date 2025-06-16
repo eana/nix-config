@@ -11,25 +11,30 @@ let
   cfg = config.module.tmux;
   tmuxPkg = import ./package.nix { inherit lib pkgs; };
 
-  defaultWlPaste = "${pkgs.wl-clipboard-rs}/bin/wl-paste";
+  clipboardPackage = if pkgs.stdenv.isLinux then pkgs.wl-clipboard-rs else null;
 
-  defaultExtraConfig = ''
+  defaultClipboardCmdStr =
+    if pkgs.stdenv.isDarwin then
+      "pbcopy"
+    else if pkgs.stdenv.isLinux then
+      "${clipboardPackage}/bin/wl-paste"
+    else
+      "";
+  commonExtraConfig = ''
     # Mouse
     bind-key m set-option -g mouse on \; display 'Mouse: ON'
     bind-key M set-option -g mouse off \; display 'Mouse: OFF'
 
-    bind-key -T copy-mode-vi 'v' send -X begin-selection     # Begin selection in copy mode.
-    bind-key -T copy-mode-vi 'C-v' send -X rectangle-toggle  # Begin selection in copy mode.
-    # Yank selection in copy mode.
-    bind -T copy-mode-vi y send-keys -X copy-pipe-and-cancel '{{#if (eq os "windows-wsl")}}clip.exe{{else}}${defaultWlPaste}{{/if}}'
+    bind-key -T copy-mode-vi 'v' send -X begin-selection      # Begin selection in copy mode.
+    bind-key -T copy-mode-vi 'C-v' send -X rectangle-toggle   # Begin selection in copy mode.
 
     # Restoring pane contents
     set -g @resurrect-capture-pane-contents 'on'
 
     # Send the same command to all panes/windows/sessions
     bind E command-prompt -p "Command:" \
-           "run \"tmux list-panes -a -F '##{session_name}:##{window_index}.##{pane_index}' \
-                  | xargs -I PANE tmux send-keys -t PANE '%1' Enter\""
+                "run \"tmux list-panes -a -F '##{session_name}:##{window_index}.##{pane_index}' \
+                      | xargs -I PANE tmux send-keys -t PANE '%1' Enter\""
 
     # Equally size pane of tmux
     # Horizontally
@@ -181,14 +186,18 @@ in
 
     extraConfig = mkOption {
       type = types.lines;
-      default = defaultExtraConfig;
+      default = ""; # Empty default, as it's constructed below
       description = "Additional tmux configuration";
     };
 
-    wlPaste = mkOption {
+    # New option for the clipboard command. User can override this.
+    clipboardCmd = mkOption {
       type = types.str;
-      default = defaultWlPaste;
-      description = "Path to wl-paste binary for Wayland clipboard integration";
+      default = defaultClipboardCmdStr;
+      description = ''
+        Command for clipboard integration (e.g., "wl-paste", "pbcopy").
+        For WSL, "clip.exe" is handled internally by default.
+      '';
     };
   };
 
@@ -205,8 +214,27 @@ in
         historyLimit
         keyMode
         plugins
-        extraConfig
         ;
+
+      extraConfig =
+        let
+          clipboardCopyCommand =
+            if cfg.clipboardCmd != "" then
+              ''
+                bind -T copy-mode-vi y send-keys -X copy-pipe-and-cancel '{{#if (eq os "windows-wsl")}}clip.exe{{else }}${cfg.clipboardCmd}{{/if}}'
+              ''
+            else
+              "";
+        in
+        ''
+          ${commonExtraConfig}
+          ${clipboardCopyCommand}
+          ${cfg.extraConfig} # User's additional extraConfig lines
+        '';
     };
+
+    home.packages = lib.mkIf pkgs.stdenv.isLinux (
+      lib.optional (clipboardPackage != null) clipboardPackage
+    );
   };
 }
