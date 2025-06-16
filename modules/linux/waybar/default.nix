@@ -31,12 +31,6 @@ in
       description = "Customized Waybar package";
     };
 
-    systemdIntegration = mkOption {
-      type = types.bool;
-      default = true;
-      description = "Whether to enable systemd integration for Waybar";
-    };
-
     settings = mkOption {
       type = types.attrs;
       default = {
@@ -466,21 +460,6 @@ in
       inherit (cfg) package;
       inherit (cfg) settings;
       inherit (cfg) style;
-    };
-
-    systemd.user.services.waybar = lib.mkIf (cfg.systemdIntegration && config.module.waybar.enable) {
-      description = "Waybar status bar";
-      wantedBy = [ "graphical-session.target" ];
-      partOf = [ "graphical-session.target" ];
-      serviceConfig = {
-        ExecStart = lib.concatStringsSep " " [
-          "${pkgs.procps}/bin/pkill -x waybar || true;"
-          "${pkgs.coreutils}/bin/sleep 0.5;"
-          "${cfg.package}/bin/waybar"
-        ];
-        Restart = "on-failure";
-        RestartSec = 5;
-      };
     };
   };
 }

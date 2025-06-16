@@ -11,7 +11,7 @@ let
   cfg = config.module.zsh;
   zshPkg = import ./package.nix { inherit lib pkgs; };
 
-  p10kConfig = ../../assets/.p10k.zsh;
+  p10kConfig = ../../../assets/.p10k.zsh;
 
   defaultOhMyZshExtraConfig = ''
     # ZSH_TMUX_AUTOSTART=true
@@ -95,7 +95,6 @@ let
     gauth = "gcloud auth login";
     ide = "idea-community . > /dev/null 2>&1";
     k = "kubectl";
-    sudo = "/run/wrappers/bin/sudo";
   };
 
 in

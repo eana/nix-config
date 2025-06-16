@@ -10,7 +10,7 @@ let
 
   cfg = config.module.neovim;
 
-  nvimConfigDir = ../../assets/.config/nvim;
+  nvimConfigDir = ../../../assets/.config/nvim;
 
 in
 {
