@@ -4,11 +4,6 @@
   pkgs,
   ...
 }:
-let
-  # Do not change this value! This tracks when NixOS was installed on your system.
-  stateVersion = "24.05";
-  hostName = "nixbox";
-in
 {
   imports = [
     ./disko.nix
@@ -77,7 +72,7 @@ in
   '';
 
   networking = {
-    inherit hostName;
+    hostName = "nixbox";
     networkmanager = {
       enable = true;
       dispatcherScripts = [
@@ -252,5 +247,5 @@ in
     };
   };
 
-  system.stateVersion = stateVersion;
+  system.stateVersion = "24.05";
 }

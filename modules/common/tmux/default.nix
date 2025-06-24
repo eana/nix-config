@@ -11,7 +11,7 @@ let
   cfg = config.module.tmux;
   tmuxPkg = import ./package.nix { inherit lib pkgs; };
 
-  clipboardPackage = if pkgs.stdenv.isLinux then pkgs.wl-clipboard-rs else null;
+  clipboardPackage = if pkgs.stdenv.isLinux then pkgs.wl-clipboard else null;
 
   defaultClipboardCmdStr =
     if pkgs.stdenv.isDarwin then

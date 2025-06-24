@@ -47,15 +47,15 @@ let
     "${defaultModifier}+e" = "exec ${pkgs.nautilus}/bin/nautilus";
     "${defaultModifier}+h" = "exec ${pkgs.copyq}/bin/copyq show";
     "${defaultModifier}+p" =
-      "exec ${pkgs.grim}/bin/grim -g \"$(${pkgs.slurp}/bin/slurp -p)\" -t ppm - | ${pkgs.imagemagick}/bin/magick convert - -format '%[pixel:p{0,0}]' txt:- | ${pkgs.wl-clipboard-rs}/bin/wl-copy && ${pkgs.libnotify}/bin/notify-send --expire-time 15000 \"Color picked and saved to clipboard\"";
+      "exec ${pkgs.grim}/bin/grim -g \"$(${pkgs.slurp}/bin/slurp -p)\" -t ppm - | ${pkgs.imagemagick}/bin/magick convert - -format '%[pixel:p{0,0}]' txt:- | ${pkgs.wl-clipboard}/bin/wl-copy && ${pkgs.libnotify}/bin/notify-send --expire-time 15000 \"Color picked and saved to clipboard\"";
     "Print" =
-      "exec ${pkgs.grim}/bin/grim - | ${pkgs.wl-clipboard-rs}/bin/wl-copy && ${pkgs.libnotify}/bin/notify-send --expire-time 15000 \"Screenshot of whole screen saved to clipboard\"";
+      "exec ${pkgs.grim}/bin/grim - | ${pkgs.wl-clipboard}/bin/wl-copy && ${pkgs.libnotify}/bin/notify-send --expire-time 15000 \"Screenshot of whole screen saved to clipboard\"";
     "${defaultModifier}+Print" =
-      "exec ${pkgs.grim}/bin/grim -g \"$(${pkgs.slurp}/bin/slurp)\" - | ${pkgs.wl-clipboard-rs}/bin/wl-copy && ${pkgs.libnotify}/bin/notify-send --expire-time 15000 \"Screenshot of selected region saved to clipboard\"";
+      "exec ${pkgs.grim}/bin/grim -g \"$(${pkgs.slurp}/bin/slurp)\" - | ${pkgs.wl-clipboard}/bin/wl-copy && ${pkgs.libnotify}/bin/notify-send --expire-time 15000 \"Screenshot of selected region saved to clipboard\"";
     "${defaultModifier}+t" =
-      "exec ${pkgs.grim}/bin/grim -g \"$(${pkgs.slurp}/bin/slurp)\" -t png - | ${pkgs.tesseract}/bin/tesseract - - | ${pkgs.wl-clipboard-rs}/bin/wl-copy && ${pkgs.libnotify}/bin/notify-send --expire-time 15000 \"Screenshot of selected region and saved the ocr-ed text to clipboard\"";
+      "exec ${pkgs.grim}/bin/grim -g \"$(${pkgs.slurp}/bin/slurp)\" -t png - | ${pkgs.tesseract}/bin/tesseract - - | ${pkgs.wl-clipboard}/bin/wl-copy && ${pkgs.libnotify}/bin/notify-send --expire-time 15000 \"Screenshot of selected region and saved the ocr-ed text to clipboard\"";
     "${defaultModifier}+Shift+Print" =
-      "exec ${pkgs.grim}/bin/grim -g \"$(${pkgs.sway}/bin/swaymsg -t get_tree | ${pkgs.jq}/bin/jq -r '.. | select(.focused?) | .rect | \"(.x),(.y) (.width)x(.height)\"')\" - | ${pkgs.wl-clipboard-rs}/bin/wl-copy && ${pkgs.libnotify}/bin/notify-send --expire-time 15000 \"Screenshot of active window saved to clipboard\"";
+      "exec ${pkgs.grim}/bin/grim -g \"$(${pkgs.sway}/bin/swaymsg -t get_tree | ${pkgs.jq}/bin/jq -r '.. | select(.focused?) | .rect | \"(.x),(.y) (.width)x(.height)\"')\" - | ${pkgs.wl-clipboard}/bin/wl-copy && ${pkgs.libnotify}/bin/notify-send --expire-time 15000 \"Screenshot of active window saved to clipboard\"";
     "Ctrl+Print" =
       "exec ${pkgs.grim}/bin/grim ~/Pictures/screenshots/screenshot-\"$(date +%s)\".png && ${pkgs.libnotify}/bin/notify-send --expire-time 15000 \"Screenshot of whole screen saved to folder\"";
     "${defaultModifier}+Ctrl+Print" =
@@ -339,7 +339,7 @@ in
         fuzzel
         grim
         slurp
-        wl-clipboard-rs
+        wl-clipboard
         imagemagick
         tesseract
         jq
