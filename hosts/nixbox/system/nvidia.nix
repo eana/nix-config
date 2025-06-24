@@ -1,9 +1,4 @@
-{
-  config,
-  lib,
-  pkgs,
-  ...
-}:
+{ config, lib, ... }:
 
 with lib;
 
@@ -30,7 +25,5 @@ in
     };
 
     services.xserver.videoDrivers = [ "nvidia" ];
-    # boot.kernelPackages = pkgs.linuxPackages_6_14;
-    boot.kernelPackages = pkgs.linuxPackages_latest;
   };
 }
