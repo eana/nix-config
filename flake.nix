@@ -51,12 +51,15 @@
       ...
     }:
     flake-parts.lib.mkFlake { inherit inputs; } {
-      systems = [ "x86_64-linux" ];
+      systems = [
+        "x86_64-linux"
+        "x86_64-darwin"
+      ];
 
       imports = [ inputs.dev-flake.flakeModule ];
 
       # Dev configuration
-      dev.name = "nixbox";
+      dev.name = "devbox";
 
       # Per-system configuration
       perSystem =
@@ -84,7 +87,6 @@
       flake = {
         nixosConfigurations = {
           nixbox = inputs.nixpkgs.lib.nixosSystem {
-            # system = "x86_64-linux";
             modules = [
               ./hosts/nixbox/default.nix
               inputs.disko.nixosModules.disko
@@ -92,7 +94,7 @@
             ];
           };
         };
-        darwinConfigurations."vickys-MacBook-Pro" = nix-darwin.lib.darwinSystem {
+        darwinConfigurations."macbox" = nix-darwin.lib.darwinSystem {
           modules = [
             ./hosts/macbox/default.nix
             home-manager.darwinModules.home-manager
