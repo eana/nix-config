@@ -14,4 +14,5 @@
       wezterm # GPU-accelerated terminal emulator
     ];
   };
+  module.wezterm.enable = true;
 }
