@@ -54,7 +54,6 @@
       d2 # Modern diagram scripting language
 
       # Other
-      direnv # Environment switcher
       firefox # Web browser
       google-chrome # Web browser
       neofetch # System information tool
