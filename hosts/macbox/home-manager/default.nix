@@ -16,6 +16,9 @@
         ../../../modules/common/ollama/default.nix
         ../../../modules/common/tmux/default.nix
         ../../../modules/common/zsh/default.nix
+
+        # Darwin-specific modules
+        ../../../modules/darwin/wezterm/default.nix
       ];
       home.packages = [
         pkgs.spotify
@@ -23,5 +26,4 @@
       home.stateVersion = "24.05";
     };
   };
-
 }
