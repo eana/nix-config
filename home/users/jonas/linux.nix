@@ -51,7 +51,7 @@ in
           After = [ "graphical-session.target" ];
         };
         Service = {
-          ExecStart = "${pkgs.telegram-desktop}/bin/telegram-desktop -startintray";
+          ExecStart = "${pkgs.telegram-desktop}/bin/Telegram -startintray";
           Restart = "on-failure";
           Environment = [ "QT_QPA_PLATFORM=xcb" ];
         };
