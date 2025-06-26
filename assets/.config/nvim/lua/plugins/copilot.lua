@@ -32,7 +32,7 @@ return {
 
       vim.api.nvim_create_user_command("CopilotGitMessage", function()
         vim.cmd("normal! GVgg")
-        vim.cmd("CopilotChat Please write a git commit message for these changes")
+        vim.cmd("CopilotChat Please write a conventional git commit message for these changes")
       end, {})
 
       vim.keymap.set("n", "<leader>ct", ":CopilotToggle<CR>", { desc = "Toggle Copilot" })
