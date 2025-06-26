@@ -92,6 +92,7 @@ in
         fetch.prune = "true";
         pull.rebase = "true";
         push.default = "current";
+        commit.verbose = "true";
         rerere = {
           enabled = "true";
           autoUpdate = "true";
