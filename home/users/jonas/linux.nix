@@ -236,6 +236,9 @@ in
       background = "~/.local/share/backgrounds/hannah-grace-dSqWwzrLJaQ-unsplash.jpg";
       swaylock.enable = true;
     };
-    waybar.enable = true;
+    waybar = {
+      enable = true;
+      systemdIntegration.enable = true;
+    };
   };
 }

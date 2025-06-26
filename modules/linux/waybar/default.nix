@@ -31,6 +31,24 @@ in
       description = "Customized Waybar package";
     };
 
+    systemdIntegration = {
+      enable = mkOption {
+        type = types.bool;
+        default = false;
+        description = "Whether to enable systemd integration for Waybar through Home Manager";
+      };
+
+      target = mkOption {
+        type = types.str;
+        default = "sway-session.target";
+        description = ''
+          The systemd target that will automatically start the Waybar service.
+          When setting this value to "sway-session.target", make sure to also enable
+          wayland.windowManager.sway.systemd.enable, otherwise the service may never be started.
+        '';
+      };
+    };
+
     settings = mkOption {
       type = types.attrs;
       default = {
@@ -460,6 +478,10 @@ in
       inherit (cfg) package;
       inherit (cfg) settings;
       inherit (cfg) style;
+      systemd = lib.mkIf cfg.systemdIntegration.enable {
+        enable = true;
+        inherit (cfg.systemdIntegration) target;
+      };
     };
   };
 }
