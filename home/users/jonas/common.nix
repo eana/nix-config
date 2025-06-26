@@ -63,6 +63,7 @@
 
     sessionVariables = {
       LESS = "-iXFR";
+      BUILDKIT_PROGRESS = "plain";
     };
 
     stateVersion = "24.05";
