@@ -2,7 +2,6 @@
   system = {
     keyboard = {
       enableKeyMapping = true;
-      layout = "US";
     };
     defaults = {
       controlcenter.BatteryShowPercentage = true;
@@ -19,7 +18,9 @@
         AppleEnableSwipeNavigateWithScrolls = true;
         AppleFontSmoothing = null;
         AppleICUForce24HourTime = true;
-        AppleInterfaceStyle = null; # Set to "Dark" for the dark theme
+        # Set to "Dark" for the dark theme
+        # To set to light mode, set this to null and you'll need to manually run defaults delete -g AppleInterfaceStyle.
+        AppleInterfaceStyle = null;
         AppleInterfaceStyleSwitchesAutomatically = false;
         AppleMeasurementUnits = "Centimeters";
         AppleMetricUnits = 1;
@@ -46,7 +47,7 @@
         _HIHideMenuBar = false;
         "com.apple.keyboard.fnState" = false;
         "com.apple.mouse.tapBehavior" = 1;
-        "com.apple.swipescrolldirection" = true;
+        "com.apple.swipescrolldirection" = null; # Disable "Natural" scrolling direction
       };
       SoftwareUpdate.AutomaticallyInstallMacOSUpdates = true;
       WindowManager = {
