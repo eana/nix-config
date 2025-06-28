@@ -1,4 +1,4 @@
-{ pkgs, lib, ... }:
+{ pkgs, ... }:
 
 {
   environment = {
@@ -13,12 +13,6 @@
       vscode
       zsh-powerlevel10k
     ];
-
-    variables = {
-      EDITOR = "nvim";
-      MOZ_ENABLE_WAYLAND = "1";
-      SSH_ASKPASS = lib.mkForce "";
-    };
   };
 
   fonts = {
