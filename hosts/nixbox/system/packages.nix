@@ -1,9 +1,10 @@
-{ pkgs, lib, ... }:
+{ pkgs, ... }:
 
 {
   environment = {
     systemPackages = with pkgs; [
       blueman
+      comma
       curl
       dive
       docker-compose
@@ -13,12 +14,6 @@
       vscode
       zsh-powerlevel10k
     ];
-
-    variables = {
-      EDITOR = "nvim";
-      MOZ_ENABLE_WAYLAND = "1";
-      SSH_ASKPASS = lib.mkForce "";
-    };
   };
 
   fonts = {
