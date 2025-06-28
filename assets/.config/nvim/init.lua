@@ -36,6 +36,19 @@ if has("wsl") then
     },
     cache_enabled = true,
   }
+elseif has("mac") or has("macunix") then
+  vim.g.clipboard = {
+    name = "macOS-clipboard",
+    copy = {
+      ["+"] = "pbcopy",
+      ["*"] = "pbcopy",
+    },
+    paste = {
+      ["+"] = "pbpaste",
+      ["*"] = "pbpaste",
+    },
+    cache_enabled = true,
+  }
 elseif os.getenv("XDG_SESSION_TYPE") == "wayland" then
   vim.g.clipboard = {
     name = "wl-clipboard",
