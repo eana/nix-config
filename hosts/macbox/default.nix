@@ -6,7 +6,6 @@
     ./system/packages.nix
     ./system/environment.nix
     ./system/homebrew.nix
-    ./system/security.nix
     ./home-manager/default.nix
     ./nix/default.nix
   ];
