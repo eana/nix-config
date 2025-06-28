@@ -6,7 +6,6 @@
     variables = {
       EDITOR = "nvim";
     };
-    wordlist.enable = true;
   };
 
   system.activationScripts.applications.text =

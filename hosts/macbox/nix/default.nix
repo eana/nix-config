@@ -23,7 +23,8 @@
 
     gc = {
       automatic = true;
-      dates = "12:12";
+      interval.Hour = 3;
+      options = "--delete-older-than 14d";
     };
   };
 
