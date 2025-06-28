@@ -51,6 +51,7 @@
       # Programming Languages and Runtimes
       lua # Lua programming language
       luajitPackages.luarocks # Package manager for Lua modules
+      luajitPackages.tiktoken_core # Tokenizer for Lua
       nodejs_22 # JavaScript runtime
       python3 # Python programming language
 
