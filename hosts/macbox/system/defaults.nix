@@ -19,7 +19,7 @@
         AppleEnableSwipeNavigateWithScrolls = true;
         AppleFontSmoothing = null;
         AppleICUForce24HourTime = true;
-        AppleInterfaceStyle = "Dark";
+        AppleInterfaceStyle = null; # Set to "Dark" for the dark theme
         AppleInterfaceStyleSwitchesAutomatically = false;
         AppleMeasurementUnits = "Centimeters";
         AppleMetricUnits = 1;
