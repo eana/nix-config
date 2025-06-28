@@ -9,6 +9,6 @@ pkgs.ollama.overrideAttrs (_: {
     description = "Local LLM service with GPU acceleration support";
     homepage = "https://ollama.ai";
     license = licenses.mit;
-    platforms = platforms.linux;
+    platforms = platforms.unix;
   };
 })
