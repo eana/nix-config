@@ -12,8 +12,12 @@
     packages = with pkgs; [
       cmake # Build system
       mas # Mac App Store command-line interface
-      wezterm # GPU-accelerated terminal emulator
     ];
   };
-  module.wezterm.enable = true;
+  module.kitty = {
+    enable = true;
+    settings = {
+      confirm_os_window_close = 1;
+    };
+  };
 }

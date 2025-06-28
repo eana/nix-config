@@ -69,7 +69,7 @@
           "/Applications/Nix Apps/Spotify.app"
           "/Applications/Nix Apps/Google Chrome.app"
           "/Applications/Nix Apps/Firefox.app"
-          "/Applications/Nix Apps/WezTerm.app"
+          "/Applications/Nix Apps/kitty.app"
         ];
         persistent-others = null;
         show-process-indicators = true;
