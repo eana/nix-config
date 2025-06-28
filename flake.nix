@@ -2,52 +2,61 @@
   description = "Nix flake configuration";
 
   inputs = {
-    nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
-    home-manager = {
-      url = "github:nix-community/home-manager";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
-
-    disko.url = "github:nix-community/disko";
-
-    nix-darwin = {
-      url = "github:nix-darwin/nix-darwin/master";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
-
-    flake-parts = {
-      url = "github:hercules-ci/flake-parts";
-      inputs.nixpkgs-lib.url = "github:nix-community/nixpkgs.lib";
-    };
-
     dev-flake = {
       url = "github:terlar/dev-flake";
       inputs.nixpkgs.follows = "nixpkgs";
       inputs.flake-parts.follows = "flake-parts";
     };
 
-    nix-homebrew.url = "github:zhaofengli-wip/nix-homebrew";
-    homebrew-core = {
-      url = "github:homebrew/homebrew-core";
-      flake = false;
+    disko.url = "github:nix-community/disko";
+
+    flake-parts = {
+      url = "github:hercules-ci/flake-parts";
+      inputs.nixpkgs-lib.url = "github:nix-community/nixpkgs.lib";
+    };
+
+    home-manager = {
+      url = "github:nix-community/home-manager";
+      inputs.nixpkgs.follows = "nixpkgs";
     };
 
     homebrew-cask = {
       url = "github:homebrew/homebrew-cask";
       flake = false;
     };
+
+    homebrew-core = {
+      url = "github:homebrew/homebrew-core";
+      flake = false;
+    };
+
+    nix-darwin = {
+      url = "github:nix-darwin/nix-darwin/master";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
+    nix-homebrew.url = "github:zhaofengli-wip/nix-homebrew";
+
+    nix-index-database = {
+      url = "github:nix-community/nix-index-database";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
+    nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
   };
 
   outputs =
     inputs@{
       self,
-      nix-darwin,
+      disko,
       home-manager,
-      nix-homebrew,
-      homebrew-core,
       homebrew-cask,
-      nixpkgs,
+      homebrew-core,
+      nix-darwin,
+      nix-homebrew,
+      nix-index-database,
       flake-parts,
+      nixpkgs,
       ...
     }:
     flake-parts.lib.mkFlake { inherit inputs; } {
@@ -89,8 +98,9 @@
           nixbox = inputs.nixpkgs.lib.nixosSystem {
             modules = [
               ./hosts/nixbox/default.nix
-              inputs.disko.nixosModules.disko
-              inputs.home-manager.nixosModules.home-manager
+              disko.nixosModules.disko
+              home-manager.nixosModules.home-manager
+              nix-index-database.nixosModules.nix-index
             ];
           };
         };
@@ -99,6 +109,7 @@
             ./hosts/macbox/default.nix
             home-manager.darwinModules.home-manager
             nix-homebrew.darwinModules.nix-homebrew
+            nix-index-database.darwinModules.nix-index
             {
               users.users.jonas = {
                 name = "jonas";

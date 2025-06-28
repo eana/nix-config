@@ -5,6 +5,7 @@
     ./hardware-configuration.nix
     ./system/audio.nix
     ./system/boot.nix
+    ./system/environment.nix
     ./system/hardware.nix
     ./system/networking.nix
     ./system/nvidia.nix

@@ -45,5 +45,14 @@
     openssh.enable = true;
 
     logind.lidSwitchExternalPower = "ignore";
+
+    # Disable GCR SSH as it is incompatible with gpg-agent's SSH support.
+    gnome.gcr-ssh-agent.enable = false;
+
+    # Limit storage space of journald.
+    journald.extraConfig = ''
+      SystemMaxUse=100M
+      RuntimeMaxUse=100M
+    '';
   };
 }

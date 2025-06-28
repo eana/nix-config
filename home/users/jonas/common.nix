@@ -8,6 +8,10 @@
       enable = true;
       nix-direnv.enable = true;
     };
+    nix-index = {
+      enable = true;
+      enableZshIntegration = true;
+    };
   };
 
   # Install packages for user.
