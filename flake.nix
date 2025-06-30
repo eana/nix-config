@@ -35,7 +35,7 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
-    nix-homebrew.url = "github:zhaofengli-wip/nix-homebrew";
+    nix-homebrew.url = "github:zhaofengli/nix-homebrew";
 
     nix-index-database = {
       url = "github:nix-community/nix-index-database";
@@ -46,19 +46,7 @@
   };
 
   outputs =
-    inputs@{
-      self,
-      disko,
-      home-manager,
-      homebrew-cask,
-      homebrew-core,
-      nix-darwin,
-      nix-homebrew,
-      nix-index-database,
-      flake-parts,
-      nixpkgs,
-      ...
-    }:
+    inputs@{ flake-parts, ... }:
     flake-parts.lib.mkFlake { inherit inputs; } {
       systems = [
         "x86_64-linux"
@@ -98,18 +86,18 @@
           nixbox = inputs.nixpkgs.lib.nixosSystem {
             modules = [
               ./hosts/nixbox/default.nix
-              disko.nixosModules.disko
-              home-manager.nixosModules.home-manager
-              nix-index-database.nixosModules.nix-index
+              inputs.disko.nixosModules.disko
+              inputs.home-manager.nixosModules.home-manager
+              inputs.nix-index-database.nixosModules.nix-index
             ];
           };
         };
-        darwinConfigurations."macbox" = nix-darwin.lib.darwinSystem {
+        darwinConfigurations."macbox" = inputs.nix-darwin.lib.darwinSystem {
           modules = [
             ./hosts/macbox/default.nix
-            home-manager.darwinModules.home-manager
-            nix-homebrew.darwinModules.nix-homebrew
-            nix-index-database.darwinModules.nix-index
+            inputs.home-manager.darwinModules.home-manager
+            inputs.nix-homebrew.darwinModules.nix-homebrew
+            inputs.nix-index-database.darwinModules.nix-index
             {
               users.users.jonas = {
                 name = "jonas";
@@ -119,10 +107,7 @@
           ];
 
           specialArgs = {
-            inherit self;
             inherit inputs;
-            inherit homebrew-core;
-            inherit homebrew-cask;
           };
         };
       };

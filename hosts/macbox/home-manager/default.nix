@@ -24,4 +24,6 @@
       home.stateVersion = "24.05";
     };
   };
+
+  programs.nix-index-database.comma.enable = true;
 }
