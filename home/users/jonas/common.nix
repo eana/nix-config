@@ -8,9 +8,10 @@
       enable = true;
       nix-direnv.enable = true;
     };
-    nix-index = {
+    nh = {
       enable = true;
-      enableZshIntegration = true;
+      flake = "/etc/nixos";
+      clean.enable = true;
     };
   };
 
