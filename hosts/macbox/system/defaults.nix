@@ -65,12 +65,6 @@
         minimize-to-application = true;
         mru-spaces = false;
         orientation = "bottom";
-        persistent-apps = [
-          "/Applications/Nix Apps/Spotify.app"
-          "/Applications/Nix Apps/Google Chrome.app"
-          "/Applications/Nix Apps/Firefox.app"
-          "/Applications/Nix Apps/kitty.app"
-        ];
         persistent-others = null;
         show-process-indicators = true;
         show-recents = false;
