@@ -34,6 +34,7 @@
     zsh.enable = true;
     sway.enable = true;
     ydotool.enable = true;
+    nix-index-database.comma.enable = true;
   };
 
   users.users.jonas = {
