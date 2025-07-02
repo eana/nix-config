@@ -3,6 +3,7 @@
 pkgs.ollama.overrideAttrs (_: {
   # Add any package overrides here if needed
   # For example:
+  # patches = [ ./some-patch.patch ];
   # buildInputs = oldAttrs.buildInputs ++ [ pkgs.someDependency ];
 
   meta = with lib; {

@@ -208,7 +208,6 @@ in
       enable = true;
       swayKeybinding = "Mod4+Shift+m";
     };
-    ollama.enable = true;
     tmux.enable = true;
     openra = {
       enable = true;
