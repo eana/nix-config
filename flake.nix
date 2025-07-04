@@ -47,6 +47,21 @@
 
   outputs =
     inputs@{ flake-parts, ... }:
+    let
+      moduleList = [
+        "gpg-agent"
+        "neovim"
+        "ollama"
+        "tmux"
+        "zsh"
+      ];
+      eanaModules = builtins.listToAttrs (
+        map (name: {
+          inherit name;
+          value = import ./modules/common/${name}/default.nix;
+        }) moduleList
+      );
+    in
     flake-parts.lib.mkFlake { inherit inputs; } {
       systems = [
         "x86_64-linux"
@@ -110,6 +125,7 @@
             inherit inputs;
           };
         };
+        nixosModules = eanaModules;
       };
     };
 
