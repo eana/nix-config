@@ -55,7 +55,7 @@
         "tmux"
         "zsh"
       ];
-      eanaModules = builtins.listToAttrs (
+      homeModules = builtins.listToAttrs (
         map (name: {
           inherit name;
           value = import ./modules/common/${name}/default.nix;
@@ -125,7 +125,7 @@
             inherit inputs;
           };
         };
-        nixosModules = eanaModules;
+        inherit homeModules;
       };
     };
 
