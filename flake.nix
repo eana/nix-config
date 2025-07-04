@@ -49,6 +49,7 @@
     inputs@{ flake-parts, ... }:
     let
       moduleList = [
+        "git"
         "gpg-agent"
         "neovim"
         "ollama"
