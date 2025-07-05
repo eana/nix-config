@@ -8,15 +8,7 @@
     users.jonas = {
       imports = [
         ../../../home/users/jonas/darwin.nix
-
-        # Common modules
-        ../../../modules/common/git/default.nix
-        ../../../modules/common/gpg-agent/default.nix
-        ../../../modules/common/kitty/default.nix
-        ../../../modules/common/neovim/default.nix
-        ../../../modules/common/ollama/default.nix
-        ../../../modules/common/tmux/default.nix
-        ../../../modules/common/zsh/default.nix
+        ../../../modules/common/default.nix
       ];
       home.packages = [
         pkgs.spotify
