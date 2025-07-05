@@ -78,6 +78,7 @@
   module = {
     git.enable = true;
     gpg-agent.enable = true;
+    kitty.enable = true;
     neovim.enable = true;
     ollama = {
       enable = true;
