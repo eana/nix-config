@@ -8,7 +8,6 @@ in
   homebrew = {
     enable = true;
     casks = [
-      "altserver"
       "iterm2"
       "openvpn-connect"
       "podman-desktop"
