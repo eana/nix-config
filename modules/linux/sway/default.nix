@@ -9,7 +9,6 @@ let
   inherit (lib) mkEnableOption mkOption types;
 
   cfg = config.module.sway;
-  swayPkg = import ./package.nix { inherit lib pkgs; };
 
   backgroundsDir = ../../../assets/.local/share/backgrounds;
   mimeAppsFile = ../../../assets/.config/mimeapps.list;
@@ -254,8 +253,8 @@ in
 
     package = mkOption {
       type = types.package;
-      default = swayPkg;
-      description = "Customized Sway package";
+      default = pkgs.sway;
+      description = "I3-compatible tiling Wayland compositor";
     };
 
     background = mkOption {

@@ -9,7 +9,6 @@ let
   inherit (lib) mkEnableOption mkOption types;
 
   cfg = config.module.fuzzel;
-  fuzzelPkg = import ./package.nix { inherit lib pkgs; };
 
 in
 {
@@ -18,7 +17,7 @@ in
 
     package = mkOption {
       type = types.package;
-      default = fuzzelPkg;
+      default = pkgs.fuzzel;
       description = "Customized Fuzzel package";
     };
 

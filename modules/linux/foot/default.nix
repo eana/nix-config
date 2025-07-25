@@ -9,7 +9,6 @@ let
   inherit (lib) mkEnableOption mkOption types;
 
   cfg = config.module.foot;
-  footPkg = import ./package.nix { inherit lib pkgs; };
 
   defaultFontFamily = "MesloLGS NF";
   defaultFontSize = 9;
@@ -57,8 +56,8 @@ in
 
     package = mkOption {
       type = types.package;
-      default = footPkg;
-      description = "Customized Foot package";
+      default = pkgs.foot;
+      description = "Fast, lightweight and minimalistic Wayland terminal emulator";
     };
 
     font = {
@@ -102,5 +101,7 @@ in
           };
       };
     };
+
+    home.packages = [ cfg.package ];
   };
 }

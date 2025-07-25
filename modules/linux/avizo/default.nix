@@ -9,7 +9,6 @@ let
   inherit (lib) mkEnableOption mkOption types;
 
   cfg = config.module.avizo;
-  avizoPkg = import ./package.nix { inherit lib pkgs; };
 
   defaultSettings = {
     default = {
@@ -28,8 +27,8 @@ in
 
     package = mkOption {
       type = types.package;
-      default = avizoPkg;
-      description = "Customized Avizo package";
+      default = pkgs.avizo;
+      description = "Neat notification daemon for Wayland";
     };
 
     settings = mkOption {

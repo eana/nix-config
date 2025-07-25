@@ -9,7 +9,6 @@ let
   inherit (lib) mkEnableOption mkOption types;
 
   cfg = config.module.git;
-  gitPkg = import ./package.nix { inherit lib pkgs; };
 
 in
 {
@@ -18,8 +17,8 @@ in
 
     package = mkOption {
       type = types.package;
-      default = gitPkg;
-      description = "Customized Git package";
+      default = pkgs.git;
+      description = "Distributed version control system";
     };
 
     userName = mkOption {

@@ -9,7 +9,6 @@ let
   inherit (lib) mkEnableOption mkOption types;
 
   cfg = config.module.waybar;
-  waybarPkg = import ./package.nix { inherit lib pkgs; };
 
   gnome-calendar = "${pkgs.gnome-calendar}/bin/gnome-calendar";
   gnome-power-statistics = "${pkgs.gnome-power-manager}/bin/gnome-power-statistics";
@@ -27,8 +26,8 @@ in
 
     package = mkOption {
       type = types.package;
-      default = waybarPkg;
-      description = "Customized Waybar package";
+      default = pkgs.waybar;
+      description = "Highly customizable Wayland bar for Sway and Wlroots based compositors";
     };
 
     systemdIntegration = {

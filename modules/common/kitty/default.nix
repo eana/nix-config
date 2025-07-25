@@ -9,7 +9,6 @@ let
   inherit (lib) mkEnableOption mkOption types;
 
   cfg = config.module.kitty;
-  kittyPkg = import ./package.nix { inherit lib pkgs; };
 
   defaultFontFamily = "MesloLGS NF";
   defaultFontSize = 15.0;
@@ -50,8 +49,8 @@ in
 
     package = mkOption {
       type = types.package;
-      default = kittyPkg;
-      description = "Customized Kitty package";
+      default = pkgs.kitty;
+      description = "The fast, feature-rich, GPU based terminal emulator";
     };
 
     font = {

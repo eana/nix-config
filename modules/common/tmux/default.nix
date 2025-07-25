@@ -9,7 +9,6 @@ let
   inherit (lib) mkEnableOption mkOption types;
 
   cfg = config.module.tmux;
-  tmuxPkg = import ./package.nix { inherit lib pkgs; };
 
   clipboardPackage = if pkgs.stdenv.isLinux then pkgs.wl-clipboard else null;
 
@@ -132,8 +131,8 @@ in
 
     package = mkOption {
       type = types.package;
-      default = tmuxPkg;
-      description = "Customized tmux package";
+      default = pkgs.tmux;
+      description = "Terminal multiplexer";
     };
 
     shortcut = mkOption {
