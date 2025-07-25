@@ -9,7 +9,6 @@ let
   inherit (lib) mkEnableOption mkOption types;
 
   cfg = config.module.zsh;
-  zshPkg = import ./package.nix { inherit lib pkgs; };
 
   p10kConfig = ../../../assets/.p10k.zsh;
 
@@ -104,8 +103,8 @@ in
 
     package = mkOption {
       type = types.package;
-      default = zshPkg;
-      description = "Customized Zsh package";
+      default = pkgs.zsh;
+      description = "Z shell";
     };
 
     enableCompletion = mkOption {

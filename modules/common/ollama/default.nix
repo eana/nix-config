@@ -9,7 +9,6 @@ let
   inherit (lib) mkEnableOption mkOption types;
 
   cfg = config.module.ollama;
-  ollamaPkg = import ./package.nix { inherit lib pkgs; };
 
   defaultSettings = {
     host = "0.0.0.0";
@@ -25,8 +24,8 @@ in
 
     package = mkOption {
       type = types.package;
-      default = ollamaPkg;
-      description = "Customized Ollama package";
+      default = pkgs.ollama;
+      description = "Lightweight, extensible framework for building and running language models on the local machine";
       example = lib.literalExpression "pkgs.ollama";
     };
 

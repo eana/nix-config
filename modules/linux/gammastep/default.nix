@@ -9,7 +9,6 @@ let
   inherit (lib) mkEnableOption mkOption types;
 
   cfg = config.module.gammastep;
-  gammastepPkg = import ./package.nix { inherit lib pkgs; };
 
   defaultSettings = {
     general = {
@@ -25,8 +24,8 @@ in
 
     package = mkOption {
       type = types.package;
-      default = gammastepPkg;
-      description = "Customized Gammastep package";
+      default = pkgs.gammastep;
+      description = "Screen color temperature manager";
     };
 
     tray = mkOption {
@@ -85,7 +84,5 @@ in
         settings
         ;
     };
-
-    home.packages = [ cfg.package ];
   };
 }

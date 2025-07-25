@@ -9,7 +9,6 @@ let
   inherit (lib) mkEnableOption mkOption types;
 
   cfg = config.module.gpg-agent;
-  gpgAgentPkg = import ./package.nix { inherit lib pkgs; };
 
   defaultSettings = {
     defaultCacheTtl = 86400;
@@ -24,8 +23,8 @@ in
 
     package = mkOption {
       type = types.package;
-      default = gpgAgentPkg;
-      description = "Customized GPG package";
+      default = pkgs.gnupg;
+      description = "Modern release of the GNU Privacy Guard, a GPL OpenPGP implementation";
     };
 
     settings = mkOption {

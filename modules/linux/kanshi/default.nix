@@ -9,7 +9,6 @@ let
   inherit (lib) mkEnableOption mkOption types;
 
   cfg = config.module.kanshi;
-  kanshiPkg = import ./package.nix { inherit lib pkgs; };
 
   swaymsg = "${pkgs.sway}/bin/swaymsg";
 
@@ -63,8 +62,8 @@ in
 
     package = mkOption {
       type = types.package;
-      default = kanshiPkg;
-      description = "Customized Kanshi package";
+      default = pkgs.kanshi;
+      description = "Dynamic display configuration tool";
     };
 
     settings = mkOption {
