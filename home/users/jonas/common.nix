@@ -20,7 +20,7 @@
   home = {
     packages = with pkgs; [
       # File Management
-      axel # Download utility
+      aria2 # Download utility
       fd # File search utility
       lsof # List open files
       tree # Directory tree viewer
