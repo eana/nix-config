@@ -102,14 +102,13 @@ in
     programs.kitty = {
       enable = true;
       inherit (cfg) package;
-      font =
-        {
-          name = cfg.font.family;
-          inherit (cfg.font) size;
-        }
-        // lib.optionalAttrs (cfg.font.package != null) {
-          inherit (cfg.font) package;
-        };
+      font = {
+        name = cfg.font.family;
+        inherit (cfg.font) size;
+      }
+      // lib.optionalAttrs (cfg.font.package != null) {
+        inherit (cfg.font) package;
+      };
       settings = lib.recursiveUpdate defaultSettings (
         cfg.settings
         // {
