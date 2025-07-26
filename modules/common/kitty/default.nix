@@ -11,7 +11,7 @@ let
   cfg = config.module.kitty;
 
   defaultFontFamily = "MesloLGS NF";
-  defaultFontSize = 15.0;
+  defaultFontSize = 11.0;
   defaultOpacity = 1.0;
 
   defaultSettings = {

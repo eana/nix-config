@@ -11,7 +11,7 @@ let
   cfg = config.module.foot;
 
   defaultFontFamily = "MesloLGS NF";
-  defaultFontSize = 9;
+  defaultFontSize = 10;
   defaultDpiAware = true;
 
   mkFontString = family: size: "${family}:size=${toString size}";
