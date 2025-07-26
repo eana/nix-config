@@ -196,7 +196,6 @@ let
       --border #285577 \
       --button-background #31363b \
       --text #ffffff \
-      --font "Helvetica Neue LT Std 11" \
       --message 'You pressed the exit shortcut. What do you want?' \
       --button 'Poweroff' 'systemctl poweroff' \
       --button 'Reboot' 'systemctl reboot' \
@@ -366,7 +365,6 @@ in
         modes = { };
         fonts = {
           names = [ "Helvetica Neue LT Std" ];
-          size = 12.0;
         };
       };
 

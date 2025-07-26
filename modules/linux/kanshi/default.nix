@@ -27,14 +27,14 @@ let
             status = "enable";
             mode = "3840x2160";
             position = "0,0";
-            scale = 1.1;
+            scale = 1.4;
           }
           {
             criteria = "Sharp Corporation 0x1453 Unknown";
             status = "disable";
             mode = "1920x1080";
             position = "540,2160";
-            scale = 0.8;
+            scale = 1.0;
           }
         ];
       };

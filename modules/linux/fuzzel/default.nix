@@ -25,8 +25,7 @@ in
       type = types.attrs;
       default = {
         main = {
-          font = "Helvetica Neue LT Std:size=9";
-          dpi-aware = "yes";
+          dpi-aware = "auto";
         };
       };
       description = "Fuzzel configuration settings";
