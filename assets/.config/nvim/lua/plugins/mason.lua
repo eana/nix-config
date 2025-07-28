@@ -4,11 +4,12 @@ return {
     ensure_installed = {
       "bash-language-server",
       "gopls",
+      "black",
       "json-lsp",
       "jsonlint",
       "jsonnet-language-server",
       "lua-language-server",
-      "prettierd",
+      "prettier",
       "shellcheck",
       "shfmt",
       "stylua",
