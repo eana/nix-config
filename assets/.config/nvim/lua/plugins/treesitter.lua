@@ -33,9 +33,9 @@ return {
       context_commentstring = { enable = true, enable_autocmd = false },
       ensure_installed = {
         "bash",
-        "cmake",
         "comment",
         "diff",
+        "git_config",
         "git_rebase",
         "gitattributes",
         "gitcommit",
@@ -44,6 +44,7 @@ return {
         "html",
         "javascript",
         "json",
+        "json5",
         "jsonc",
         "lua",
         "luadoc",
