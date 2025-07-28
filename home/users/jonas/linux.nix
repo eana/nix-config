@@ -128,30 +128,8 @@ in
 
       # Development Tools
       aws-export-profile # AWS profile exporter
-      gcc # GNU Compiler Collection
-      gnumake # Build automation tool
-      go # Go programming language
-      gotools # Tools for Go programming
       meld # Visual diff and merge tool
-      nil # Nix language server
-      nix-prefetch-git # Prefetch Git repositories
       nix-tree # Visualize Nix dependencies
-      tree-sitter # Incremental parsing system
-
-      # Language Servers and Linters
-      bash-language-server # Language server for Bash
-      black # Python code formatter
-      jsonnet-language-server # Language server for Jsonnet
-      lua-language-server # Language server for Lua
-      nodePackages.jsonlint # JSON linter
-      nodePackages.prettier # Code formatter
-      shellcheck # Shell script analysis tool
-      shfmt # Shell script formatter
-      stylua # An opinionated code formatter for Lua
-      terraform-ls # Language server for Terraform
-      tflint # Linter for Terraform
-      yaml-language-server # Language server for YAML
-      yamlfmt # YAML formatter
 
       # Containers
       podman # Tool for managing OCI containers

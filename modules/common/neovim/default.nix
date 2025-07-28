@@ -12,6 +12,16 @@ let
 
   nvimConfigDir = ../../../assets/.config/nvim;
 
+  commonDeps = with pkgs; [
+    gcc # GNU Compiler Collection
+    gnumake # Build automation tool
+
+    go # Go programming language
+    gotools # Tools for Go programming
+    nil # Nix language server
+    tree-sitter # Incremental parsing system
+  ];
+
 in
 {
   options.module.neovim = {
@@ -60,6 +70,7 @@ in
       [
         (lib.mkIf cfg.withNodeJs nodejs)
       ]
+      ++ commonDeps
       ++ cfg.extraPackages;
 
     xdg.configFile."nvim" = {
