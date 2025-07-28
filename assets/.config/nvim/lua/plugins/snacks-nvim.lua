@@ -8,25 +8,8 @@ return {
     dim = { enabled = false },
     explorer = { enabled = false },
     scroll = { enabled = false },
+    terminal = { enabled = false },
+    words = { enabled = false },
     zen = { enabled = false },
-    terminal = {
-      win = {
-        relative = "editor",
-        position = "float",
-        width = 0.8,
-        height = 0.8,
-        border = "rounded",
-      },
-    },
-  },
-  keys = {
-    {
-      "<leader>\\",
-      function()
-        Snacks.terminal.toggle(nil, { cwd = vim.fn.getcwd() })
-      end,
-      mode = { "n", "t" },
-      desc = "Toggle Terminal",
-    },
   },
 }
