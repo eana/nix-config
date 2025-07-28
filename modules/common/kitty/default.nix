@@ -18,6 +18,7 @@ let
     scrollback_lines = 10000;
     enable_audio_bell = false;
     confirm_os_window_close = 0;
+    update_check_interval = 0;
     background_opacity = toString defaultOpacity;
   };
 

@@ -70,6 +70,7 @@
     sessionVariables = {
       LESS = "-iXFR";
       BUILDKIT_PROGRESS = "plain";
+      TERM = "xterm-256color";
     };
 
     stateVersion = "24.05";
