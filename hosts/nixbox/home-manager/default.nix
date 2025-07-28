@@ -19,6 +19,7 @@
     sway.enable = true;
     ydotool.enable = true;
     nix-index-database.comma.enable = true;
+    ssh.startAgent = true;
   };
 
   users.users.jonas = {
