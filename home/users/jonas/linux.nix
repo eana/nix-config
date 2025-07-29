@@ -200,7 +200,10 @@ in
     sway = {
       enable = true;
       background = "~/.local/share/backgrounds/hannah-grace-dSqWwzrLJaQ-unsplash.jpg";
-      swaylock.enable = true;
+      swaylock = {
+        enable = true;
+        settings.indicator-radius = 45;
+      };
     };
     waybar = {
       enable = true;
