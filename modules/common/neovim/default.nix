@@ -67,7 +67,14 @@ in
 
   config = lib.mkIf cfg.enable {
     home.sessionVariables = {
-      AIDER_NO_AUTO_COMMITS = lib.mkDefault "1";
+      AIDER_MODEL = lib.mkDefault "openrouter/deepseek/deepseek-r1:free";
+
+      AIDER_AUTO_COMMITS = lib.mkDefault "0";
+      AIDER_GITIGNORE = lib.mkDefault "0";
+
+      AIDER_INPUT_HISTORY_FILE = lib.mkDefault "$HOME/.config/aider/.aider.input.history";
+      AIDER_CHAT_HISTORY_FILE = lib.mkDefault "$HOME/.config/aider/.aider.chat.history.md";
+      AIDER_LLM_HISTORY_FILE = lib.mkDefault "$HOME/.config/aider/.aider.llm.history.md";
     };
 
     home.packages =
@@ -78,9 +85,12 @@ in
       ++ commonDeps
       ++ cfg.extraPackages;
 
-    xdg.configFile."nvim" = {
-      source = nvimConfigDir;
-      recursive = true;
+    xdg.configFile = {
+      ".aider/.keep".text = "";
+      "nvim" = {
+        source = nvimConfigDir;
+        recursive = true;
+      };
     };
 
     programs.neovim = {
