@@ -16,6 +16,7 @@ let
     gcc # GNU Compiler Collection
     gnumake # Build automation tool
 
+    aider-chat # AI pair programming in terminal
     go # Go programming language
     gotools # Tools for Go programming
     nil # Nix language server
