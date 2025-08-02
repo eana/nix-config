@@ -67,8 +67,6 @@ in
 
   config = lib.mkIf cfg.enable {
     home.sessionVariables = {
-      # Set any Neovim-related environment variables here
-      EDITOR = lib.mkIf cfg.defaultEditor "nvim";
       AIDER_NO_AUTO_COMMITS = lib.mkDefault "1";
     };
 
