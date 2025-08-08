@@ -2,7 +2,7 @@ return {
   {
     "CopilotC-Nvim/CopilotChat.nvim",
     dependencies = {
-      { "zbirenbaum/copilot.lua" }, -- or github/copilot.vim
+      { "github/copilot.vim" }, -- or zbirenbaum/copilot.lua
       { "nvim-lua/plenary.nvim" }, -- for curl, log wrapper
     },
     build = "make tiktoken", -- Only on MacOS or Linux
@@ -11,11 +11,18 @@ return {
     },
   },
   {
-    "zbirenbaum/copilot.lua",
-    cmd = "Copilot", -- Optional lazy-loading
+    "github/copilot.vim",
     config = function()
-      require("copilot").setup({
-        -- You can add your Copilot config options here
+      -- disable tab completion for github copilot
+      vim.g.copilot_no_tab_map = true
+      vim.g.copilot_assume_mapped = true
+      vim.g.copilot_tab_fallback = ""
+      -- set copilot completion keybinding to <C-f>
+      vim.keymap.set("i", "<C-f>", 'copilot#Accept("\\<CR>")', {
+        expr = true,
+        nowait = true,
+        replace_keycodes = false,
+        silent = true,
       })
 
       local copilot_enabled = true
