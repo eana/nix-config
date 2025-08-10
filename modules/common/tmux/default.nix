@@ -86,7 +86,7 @@ let
         bind -n S-C-left swap-window -t -1 \; \
         bind -n S-C-right swap-window -t +1 \; \
         bind -n C-t new-window -a -c "#{pane_current_path}" \; \
-        set -qg prefix C-a
+        set -qg prefix C-${cfg.shortcut}
 
     # Renumber windows in tmux
     set-option -g renumber-windows on
@@ -205,7 +205,6 @@ in
       enable = true;
       inherit (cfg)
         package
-        shortcut
         baseIndex
         clock24
         escapeTime
@@ -226,6 +225,13 @@ in
               "";
         in
         ''
+          # Handle prefix key configuration manually
+          set -gu prefix2
+          unbind C-${cfg.shortcut}
+          unbind C-b
+          set -g prefix C-${cfg.shortcut}
+          bind C-${cfg.shortcut} send-prefix
+
           ${commonExtraConfig}
           ${clipboardCopyCommand}
           ${cfg.extraConfig} # User's additional extraConfig lines
