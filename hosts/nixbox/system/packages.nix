@@ -10,7 +10,6 @@
       gparted
       # jetbrains.idea-community-bin
       podman-tui
-      vscode
       zsh-powerlevel10k
     ];
   };

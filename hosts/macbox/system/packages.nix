@@ -6,7 +6,6 @@
     jetbrains.idea-community-bin
     m-cli
     mkalias
-    vscode
     zsh-powerlevel10k
   ];
 
