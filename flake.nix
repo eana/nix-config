@@ -91,6 +91,7 @@
 
           devshells.default = {
             packages = with pkgs; [
+              cachix
               deadnix
               statix
             ];
