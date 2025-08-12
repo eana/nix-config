@@ -176,6 +176,10 @@ in
       swayKeybinding = "Mod4+Shift+m";
     };
     tmux.enable = true;
+    ollama = {
+      enable = true;
+      acceleration = false;
+    };
     openra = {
       enable = true;
       release = "release-20250330";
