@@ -1,0 +1,44 @@
+{
+  $schema: "https://docs.renovatebot.com/renovate-schema.json",
+  extends: [
+    ":enablePreCommit",
+    ":semanticCommits",
+    "config:recommended",
+    "helpers:pinGitHubActionDigests",
+  ],
+  reviewers: ["@eana"],
+  labels: ["dependencies"],
+  timezone: "Etc/UTC",
+  schedule: ["after 8am and before 8pm every weekday"],
+  platformAutomerge: true,
+  vulnerabilityAlerts: { enabled: true },
+  packageRules: [
+    {
+      description: "Group all minor and patch updates",
+      groupName: "development (patch and minor) updates",
+      groupSlug: "dev-deps",
+      matchUpdateTypes: ["minor", "patch"],
+      automerge: true,
+      matchPackageNames: ["*"],
+    },
+    {
+      description: "Group pre-commit/pre-commit-hook updates, including major versions",
+      matchManagers: ["pre-commit"],
+      matchPackageNames: ["pre-commit/pre-commit-hooks"],
+      automerge: true,
+    },
+    {
+      description: "Group GitHub Actions",
+      groupName: "GitHub Actions",
+      groupSlug: "github-actions",
+      matchManagers: ["github-actions"],
+      automerge: true,
+    },
+  ],
+  lockFileMaintenance: {
+    enabled: true,
+    automerge: true,
+    schedule: ["after 8am and before 8pm every weekday"],
+  },
+  nix: { enabled: true },
+}
