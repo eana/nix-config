@@ -1,0 +1,103 @@
+name: CI
+on:
+  push:
+    tags-ignore:
+      - "**"
+    branches:
+      - master
+  pull_request:
+    branches:
+      - master
+
+jobs:
+  changes:
+    name: Changes
+    runs-on: ubuntu-latest
+    outputs:
+      nixbox: ${{ steps.changes.outputs.nixbox }}
+    permissions:
+      contents: read
+      pull-requests: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5
+        with:
+          persist-credentials: false
+      - name: Path filters
+        uses: dorny/paths-filter@de90cc6fb38fc0963ad72b210f1f284cd68cea36 #v3
+        id: changes
+        with:
+          filters: |
+            nixbox:
+              - flake.nix
+              - flake.lock
+              - 'assets/**'
+              - 'hosts/nixbox/**'
+              - 'modules/common/**'
+              - 'modules/linux/**'
+
+  check:
+    name: Check
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      actions: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5
+        with:
+          persist-credentials: false
+      - name: Install Nix
+        uses: DeterminateSystems/nix-installer-action@90bb610b90bf290cad97484ba341453bd1cbefea # v19
+        with:
+          source-url: https://install.lix.systems/lix/lix-installer-x86_64-linux
+          extra-conf: |
+            max-jobs = auto
+      - name: Nix cache (cachix)
+        uses: cachix/cachix-action@0fc020193b5a1fa3ac4575aa3a7d3aa6a35435ad # v15
+        with:
+          useDaemon: true
+          name: eana
+          extraPullNames: cuda-maintainers
+          authToken: "${{ secrets.CACHIX_AUTH_TOKEN }}"
+      - name: Run check
+        run: |
+          nix flake check --all-systems
+          nix develop --install
+          nix develop --command bash -c "pre-commit run --all-files"
+
+  nixbox:
+    name: Build nixbox
+    needs: changes
+    if: ${{ needs.changes.outputs.nixbox == 'true' }}
+    strategy:
+      matrix:
+        host:
+          - nixbox
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      actions: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5
+        with:
+          persist-credentials: false
+      - name: Free disk space
+        uses: jlumbroso/free-disk-space@54081f138730dfa15788a46383842cd2f914a1be # v1.3.1
+      - name: Install Nix
+        uses: DeterminateSystems/nix-installer-action@90bb610b90bf290cad97484ba341453bd1cbefea # v19
+        with:
+          source-url: https://install.lix.systems/lix/lix-installer-x86_64-linux
+          extra-conf: |
+            max-jobs = auto
+      - name: Nix cache (cachix)
+        uses: cachix/cachix-action@0fc020193b5a1fa3ac4575aa3a7d3aa6a35435ad # v15
+        with:
+          useDaemon: true
+          name: eana
+          extraPullNames: cuda-maintainers
+          authToken: "${{ secrets.CACHIX_AUTH_TOKEN }}"
+      - name: Build system
+        run: |
+          nix build --print-build-logs .#nixosConfigurations.${{ matrix.host }}.config.system.build.toplevel
