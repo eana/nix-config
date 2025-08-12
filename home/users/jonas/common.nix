@@ -81,10 +81,6 @@
     gpg-agent.enable = true;
     kitty.enable = true;
     neovim.enable = true;
-    ollama = {
-      enable = true;
-      acceleration = false;
-    };
     tmux.enable = true;
     zsh.enable = true;
   };
