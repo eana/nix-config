@@ -36,6 +36,7 @@ return {
         ["less"] = { "prettier" },
         ["html"] = { "prettier" },
         ["json"] = { "prettier" },
+        ["json5"] = { "prettier" },
         ["jsonc"] = { "prettier" },
         ["yaml"] = { "prettier" },
         ["markdown"] = { "prettier" },
