@@ -14,7 +14,7 @@ on:
 jobs:
   check:
     name: Checks
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v5
@@ -33,6 +33,6 @@ jobs:
           purge-primary-key: never
       - name: Run Checks
         run: |
-          nix flake check
+          nix flake check --all-systems
           nix develop --install
           nix develop --command bash -c "pre-commit run --all-files"
