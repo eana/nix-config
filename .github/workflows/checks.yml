@@ -20,15 +20,16 @@ jobs:
         uses: actions/checkout@v5
       - name: Install Nix
         uses: nixbuild/nix-quick-install-action@v32
-      - name: Restore and cache Nix store
+      - name: Set up Nix cache
         uses: nix-community/cache-nix-action@v6
         with:
-          primary-key: nix-${{ runner.os }}-${{ hashFiles('**/*.nix') }}
+          primary-key: nix-${{ runner.os }}-${{ hashFiles('**/*.nix', '**/flake.lock') }}
           restore-prefixes-first-match: nix-${{ runner.os }}-
-          gc-max-store-size: 1073741824
+          gc-max-store-size-linux: 2G
           purge: true
-          purge-prefixes: cache-${{ runner.os }}-
-          purge-created: 0
+          purge-prefixes: nix-${{ runner.os }}-
+          purge-created: 604800 # 7 days
+          purge-last-accessed: 604800 # 7 days
           purge-primary-key: never
       - name: Run Checks
         run: |
