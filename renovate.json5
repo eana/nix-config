@@ -5,11 +5,11 @@
     ":semanticCommits",
     "config:recommended",
     "helpers:pinGitHubActionDigests",
+    "schedule:weekdays",
   ],
   reviewers: ["@eana"],
   labels: ["dependencies"],
   timezone: "Etc/UTC",
-  schedule: ["after 8am and before 8pm every weekday"],
   platformAutomerge: true,
   vulnerabilityAlerts: { enabled: true },
   packageRules: [
@@ -18,8 +18,8 @@
       groupName: "development (patch and minor) updates",
       groupSlug: "dev-deps",
       matchUpdateTypes: ["minor", "patch"],
-      automerge: true,
       matchPackageNames: ["*"],
+      automerge: true,
     },
     {
       description: "Group pre-commit/pre-commit-hook updates, including major versions",
@@ -37,8 +37,8 @@
   ],
   lockFileMaintenance: {
     enabled: true,
+    extends: ["schedule:weekly"],
     automerge: true,
-    schedule: ["after 8am and before 8pm every weekday"],
   },
   nix: { enabled: true },
 }
