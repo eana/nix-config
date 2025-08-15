@@ -242,7 +242,7 @@ let
     client.placeholder          #000000     #0c0c0c     #ffffff     #000000     #0c0c0c
 
     # Start polkit agent
-    exec --no-startup-id /usr/libexec/polkit-gnome-authentication-agent-1
+    exec --no-startup-id ${pkgs.polkit_gnome}/libexec/polkit-gnome-authentication-agent-1
   '';
 
 in
