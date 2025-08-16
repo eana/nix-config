@@ -175,7 +175,6 @@ in
       enable = true;
       swayKeybinding = "Mod4+Shift+m";
     };
-    tmux.enable = true;
     ollama = {
       enable = true;
       acceleration = false;

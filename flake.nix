@@ -108,6 +108,13 @@
               inputs.nix-index-database.nixosModules.nix-index
             ];
           };
+          nasbox = inputs.nixpkgs.lib.nixosSystem {
+            modules = [
+              ./hosts/nasbox/default.nix
+              inputs.home-manager.nixosModules.home-manager
+              inputs.nix-index-database.nixosModules.nix-index
+            ];
+          };
         };
         darwinConfigurations."macbox" = inputs.nix-darwin.lib.darwinSystem {
           modules = [
