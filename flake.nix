@@ -109,6 +109,7 @@
             ];
           };
         };
+
         darwinConfigurations."macbox" = inputs.nix-darwin.lib.darwinSystem {
           modules = [
             ./hosts/macbox/default.nix
@@ -127,6 +128,16 @@
             inherit inputs;
           };
         };
+
+        homeConfigurations = {
+          nasbox = inputs.home-manager.lib.homeManagerConfiguration {
+            pkgs = import inputs.nixpkgs { system = "x86_64-linux"; };
+            modules = [
+              ./hosts/nasbox/home-manager/default.nix
+            ];
+          };
+        };
+
         inherit homeModules;
       };
     };
