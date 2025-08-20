@@ -15,12 +15,14 @@ let
   commonDeps = with pkgs; [
     gcc # GNU Compiler Collection
     gnumake # Build automation tool
+    python3 # Python programming language
 
     aider-chat # AI pair programming in terminal
     go # Go programming language
     gotools # Tools for Go programming
     nil # Nix language server
     tree-sitter # Incremental parsing system
+    unzip # Utility for unpacking zip files
   ];
 
 in
