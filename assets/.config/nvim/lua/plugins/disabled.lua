@@ -13,6 +13,6 @@ return {
   { "catppuccin/nvim", enabled = false }, -- A soothing pastel theme for Neovim
   { "David-Kunz/gen.nvim", enabled = false }, -- local AI generation using Ollama
   -- { "nvim-lualine/lualine.nvim", enabled = false }, -- A fast and easy-to-configure statusline for Neovim
-  -- { "williamboman/mason-lspconfig.nvim", enabled = false }, -- Bridges mason.nvim with lspconfig for easier LSP setup
-  -- { "williamboman/mason.nvim", enabled = false }, -- A package manager for Neovim that helps manage LSP servers, DAP servers, linters, and formatters
+  { "mason-org/mason-lspconfig.nvim", enabled = false }, -- Bridges mason.nvim with lspconfig for easier LSP setup
+  { "mason-org/mason.nvim", enabled = false }, -- A package manager for Neovim that helps manage LSP servers, DAP servers, linters, and formatters
 }
