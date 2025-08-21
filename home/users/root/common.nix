@@ -26,9 +26,6 @@
       lazygit # Simple terminal UI for Git commands
       tig # Text-mode interface for Git
 
-      # Programming Languages and Runtimes
-      python3 # Python programming language
-
       # Diagramming Tools
       d2 # Modern diagram scripting language
 
