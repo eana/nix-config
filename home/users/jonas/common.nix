@@ -47,9 +47,6 @@
       jq # Command-line JSON processor
       xh # Friendly and fast HTTP client
 
-      # Programming Languages and Runtimes
-      python3 # Python programming language
-
       # Diagramming Tools
       d2 # Modern diagram scripting language
 

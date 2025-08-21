@@ -15,14 +15,34 @@ let
   commonDeps = with pkgs; [
     gcc # GNU Compiler Collection
     gnumake # Build automation tool
+    go # Go programming language
     python3 # Python programming language
 
     aider-chat # AI pair programming in terminal
-    go # Go programming language
-    gotools # Tools for Go programming
-    nil # Nix language server
-    tree-sitter # Incremental parsing system
+    glow # Markdown renderer for the terminal
     unzip # Utility for unpacking zip files
+
+    # Linters, formatters, and language servers
+    bash-language-server # Language server for Bash
+    black # Python code formatter
+    gopls # Go language server
+    gotools # Tools for Go programming
+    jsonnet-language-server # Language server for Jsonnet
+    lua # Lua programming language
+    lua-language-server # Language server for Lua
+    luajitPackages.luarocks # Package manager for Lua modules
+    luajitPackages.tiktoken_core # Tokenizer for Lua
+    nil # Nix language server
+    nixfmt-rfc-style # Nix code formatter
+    nodePackages.jsonlint # JSON linter
+    nodejs_22 # JavaScript runtime
+    prettierd # Prettier for formatting code
+    shellcheck # Shell script analysis tool
+    shfmt # Shell script formatter
+    stylua # Lua code formatter
+    terraform-ls # Language server for Terraform
+    tflint # Terraform linter
+    tree-sitter # Incremental parsing system
   ];
 
 in
