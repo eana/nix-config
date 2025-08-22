@@ -4,5 +4,9 @@
     ./nix/default.nix
   ];
 
-  time.timeZone = "Europe/Stockholm";
+  home.stateVersion = "24.05";
+
+  programs = {
+    zsh.enable = true;
+  };
 }

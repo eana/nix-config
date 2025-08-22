@@ -1,7 +1,8 @@
-{ config, ... }:
+{ config, pkgs, ... }:
 
 {
   nix = {
+    package = pkgs.nix;
     settings = {
       substituters = [
         "https://cache.nixos.org"
