@@ -17,8 +17,9 @@
   # Search for packages here: https://search.nixos.org/packages
   home = {
     packages = with pkgs; [
-      util-linux # Set of system utilities for Linux
+      ncurses5 # Terminal handling library
       nix-tree # Visualize Nix dependencies
+      util-linux # Set of system utilities for Linux
     ];
 
     sessionVariables = {
