@@ -66,7 +66,7 @@ elseif os.getenv("XDG_SESSION_TYPE") == "wayland" then
     },
     cache_enabled = true,
   }
-else
+elseif os.getenv("DISPLAY") then
   vim.g.clipboard = {
     name = "xsel_override",
     copy = {
@@ -79,6 +79,9 @@ else
     },
     cache_enabled = true,
   }
+else
+  -- No clipboard support
+  vim.g.clipboard = nil
 end
 
 -- Configure Neovim to have custom shortcuts for common actions during an
