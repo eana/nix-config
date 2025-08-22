@@ -1,13 +1,9 @@
 {
-  home-manager = {
-    users.root = {
-      imports = [
-        ../../../home/users/root/ds920p.nix
-        ../../../modules/common/default.nix
-      ];
-      home.stateVersion = "24.05";
-    };
-  };
+  imports = [
+    ../../../home/users/root/ds920p.nix
+    ../../../modules/common/default.nix
+  ];
 
-  programs.nix-index-database.comma.enable = true;
+  home.username = "root";
+  home.homeDirectory = "/root";
 }

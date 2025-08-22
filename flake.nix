@@ -2,6 +2,8 @@
   description = "Nix flake configuration";
 
   inputs = {
+    nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
+
     dev-flake = {
       url = "github:terlar/dev-flake";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -41,8 +43,6 @@
       url = "github:nix-community/nix-index-database";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-
-    nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
   };
 
   outputs =
@@ -133,7 +133,7 @@
           nasbox = inputs.home-manager.lib.homeManagerConfiguration {
             pkgs = import inputs.nixpkgs { system = "x86_64-linux"; };
             modules = [
-              ./hosts/nasbox/home-manager/default.nix
+              ./hosts/nasbox/default.nix
             ];
           };
         };
