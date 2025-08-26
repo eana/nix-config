@@ -15,7 +15,7 @@
   home = {
     packages = with pkgs; [
       # File Management
-      aria2 # Download utility
+      axel # Download utility
       tree # Directory tree viewer
       unzip # Unzip utility
 
