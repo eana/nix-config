@@ -71,7 +71,8 @@
     git.enable = true;
     gpg-agent.enable = true;
     kitty.enable = true;
-    neovim.enable = true;
+    # neovim.enable = true;
+    nixvim.enable = true;
     tmux.enable = true;
     zsh.enable = true;
   };

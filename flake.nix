@@ -12,37 +12,28 @@
 
     disko.url = "github:nix-community/disko";
 
-    flake-parts = {
-      url = "github:hercules-ci/flake-parts";
-      inputs.nixpkgs-lib.url = "github:nix-community/nixpkgs.lib";
-    };
+    flake-parts.url = "github:hercules-ci/flake-parts";
+    flake-parts.inputs.nixpkgs-lib.url = "github:nix-community/nixpkgs.lib";
 
-    home-manager = {
-      url = "github:nix-community/home-manager";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
+    home-manager.url = "github:nix-community/home-manager";
+    home-manager.inputs.nixpkgs.follows = "nixpkgs";
 
-    homebrew-cask = {
-      url = "github:homebrew/homebrew-cask";
-      flake = false;
-    };
+    homebrew-cask.url = "github:homebrew/homebrew-cask";
+    homebrew-cask.flake = false;
 
-    homebrew-core = {
-      url = "github:homebrew/homebrew-core";
-      flake = false;
-    };
+    homebrew-core.url = "github:homebrew/homebrew-core";
+    homebrew-core.flake = false;
 
-    nix-darwin = {
-      url = "github:nix-darwin/nix-darwin/master";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
+    nix-darwin.url = "github:nix-darwin/nix-darwin/master";
+    nix-darwin.inputs.nixpkgs.follows = "nixpkgs";
 
     nix-homebrew.url = "github:zhaofengli/nix-homebrew";
 
-    nix-index-database = {
-      url = "github:nix-community/nix-index-database";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
+    nix-index-database.url = "github:nix-community/nix-index-database";
+    nix-index-database.inputs.nixpkgs.follows = "nixpkgs";
+
+    nixvim.url = "github:nix-community/nixvim";
+    nixvim.inputs.nixpkgs.follows = "nixpkgs";
   };
 
   outputs =
@@ -99,15 +90,15 @@
         };
 
       flake = {
-        nixosConfigurations = {
-          nixbox = inputs.nixpkgs.lib.nixosSystem {
-            modules = [
-              ./hosts/nixbox/default.nix
-              inputs.disko.nixosModules.disko
-              inputs.home-manager.nixosModules.home-manager
-              inputs.nix-index-database.nixosModules.nix-index
-            ];
-          };
+        nixosConfigurations.nixbox = inputs.nixpkgs.lib.nixosSystem {
+          modules = [
+            ./hosts/nixbox/default.nix
+            inputs.disko.nixosModules.disko
+            inputs.home-manager.nixosModules.home-manager
+            inputs.nix-index-database.nixosModules.nix-index
+          ];
+
+          specialArgs = { inherit (inputs) nixvim; };
         };
 
         darwinConfigurations."macbox" = inputs.nix-darwin.lib.darwinSystem {
@@ -124,18 +115,12 @@
             }
           ];
 
-          specialArgs = {
-            inherit inputs;
-          };
+          specialArgs = { inherit inputs; };
         };
 
-        homeConfigurations = {
-          nasbox = inputs.home-manager.lib.homeManagerConfiguration {
-            pkgs = import inputs.nixpkgs { system = "x86_64-linux"; };
-            modules = [
-              ./hosts/nasbox/default.nix
-            ];
-          };
+        homeConfigurations.nasbox = inputs.home-manager.lib.homeManagerConfiguration {
+          pkgs = import inputs.nixpkgs { system = "x86_64-linux"; };
+          modules = [ ./hosts/nasbox/default.nix ];
         };
 
         inherit homeModules;

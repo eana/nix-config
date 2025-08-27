@@ -4,6 +4,7 @@
     ./gpg-agent/default.nix
     ./kitty/default.nix
     ./neovim/default.nix
+    ./nixvim/default.nix
     ./ollama/default.nix
     ./tmux/default.nix
     ./zsh/default.nix

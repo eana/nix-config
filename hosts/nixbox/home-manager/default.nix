@@ -1,4 +1,4 @@
-{ pkgs, ... }:
+{ pkgs, nixvim, ... }:
 
 {
   home-manager = {
@@ -10,6 +10,7 @@
         ../../../home/users/jonas/linux.nix
         ../../../modules/common/default.nix
         ../../../modules/linux/default.nix
+        nixvim.homeModules.nixvim
       ];
     };
   };
