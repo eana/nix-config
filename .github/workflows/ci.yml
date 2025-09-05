@@ -1,0 +1,49 @@
+name: CI Checks and Builds
+on:
+  pull_request:
+    branches: [master]
+  push:
+    branches: [master]
+  workflow_dispatch:
+
+jobs:
+  pre-commit:
+    name: Pre-commit
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5
+      - uses: nixbuild/nix-quick-install-action@1f095fee853b33114486cfdeae62fa099cda35a9 # v33
+      - run: nix develop --command bash -c "pre-commit run --all-files"
+
+  build:
+    name: Build ${{ matrix.host.name }}
+    runs-on: ${{ matrix.host.runner }}
+    needs:
+      - pre-commit
+    if: needs.pre-commit.result == 'success'
+    strategy:
+      fail-fast: false
+      matrix:
+        host:
+          - name: nixbox
+            flake-ref: .#nixosConfigurations.nixbox.config.system.build.toplevel
+            cache-key: nixos
+            runner: ubuntu-latest
+          - name: macbox
+            flake-ref: .#darwinConfigurations.macbox.system
+            cache-key: darwin
+            runner: macos-latest
+          - name: nasbox
+            flake-ref: .#homeConfigurations.nasbox.activationPackage
+            cache-key: home-manager
+            runner: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5
+      - uses: nixbuild/nix-quick-install-action@1f095fee853b33114486cfdeae62fa099cda35a9 # v33
+      - uses: nix-community/cache-nix-action@135667ec418502fa5a3598af6fb9eb733888ce6a # v6
+        with:
+          primary-key: nix-${{ matrix.host.cache-key }}-${{ hashFiles('**/*.nix', '**/flake.lock') }}
+          restore-prefixes-first-match: nix-${{ matrix.host.cache-key }}-
+      - name: Build system
+        run: nix build --print-build-logs "${{ matrix.host.flake-ref }}"
