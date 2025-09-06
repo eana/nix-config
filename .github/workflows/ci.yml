@@ -45,5 +45,8 @@ jobs:
         with:
           primary-key: nix-${{ matrix.host.cache-key }}-${{ hashFiles('**/*.nix', '**/flake.lock') }}
           restore-prefixes-first-match: nix-${{ matrix.host.cache-key }}-
+      - name: Free disk space (nixbox)
+        if: matrix.host.name == 'nixbox'
+        uses: jlumbroso/free-disk-space@54081f138730dfa15788a46383842cd2f914a1be # v1.3.1
       - name: Build system
         run: nix build --print-build-logs "${{ matrix.host.flake-ref }}"
