@@ -1,5 +1,3 @@
-{ pkgs, ... }:
-
 {
   home-manager = {
     backupFileExtension = "backup";
@@ -10,9 +8,7 @@
         ../../../home/users/jonas/darwin.nix
         ../../../modules/common/default.nix
       ];
-      home.packages = [
-        pkgs.spotify
-      ];
+      home.packages = [ ];
       home.stateVersion = "24.05";
     };
   };
