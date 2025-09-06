@@ -180,27 +180,7 @@ in
       enable = true;
       acceleration = false;
     };
-    openra = {
-      enable = true;
-      release = "release-20250330";
-      variants = {
-        "red-alert" = {
-          enable = true;
-          appimageSha256 = "sha256-PLccdCgYjIUm3YkWmT/Bb6F7pfKKNZaKgmfz258hhv4=";
-          iconSha256 = "sha256-6IadsH5NGKXZ3gye3JYVTCDC/uPwy3BRXhuAp5+10qA=";
-        };
-        "dune" = {
-          enable = true;
-          appimageSha256 = "sha256-dYWYa/DNSI3rrsP634U8GQEAPv+UXbrV3pWwtr14Gmc=";
-          iconSha256 = "sha256-dPnIsztCpcAID2DYjZFN3QSCvE8K6bzC9v7TQkDq3oY=";
-        };
-        "tiberian-dawn" = {
-          enable = true;
-          appimageSha256 = "sha256-s9IC0b9wG+WYnEHCVtGb0rF4hpTfAeNDrehlzxGQcGs=";
-          iconSha256 = "sha256-dPnIsztCpcAID2DYjZFN3QSCvE8K6bzC9v7TQkDq3oY=";
-        };
-      };
-    };
+    openra.enable = false;
     sway = {
       enable = true;
       background = "~/.local/share/backgrounds/hannah-grace-dSqWwzrLJaQ-unsplash.jpg";
