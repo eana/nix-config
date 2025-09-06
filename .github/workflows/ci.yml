@@ -27,15 +27,15 @@ jobs:
         host:
           - name: nixbox
             flake-ref: .#nixosConfigurations.nixbox.config.system.build.toplevel
-            cache-key: nixos
+            cache-key: nixbox
             runner: ubuntu-latest
           - name: macbox
             flake-ref: .#darwinConfigurations.macbox.system
-            cache-key: darwin
+            cache-key: macbox
             runner: macos-latest
           - name: nasbox
             flake-ref: .#homeConfigurations.nasbox.activationPackage
-            cache-key: home-manager
+            cache-key: nasbox
             runner: ubuntu-latest
 
     steps:
