@@ -138,7 +138,6 @@ in
       cantarell-fonts # Cantarell font family
 
       # Other
-      # aider-chat # AI-powered code review tool
       awscli2 # AWS command-line interface
       blueman # Bluetooth manager
       brightnessctl # Utility to control brightness
