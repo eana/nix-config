@@ -18,7 +18,7 @@ let
     go # Go programming language
     python3 # Python programming language
 
-    aider-chat # AI pair programming in terminal
+    aider-chat-with-playwright # AI pair programming in terminal
     glow # Markdown renderer for the terminal
     unzip # Utility for unpacking zip files
 
