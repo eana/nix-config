@@ -1,5 +1,3 @@
-{ config, ... }:
-
 {
   nix = {
     settings = {
