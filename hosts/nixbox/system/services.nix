@@ -44,7 +44,7 @@
     dbus.enable = true;
     openssh.enable = true;
 
-    logind.lidSwitchExternalPower = "ignore";
+    logind.settings.Login.HandleLidSwitchExternalPower = "ignore";
 
     # Disable GCR SSH as it is incompatible with gpg-agent's SSH support.
     gnome.gcr-ssh-agent.enable = false;
