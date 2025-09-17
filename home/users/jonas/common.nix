@@ -11,7 +11,10 @@
     nh = {
       enable = true;
       flake = "/etc/nixos";
-      clean.enable = true;
+      clean = {
+        enable = true;
+        dates = "weekly";
+      };
     };
   };
 

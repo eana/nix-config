@@ -8,6 +8,14 @@
       enable = true;
       nix-direnv.enable = true;
     };
+    nh = {
+      enable = true;
+      flake = "/etc/nixos";
+      clean = {
+        enable = true;
+        dates = "weekly";
+      };
+    };
   };
 
   # Install packages for user.
