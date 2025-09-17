@@ -26,11 +26,6 @@
         "flakes"
       ];
     };
-
-    gc = {
-      automatic = true;
-      dates = "12:12";
-    };
   };
 
   nixpkgs.config.allowUnfree = true;
