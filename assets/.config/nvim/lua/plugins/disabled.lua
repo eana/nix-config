@@ -1,6 +1,6 @@
 return {
-  { "echasnovski/mini.animate", enabled = false }, -- Provides animations for various Neovim actions
-  { "echasnovski/mini.ai", enabled = false }, -- Enhances text objects for better selection and manipulation
+  { "nvim-mini/mini.animate", enabled = false }, -- Provides animations for various Neovim actions
+  { "nvim-mini/mini.ai", enabled = false }, -- Enhances text objects for better selection and manipulation
   { "folke/flash.nvim", enabled = false }, -- Improves the search and jump functionality in Neovim
   { "folke/noice.nvim", enabled = false }, -- Enhances the Neovim UI with better notifications and command line
   { "rcarriga/nvim-notify", enabled = false }, -- A fancy, configurable, notification manager for Neovim
