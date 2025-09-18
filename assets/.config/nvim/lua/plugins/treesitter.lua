@@ -64,7 +64,5 @@ return {
       },
       auto_install = true,
     },
-    main = "nvim-treesitter.configs",
-    config = true,
   },
 }
