@@ -1,28 +1,52 @@
--- bootstrap lazy.nvim, LazyVim and your plugins
-require("config.lazy")
-
-local options = vim.opt
-local api = vim.api
+-- vim.opt are automatically loaded before lazy.nvim startup
+-- Default vim.opt that are always set: https://github.com/LazyVim/LazyVim/blob/main/lua/lazyvim/config/vim.opt.lua
+-- Add any additional vim.opt here
 
 local has = function(item)
   return vim.fn.has(item) == 1
 end
 
--- Remove frustrations
-api.nvim_set_keymap("n", "C", '"_C', { noremap = true, silent = true })
-api.nvim_set_keymap("n", "D", '"_D', { noremap = true, silent = true })
+vim.opt.colorcolumn = "80,120"
+vim.opt.list = true
+vim.opt.conceallevel = 0
 
-api.nvim_set_keymap("n", "d", '"_d', { noremap = true, silent = true })
-api.nvim_set_keymap("n", "dd", '"_dd', { noremap = true, silent = true })
-api.nvim_set_keymap("n", "x", '"_x', { noremap = true, silent = true })
-api.nvim_set_keymap("n", "c", '"_c', { noremap = true, silent = true })
+-- vim.opt.updatetime = 100
+-- vim.opt.scrolloff = 9999
+
+vim.opt.tabstop = 2
+vim.opt.shiftwidth = 2
+vim.opt.softtabstop = 2
+vim.opt.expandtab = true
+vim.opt.signcolumn = "yes"
+
+vim.opt.number = true
+vim.opt.relativenumber = false
+
+vim.opt.background = "dark"
+vim.opt.termguicolors = true
+
+vim.opt.completeopt = "menuone,noselect"
+
+-- Highlight trailing whitespace
+vim.cmd("highlight TrailingWhitespace ctermbg=red guibg=red")
+vim.cmd("match TrailingWhitespace /\\s\\+$/")
+
+-- Remove frustrations
+vim.api.nvim_set_keymap("n", "C", '"_C', { noremap = true, silent = true })
+vim.api.nvim_set_keymap("n", "D", '"_D', { noremap = true, silent = true })
+
+vim.api.nvim_set_keymap("n", "d", '"_d', { noremap = true, silent = true })
+vim.api.nvim_set_keymap("n", "dd", '"_dd', { noremap = true, silent = true })
+vim.api.nvim_set_keymap("n", "x", '"_x', { noremap = true, silent = true })
+vim.api.nvim_set_keymap("n", "c", '"_c', { noremap = true, silent = true })
 
 -- Configure spellchecking
-options.spelllang = "en_us"
-options.spell = true
-options.spelloptions = "camel"
-api.nvim_set_hl(0, "SpellBad", { underline = true, fg = "#E06C75" })
+vim.opt.spelllang = "en_us"
+vim.opt.spell = true
+vim.opt.spelloptions = "camel"
+vim.api.nvim_set_hl(0, "SpellBad", { underline = true, fg = "#E06C75" })
 
+-- Configure clipboard integration based on OS/environment
 if has("wsl") then
   vim.g.clipboard = {
     name = "wsl-clipboard",
@@ -84,11 +108,8 @@ else
   vim.g.clipboard = nil
 end
 
--- Configure Neovim to have custom shortcuts for common actions during an
--- interactive Git rebase
-require("config.git-rebase-config")
-
-options.wildignore:append({
+-- Ignore some default vim color schemes to reduce noise when using :colorscheme <Tab>
+vim.opt.wildignore:append({
   "blue.vim",
   "darkblue.vim",
   "delek.vim",
@@ -114,6 +135,3 @@ options.wildignore:append({
   "zaibatsu.vim",
   "zellner.vim",
 })
-
--- Load neovide configuration
-require("config.neovide").setup()

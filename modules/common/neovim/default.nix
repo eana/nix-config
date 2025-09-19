@@ -10,7 +10,34 @@ let
 
   cfg = config.module.neovim;
 
-  nvimConfigDir = ../../../assets/.config/nvim;
+  customConfigs = ../../../assets/.config/nvim/lua/custom/configs;
+  customPlugins = ../../../assets/.config/nvim/lua/custom/plugins;
+
+  kickstartPatched = pkgs.stdenv.mkDerivation {
+    name = "kickstart-nvim-patched";
+    src = pkgs.fetchFromGitHub {
+      owner = "nvim-lua";
+      repo = "kickstart.nvim";
+      rev = "a08ed774a36e5a7386adf645652a4af7b972e208";
+      sha256 = "sha256-R59087fZQVRxyD47T0TPwjbq3s+N+aJAcT7S5AZhQz8=";
+    };
+
+    installPhase = ''
+      mkdir -p $out
+      cp -r $src/* $out/
+      chmod -R u+w $out
+
+      sed -E "s/^\s*--\s*(\{ import = 'custom.plugins' \},)/     \1/" -i "$out/init.lua"
+      echo "require 'custom.configs.git-rebase-config'" >> "$out/init.lua"
+      echo "require 'custom.configs.keymaps'" >> "$out/init.lua"
+      echo "require 'custom.configs.options'" >> "$out/init.lua"
+
+      mkdir -p $out/lua/custom/configs
+      cp -r ${customConfigs}/* $out/lua/custom/configs/
+      mkdir -p $out/lua/custom/plugins
+      cp -r ${customPlugins}/* $out/lua/custom/plugins/
+    '';
+  };
 
   commonDeps = with pkgs; [
     gcc # GNU Compiler Collection
@@ -108,9 +135,9 @@ in
       ++ cfg.extraPackages;
 
     xdg.configFile = {
-      ".aider/.keep".text = "";
+      "aider/.keep".text = "";
       "nvim" = {
-        source = nvimConfigDir;
+        source = kickstartPatched;
         recursive = true;
       };
     };

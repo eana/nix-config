@@ -1,7 +1,6 @@
 local not_vscode = not vim.g.vscode
 
 return {
-  -- nvim-treesitter
   {
     "nvim-treesitter/nvim-treesitter",
 

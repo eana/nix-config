@@ -1,14 +1,8 @@
 return {
   {
-    "LazyVim/LazyVim",
-    opts = {
-      colorscheme = "default",
-    },
-  },
-  {
     "kristijanhusak/vim-hybrid-material",
     lazy = false,
-    priority = 1000,
+    priority = 500,
     config = function()
       vim.g.enable_bold_font = 1
       vim.env.NVIM_TUI_ENABLE_TRUE_COLOR = 1
