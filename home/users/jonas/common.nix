@@ -54,7 +54,7 @@
       d2 # Modern diagram scripting language
 
       # Other
-      firefox # Web browser
+      firefox-bin # Web browser
       google-chrome # Web browser
       neofetch # System information tool
       sops # Secrets management tool
