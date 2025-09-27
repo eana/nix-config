@@ -8,6 +8,8 @@ in
     enable = true;
     casks = [
       "iterm2"
+      "google-chrome"
+      "firefox"
       "openvpn-connect"
       "podman-desktop"
       "vlc"
