@@ -150,6 +150,10 @@ in
       protonvpn-cli_2 # ProtonVPN command-line interface
       system-config-printer # Printer configuration tool
 
+      # Browsers
+      firefox # Web browser
+      google-chrome # Web browser
+
       # Bitwarden
       pinentry-tty # Pinentry for Bitwarden
       rbw # Bitwarden CLI
