@@ -37,6 +37,9 @@
       # Diagramming Tools
       d2 # Modern diagram scripting language
 
+      # Nix Tools
+      cachix # Binary cache client for Nix
+
       # Other
       neofetch # System information tool
     ];
