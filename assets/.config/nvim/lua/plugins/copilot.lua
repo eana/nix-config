@@ -40,7 +40,7 @@ return {
       vim.api.nvim_create_user_command("CopilotGitMessage", function()
         vim.cmd("normal! GVgg")
         local prompt = [[
-You are an expert at writing Git commits. Your job is to write a short clear commit message that summarizes the changes.
+You are an expert at writing Git commits. Your job is to write a short clear commit message that summarizes the changes
 
 The commit message should be structured as follows:
 
@@ -48,17 +48,26 @@ The commit message should be structured as follows:
 
     [optional body]
 
-- Commits MUST be prefixed with a type, which consists of one of the followings words: build, chore, ci, docs, feat, fix, perf, refactor, style, test
+Rules:
+
+- Commits MUST be prefixed with a type, which consists of one of the following words: build, chore, ci, docs, feat, fix, perf, refactor, style, test
 - The type feat MUST be used when a commit adds a new feature
 - The type fix MUST be used when a commit represents a bug fix
-- An optional scope MAY be provided after a type. A scope is a phrase describing a section of the codebase enclosed in parenthesis, e.g., fix(parser):
-- A description MUST immediately follow the type/scope prefix. The description is a short description of the code changes, e.g., fix: array parsing issue when multiple spaces were contained in string.
-- Try to limit the whole subject line to 60 characters
+- An optional scope MAY be provided after a type. A scope is a phrase describing a section of the codebase enclosed in parenthesis, e.g., fix(parser)
+- A description MUST immediately follow the type/scope prefix. The description is a short summary of the code changes
+- The subject line MUST be in imperative mood (e.g., add, fix, update)
+- Try to limit the subject line to 60 characters
 - Lowercase the subject line
-- Do not end the subject line with any punctuation
-- A longer commit body MAY be provided after the short description, providing additional contextual information about the code changes. The body MUST begin one blank line after the description.
-- Use the imperative mood in the subject line
-- Keep the body short and concise (omit it entirely if not useful)
+- Do not end the subject line with punctuation
+
+Commit body:
+
+- The body MUST begin one blank line after the subject line
+- If a body is included, it MUST use bullet points starting with a hyphen and space
+- The first letter of each bullet point MUST be capitalized
+- Each bullet point MUST be written in imperative mood
+- Keep bullet points short and clear
+- Omit the body entirely if it does not add useful detail beyond the subject
 ]]
 
         vim.cmd.CopilotChat(prompt)
