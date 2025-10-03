@@ -6,6 +6,7 @@
 
 {
   networking = {
+    firewall.enable = false;
     hostName = "nixbox";
     enableIPv6 = false;
     networkmanager = {
