@@ -33,54 +33,6 @@
 
       # Media
       mpg123 # Audio player
-      (
-        let
-          # upnpclient package with all dependencies
-          upnpclient = python3Packages.buildPythonPackage rec {
-            pname = "upnpclient";
-            version = "1.0.3";
-            src = fetchPypi {
-              inherit pname version;
-              sha256 = "sha256-ZB8F+kuOXFtcxFYdq0n+XEd00m5RN4Zx761AIySeabg=";
-            };
-            format = "setuptools";
-            propagatedBuildInputs = with python3Packages; [
-              dateutil
-              ifaddr
-              requests
-            ];
-            doCheck = false;
-          };
-
-          # Create a Python environment with all required packages
-          pythonWithDeps = python3.withPackages (
-            ps: with ps; [
-              dateutil
-              ifaddr
-              lxml
-              requests
-              upnpclient
-            ]
-          );
-
-          # Create wrapper scripts for python and python3 that use our custom environment
-          pythonWrapper = writeShellScriptBin "python" ''
-            exec ${pythonWithDeps}/bin/python "$@"
-          '';
-
-          python3Wrapper = writeShellScriptBin "python3" ''
-            exec ${pythonWithDeps}/bin/python "$@"
-          '';
-
-          # Create mpv wrapper that puts our Python wrappers first in PATH
-          mpv-with-deps = writeShellScriptBin "mpv" ''
-            export PATH="${pythonWrapper}/bin:${python3Wrapper}/bin:${pythonWithDeps}/bin:$PATH"
-            export PYTHONPATH="${pythonWithDeps}/${pythonWithDeps.sitePackages}"
-            exec ${mpv}/bin/mpv "$@"
-          '';
-        in
-        mpv-with-deps
-      )
 
       # Development Tools
       fzf # Fuzzy finder

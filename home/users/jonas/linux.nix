@@ -178,7 +178,7 @@ in
       enable = true;
       swayKeybinding = "Mod4+Shift+m";
     };
-    tmux.enable = true;
+    mpv.enable = true;
     ollama = {
       enable = true;
       acceleration = false;
@@ -192,6 +192,7 @@ in
         settings.indicator-radius = 45;
       };
     };
+    tmux.enable = true;
     waybar = {
       enable = true;
       systemdIntegration.enable = true;
