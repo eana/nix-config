@@ -2,12 +2,14 @@
 -- Default keymaps that are always set: https://github.com/LazyVim/LazyVim/blob/main/lua/lazyvim/config/keymaps.lua
 -- Add any additional keymaps here
 
-local k = vim.keymap
+vim.keymap.set(
+  "n",
+  "\\<CR>",
+  ":nohlsearch<CR>",
+  { noremap = true, silent = true, desc = "Turn off highlight search results" }
+)
 
-k.set("n", "\\<CR>", ":nohlsearch<CR>", { noremap = true, silent = true, desc = "Turn off highlight search results" })
-
-k.set("n", "\\ta", ":tab all<CR>", { noremap = true, silent = true, desc = "Open multiple files into tabs at once" })
-k.set(
+vim.keymap.set(
   "n",
   "<F5>",
   [[:%s/\s\+$//e<cr>]],
@@ -15,8 +17,22 @@ k.set(
 )
 
 -- Unset ctrl-left/right
-k.del("n", "<C-Left>")
-k.del("n", "<C-Right>")
+vim.keymap.del("n", "<C-Left>")
+vim.keymap.del("n", "<C-Right>")
 
-k.set({ "n", "v" }, "<C-S-Up>", ":m -2<CR>", { desc = "Move the current line up" })
-k.set({ "v", "n" }, "<C-S-Down>", ":m +1<CR>", { desc = "Move the current line down" })
+vim.keymap.set({ "n", "v" }, "<C-S-Up>", ":m -2<CR>", { desc = "Move the current line up" })
+vim.keymap.set({ "v", "n" }, "<C-S-Down>", ":m +1<CR>", { desc = "Move the current line down" })
+
+-- Resize window
+vim.keymap.set(
+  "n",
+  "<C-Up>",
+  "<Cmd>resize -1<CR>",
+  { noremap = true, silent = true, desc = "Increase Message Window Height" }
+)
+vim.keymap.set(
+  "n",
+  "<C-Down>",
+  "<Cmd>resize +1<CR>",
+  { noremap = true, silent = true, desc = "Decrease Message Window Height" }
+)
