@@ -42,11 +42,6 @@
 
     open-webui = {
       enable = true;
-      package = pkgs.open-webui.overridePythonAttrs (old: {
-        dependencies = old.dependencies ++ [
-          pkgs.python3Packages.itsdangerous
-        ];
-      });
       environment = {
         OLLAMA_API_BASE_URL = "http://192.168.0.113:11434";
         WEBUI_AUTH = "False";
