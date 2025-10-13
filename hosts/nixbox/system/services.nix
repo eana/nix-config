@@ -42,11 +42,6 @@
 
     open-webui = {
       enable = true;
-      package = pkgs.open-webui.overridePythonAttrs (old: {
-        dependencies = old.dependencies ++ [
-          pkgs.python3Packages.itsdangerous
-        ];
-      });
       environment = {
         WEBUI_AUTH = "False";
       };
