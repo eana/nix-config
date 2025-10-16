@@ -111,6 +111,8 @@ let
     "${defaultModifier}+Shift+minus" = "scratchpad show";
     "${defaultModifier}+Ctrl+d" = "exec ${pkgs.sway}/bin/swaymsg output eDP-1 disable";
     "${defaultModifier}+Ctrl+e" = "exec ${pkgs.sway}/bin/swaymsg output eDP-1 enable";
+    "${defaultModifier}+b" =
+      "exec ${pkgs.rofi-rbw-wayland}/bin/rofi-rbw --selector rofi --selector-args=-normal-window --clipboarder wl-copy --typer ydotool";
   };
 
   # Final keybindings with swaylock commands
