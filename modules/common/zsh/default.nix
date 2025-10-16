@@ -51,12 +51,6 @@ let
     # zmodload zsh/zprof
     skip_global_compinit=1
 
-    # rofi-rbw
-    bindkey "^[b" run_rofi
-    function run_rofi(){
-      rofi-rbw --selector rofi --selector-args=-normal-window --clipboarder wl-copy --typer ydotool
-    }
-    zle -N run_rofi
     # Fix ctrl + left/right arrow keys
     bindkey "\e[1;5C" forward-word
     bindkey "\e[1;5D" backward-word
