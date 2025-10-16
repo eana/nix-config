@@ -109,19 +109,8 @@ in
   # Search for packages here: https://search.nixos.org/packages
   home = {
     packages = with pkgs; [
-      # SwayWM and Wayland Tools
-      grim # Screenshot utility for Wayland
-      imagemagick # Image manipulation tool
-      libnotify # Desktop notifications
-      mako # Notification daemon for Wayland
-      networkmanagerapplet # Network manager applet
-      slurp # Select a region in Wayland
-      swaybg # Wallpaper tool for Sway
-      swayidle # Idle management daemon for Sway
-
       # File Management
       gthumb # Image browser and viewer
-      nautilus # File manager
 
       # Media
       freetube # YouTube client
@@ -131,34 +120,18 @@ in
       meld # Visual diff and merge tool
       nix-tree # Visualize Nix dependencies
 
-      # Containers
-      podman # Tool for managing OCI containers
-
       # Fonts
       cantarell-fonts # Cantarell font family
 
       # Other
       awscli2 # AWS command-line interface
-      blueman # Bluetooth manager
-      brightnessctl # Utility to control brightness
-      copyq # Clipboard manager
-      earlyoom # Early OOM daemon
       fuse-emulator # ZX Spectrum emulator
       oath-toolkit # OATH one-time password tool
-      pavucontrol # PulseAudio volume control
-      playerctl # Media player controller
       protonvpn-cli_2 # ProtonVPN command-line interface
-      system-config-printer # Printer configuration tool
 
       # Browsers
       firefox # Web browser
       google-chrome # Web browser
-
-      # Bitwarden
-      pinentry-tty # Pinentry for Bitwarden
-      rbw # Bitwarden CLI
-      rofi # Window switcher, application launcher, and dmenu replacement
-      rofi-rbw-wayland # Bitwarden integration for Rofi
     ];
 
     sessionVariables = {

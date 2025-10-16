@@ -349,6 +349,8 @@ in
         copyq
         google-chrome
         nautilus
+        rofi
+        rofi-rbw-wayland
       ];
     };
 
