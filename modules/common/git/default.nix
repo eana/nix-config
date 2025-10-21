@@ -112,15 +112,19 @@ in
   config = lib.mkIf cfg.enable {
     programs.git = {
       enable = true;
-      inherit (cfg)
-        package
-        userName
-        userEmail
-        signing
-        aliases
-        extraConfig
-        ;
-      delta.enable = cfg.delta.enable;
+      inherit (cfg) package;
+      settings = lib.recursiveUpdate {
+        user = {
+          name = cfg.userName;
+          email = cfg.userEmail;
+        };
+        alias = cfg.aliases;
+      } cfg.extraConfig;
+      inherit (cfg) signing;
+    };
+    programs.delta = {
+      inherit (cfg.delta) enable;
+      enableGitIntegration = true;
     };
   };
 }
