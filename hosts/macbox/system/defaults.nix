@@ -2,6 +2,7 @@
   system = {
     keyboard = {
       enableKeyMapping = true;
+      nonUS.remapTilde = true;
     };
     defaults = {
       controlcenter.BatteryShowPercentage = true;
