@@ -127,7 +127,7 @@ in
       awscli2 # AWS command-line interface
       fuse-emulator # ZX Spectrum emulator
       oath-toolkit # OATH one-time password tool
-      protonvpn-cli_2 # ProtonVPN command-line interface
+      protonvpn-gui # ProtonVPN
 
       # Browsers
       firefox # Web browser
