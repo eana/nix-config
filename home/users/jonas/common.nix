@@ -58,7 +58,6 @@
       # Other
       neofetch # System information tool
       sops # Secrets management tool
-      telegram-desktop # Telegram client
     ];
 
     sessionVariables = {
