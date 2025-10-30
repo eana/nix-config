@@ -132,6 +132,9 @@ in
       # Browsers
       firefox # Web browser
       google-chrome # Web browser
+
+      # Other
+      telegram-desktop # Telegram client
     ];
 
     sessionVariables = {

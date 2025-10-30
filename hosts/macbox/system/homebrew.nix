@@ -7,11 +7,12 @@ in
   homebrew = {
     enable = true;
     casks = [
-      "iterm2"
-      "google-chrome"
       "firefox"
+      "google-chrome"
+      "iterm2"
       "openvpn-connect"
       "podman-desktop"
+      "telegram-desktop"
       "vlc"
     ];
     # masApps = {
