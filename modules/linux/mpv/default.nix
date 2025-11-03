@@ -20,7 +20,7 @@ let
     };
     format = "setuptools";
     propagatedBuildInputs = with pythonPkgs; [
-      dateutil
+      python-dateutil
       ifaddr
       requests
     ];
@@ -35,7 +35,7 @@ let
 
   pythonWithDeps = pkgs.python3.withPackages (
     ps: with ps; [
-      dateutil
+      python-dateutil
       ifaddr
       lxml
       requests
