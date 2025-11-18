@@ -16,6 +16,11 @@
     ./nix/default.nix
   ];
 
+  age.secrets.ssh-hosts = {
+    file = ../../secrets/ssh-hosts.age;
+    mode = "0444";
+  };
+
   hardware.nvidiaPrime.enable = true;
 
   time.timeZone = "Europe/Stockholm";

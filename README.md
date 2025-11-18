@@ -2,7 +2,7 @@
 
 ## Things to do:
 
-- [ ] Handle ~/.ssh/config
+- [x] Handle ~/.ssh/config
 - [x] Handle ~/.config/mpv
 - [ ] Multiuser config for git
 - [x] Add aws-export-profile -- https://github.com/cytopia/aws-export-profile
