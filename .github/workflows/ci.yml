@@ -16,7 +16,6 @@ jobs:
       - name: Install Nix
         uses: DeterminateSystems/nix-installer-action@786fff0690178f1234e4e1fe9b536e94f5433196 # v20
         with:
-          source-url: https://install.lix.systems/lix/lix-installer-x86_64-linux
           extra-conf: |
             max-jobs = auto
       - name: Run pre-commit Checks
@@ -75,7 +74,6 @@ jobs:
       - name: Install Nix
         uses: DeterminateSystems/nix-installer-action@786fff0690178f1234e4e1fe9b536e94f5433196 # v20
         with:
-          source-url: https://install.lix.systems/lix/lix-installer-x86_64-linux
           extra-conf: |
             max-jobs = auto
       - name: Cache Cachix
@@ -102,7 +100,6 @@ jobs:
       - name: Install Nix
         uses: DeterminateSystems/nix-installer-action@786fff0690178f1234e4e1fe9b536e94f5433196 # v20
         with:
-          source-url: https://install.lix.systems/lix/lix-installer-aarch64-darwin
           extra-conf: |
             max-jobs = auto
       - name: Cache Cachix
@@ -127,7 +124,6 @@ jobs:
       - name: Install Nix
         uses: DeterminateSystems/nix-installer-action@786fff0690178f1234e4e1fe9b536e94f5433196 # v20
         with:
-          source-url: https://install.lix.systems/lix/lix-installer-x86_64-linux
           extra-conf: |
             max-jobs = auto
       - name: Cache Cachix
