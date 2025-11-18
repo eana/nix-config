@@ -21,6 +21,7 @@ return {
       python = { "black" },
       nix = { "nixfmt" },
       go = { "gofmt", "goimports" },
+      nu = { "topiary_nu" },
       ["terraform-vars"] = { "terraform_fmt" },
       ["javascript"] = { "prettierd" },
       ["typescript"] = { "prettierd" },
@@ -40,6 +41,10 @@ return {
       },
       stylua = {
         prepend_args = { "--indent-type", "Spaces", "--indent-width", "2", "--line-endings", "Unix" },
+      },
+      topiary_nu = {
+        command = "topiary",
+        args = { "format", "--language", "nu" },
       },
     },
   },

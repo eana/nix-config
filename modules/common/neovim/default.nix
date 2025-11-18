@@ -12,10 +12,18 @@ let
 
   nvimConfigDir = ../../../assets/.config/nvim;
 
+  nu-scm = pkgs.fetchFromGitHub {
+    owner = "blindFS";
+    repo = "topiary-nushell";
+    rev = "main";
+    sha256 = "sha256-rV0BNLVg+cKJtAprKLPLpfwOvYjCSMjfCKzS/kSUFu0=";
+  };
+
   commonDeps = with pkgs; [
     gcc # GNU Compiler Collection
     gnumake # Build automation tool
     go # Go programming language
+    nu-scm # Nushell with Topiary support
     python3 # Python programming language
 
     aider-chat-with-playwright # AI pair programming in terminal
@@ -41,7 +49,10 @@ let
     stylua # Lua code formatter
     terraform-ls # Language server for Terraform
     tflint # Terraform linter
+    topiary # Uniform formatter for simple languages
     tree-sitter # Incremental parsing system
+    yaml-language-server # Language server for YAML
+    yamlfmt # YAML formatter
   ];
 
 in
@@ -96,6 +107,9 @@ in
       AIDER_INPUT_HISTORY_FILE = lib.mkDefault "$HOME/.config/aider/.aider.input.history";
       AIDER_CHAT_HISTORY_FILE = lib.mkDefault "$HOME/.config/aider/.aider.chat.history.md";
       AIDER_LLM_HISTORY_FILE = lib.mkDefault "$HOME/.config/aider/.aider.llm.history.md";
+
+      TOPIARY_CONFIG_FILE = lib.mkDefault "$HOME/.config/topiary/languages.ncl";
+      TOPIARY_LANGUAGE_DIR = lib.mkDefault "$HOME/.config/topiary/languages";
     };
 
     home.packages =
@@ -107,11 +121,12 @@ in
       ++ cfg.extraPackages;
 
     xdg.configFile = {
-      ".aider/.keep".text = "";
       "nvim" = {
         source = nvimConfigDir;
         recursive = true;
       };
+      "topiary/languages.ncl".source = "${nu-scm}/languages.ncl";
+      "topiary/languages/nu.scm".source = "${nu-scm}/languages/nu.scm";
     };
 
     programs.neovim = {
