@@ -40,13 +40,6 @@
       drivers = [ pkgs.canon-cups-ufr2 ];
     };
 
-    open-webui = {
-      enable = true;
-      environment = {
-        WEBUI_AUTH = "False";
-      };
-    };
-
     libinput.enable = true;
     dbus.enable = true;
     openssh.enable = true;
