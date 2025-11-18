@@ -10,6 +10,11 @@
     ./nix/default.nix
   ];
 
+  age.secrets.ssh-hosts = {
+    file = ../../secrets/ssh-hosts.age;
+    mode = "0444";
+  };
+
   time.timeZone = "Europe/Stockholm";
   system = {
     primaryUser = "jonas";

@@ -1,5 +1,6 @@
 {
   pkgs,
+  sshSecretsPath ? null,
   ...
 }:
 {
@@ -57,6 +58,7 @@
 
       # Other
       neofetch # System information tool
+      age # Simple, modern and secure encryption tool
       sops # Secrets management tool
     ];
 
@@ -74,6 +76,27 @@
     gpg-agent.enable = true;
     kitty.enable = true;
     neovim.enable = true;
+
+    ssh-client = {
+      enable = true;
+
+      # Add hosts here that do not contain sensitive information.
+      # hosts = {
+      #   "xxx" = {
+      #     hostname = "xxx";
+      #     user = "xxx";
+      #     port = 1111;
+      #     identityFile = "~/.ssh/id_ed25519";
+      #   };
+      # };
+
+      secretsFile = sshSecretsPath;
+
+      globalOptions = {
+        KexAlgorithms = "sntrup761x25519-sha512@openssh.com,curve25519-sha256";
+      };
+    };
+
     tmux.enable = true;
     zsh.enable = true;
   };
