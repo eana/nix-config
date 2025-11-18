@@ -34,7 +34,6 @@ let
     luajitPackages.tiktoken_core # Tokenizer for Lua
     nil # Nix language server
     nixfmt-rfc-style # Nix code formatter
-    nodePackages.jsonlint # JSON linter
     nodejs_22 # JavaScript runtime
     prettierd # Prettier for formatting code
     shellcheck # Shell script analysis tool
