@@ -17,6 +17,11 @@
       inputs.nixpkgs-lib.url = "github:nix-community/nixpkgs.lib";
     };
 
+    agenix = {
+      url = "github:ryantm/agenix";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
     home-manager = {
       url = "github:nix-community/home-manager";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -76,12 +81,18 @@
 
       # Per-system configuration
       perSystem =
-        { config, pkgs, ... }:
+        {
+          config,
+          pkgs,
+          system,
+          ...
+        }:
         {
           treefmt = import ./dev/treefmt.nix { inherit pkgs; };
           pre-commit = import ./dev/pre-commit.nix { inherit pkgs; };
 
           packages = {
+            agenix = inputs.agenix.packages.${system}.default;
             pre-commit = config.pre-commit.settings.package;
             pre-commit-install = pkgs.writeShellScriptBin "pre-commit-install" ''
               #!${pkgs.stdenv.shell}
@@ -104,15 +115,18 @@
             modules = [
               ./hosts/nixbox/default.nix
               inputs.disko.nixosModules.disko
+              inputs.agenix.nixosModules.default
               inputs.home-manager.nixosModules.home-manager
               inputs.nix-index-database.nixosModules.nix-index
             ];
+            specialArgs = { inherit inputs; };
           };
         };
 
         darwinConfigurations."macbox" = inputs.nix-darwin.lib.darwinSystem {
           modules = [
             ./hosts/macbox/default.nix
+            inputs.agenix.nixosModules.default
             inputs.home-manager.darwinModules.home-manager
             inputs.nix-homebrew.darwinModules.nix-homebrew
             inputs.nix-index-database.darwinModules.nix-index
@@ -124,9 +138,7 @@
             }
           ];
 
-          specialArgs = {
-            inherit inputs;
-          };
+          specialArgs = { inherit inputs; };
         };
 
         homeConfigurations = {
@@ -134,6 +146,7 @@
             pkgs = import inputs.nixpkgs { system = "x86_64-linux"; };
             modules = [
               ./hosts/nasbox/default.nix
+              inputs.agenix.nixosModules.default
             ];
           };
         };
