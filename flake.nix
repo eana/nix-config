@@ -79,7 +79,7 @@
         { config, pkgs, ... }:
         {
           treefmt = import ./dev/treefmt.nix { inherit pkgs; };
-          pre-commit = import ./dev/pre-commit.nix;
+          pre-commit = import ./dev/pre-commit.nix { inherit pkgs; };
 
           packages = {
             pre-commit = config.pre-commit.settings.package;
