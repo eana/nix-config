@@ -52,7 +52,7 @@
         "com.apple.mouse.tapBehavior" = 1;
         "com.apple.swipescrolldirection" = null; # Disable "Natural" scrolling direction
       };
-      SoftwareUpdate.AutomaticallyInstallMacOSUpdates = true;
+      SoftwareUpdate.AutomaticallyInstallMacOSUpdates = false;
       WindowManager = {
         EnableStandardClickToShowDesktop = false;
         GloballyEnabled = false;
