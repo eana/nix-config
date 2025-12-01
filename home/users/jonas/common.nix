@@ -32,6 +32,10 @@
       wget # Download utility
       zip # Zip utility
 
+      # Networking
+      inetutils # Collection of common network programs (ftp, telnet, etc.)
+      net-tools # Network tools (ifconfig, netstat, etc.)
+
       # Media
       mpg123 # Audio player
 
