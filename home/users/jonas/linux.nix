@@ -112,6 +112,9 @@ in
       # File Management
       gthumb # Image browser and viewer
 
+      # Networking
+      iproute2 # Utilities for controlling TCP/IP networking and traffic control in Linux
+
       # Media
       freetube # YouTube client
 
