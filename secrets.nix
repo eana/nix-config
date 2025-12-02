@@ -1,5 +1,7 @@
 # To encrypt a file:
 # cat secrets/file.txt | nix run .#agenix -- -e secrets/file.age
+# or
+# age --recipients-file <(grep -o 'ssh-ed25519 [A-Za-z0-9+/=]\+' secrets.nix) -o secrets/file.age file.txt
 let
   # ssh user keys
   jonas-macbox = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIIhkZXZS9kncETCALGhU4mKrooISoYsaSrMPYBf4ss7v";
@@ -28,4 +30,5 @@ let
 in
 {
   "secrets/ssh-hosts.age".publicKeys = allUsers ++ allSystems;
+  "secrets/atuin.age".publicKeys = allUsers ++ allSystems;
 }
