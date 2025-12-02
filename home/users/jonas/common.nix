@@ -76,6 +76,15 @@
   };
 
   module = {
+    atuin = {
+      client.enable = false;
+      server = {
+        enable = true;
+        openRegistration = true;
+        host = "0.0.0.0";
+        port = 15485;
+      };
+    };
     git.enable = true;
     gpg-agent.enable = true;
     kitty.enable = true;

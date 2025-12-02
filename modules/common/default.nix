@@ -1,5 +1,6 @@
 {
   imports = [
+    ./atuin/default.nix
     ./git/default.nix
     ./gpg-agent/default.nix
     ./kitty/default.nix
