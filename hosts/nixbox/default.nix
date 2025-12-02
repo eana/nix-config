@@ -16,9 +16,19 @@
     ./nix/default.nix
   ];
 
-  age.secrets.ssh-hosts = {
-    file = ../../secrets/ssh-hosts.age;
-    mode = "0444";
+  age.secrets = {
+    ssh-hosts = {
+      file = ../../secrets/ssh-hosts.age;
+      mode = "0400";
+      owner = "jonas";
+      group = "users";
+    };
+    atuin = {
+      file = ../../secrets/atuin.age;
+      mode = "0400";
+      owner = "jonas";
+      group = "users";
+    };
   };
 
   hardware.nvidiaPrime.enable = true;
