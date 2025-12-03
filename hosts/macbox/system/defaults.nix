@@ -50,7 +50,7 @@
         _HIHideMenuBar = false;
         "com.apple.keyboard.fnState" = false;
         "com.apple.mouse.tapBehavior" = 1;
-        "com.apple.swipescrolldirection" = null; # Disable "Natural" scrolling direction
+        "com.apple.swipescrolldirection" = false; # Disable "Natural" scrolling direction
       };
       SoftwareUpdate.AutomaticallyInstallMacOSUpdates = false;
       WindowManager = {
