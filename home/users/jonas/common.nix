@@ -19,6 +19,8 @@
     };
   };
 
+  services.ssh-agent.enable = true;
+
   # Install packages for user.
   # Search for packages here: https://search.nixos.org/packages
   home = {
