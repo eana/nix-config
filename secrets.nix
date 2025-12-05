@@ -18,4 +18,5 @@ let
 in
 {
   "secrets/ssh-hosts.age".publicKeys = allUsers ++ allSystems;
+  "secrets/atuin.age".publicKeys = allUsers ++ allSystems;
 }

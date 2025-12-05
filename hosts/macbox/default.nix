@@ -10,9 +10,15 @@
     ./nix/default.nix
   ];
 
-  age.secrets.ssh-hosts = {
-    file = ../../secrets/ssh-hosts.age;
-    mode = "0444";
+  age.secrets = {
+    ssh-hosts = {
+      file = ../../secrets/ssh-hosts.age;
+      mode = "0400";
+    };
+    atuin = {
+      file = ../../secrets/atuin.age;
+      mode = "0400";
+    };
   };
 
   time.timeZone = "Europe/Stockholm";

@@ -1,6 +1,7 @@
 {
   pkgs,
   sshSecretsPath ? null,
+  atuinSecretsPath ? null,
   ...
 }:
 {
@@ -77,14 +78,18 @@
 
   module = {
     atuin = {
-      client.enable = false;
-      server = {
+      enable = true;
+      sync = {
         enable = true;
-        openRegistration = true;
-        host = "0.0.0.0";
-        port = 15485;
+        address = "https://atuin.eana.win";
+        credentialsFile = atuinSecretsPath;
+      };
+      settings = {
+        sync_frequency = "10m";
+        search_mode = "fuzzy";
       };
     };
+
     git.enable = true;
     gpg-agent.enable = true;
     kitty.enable = true;

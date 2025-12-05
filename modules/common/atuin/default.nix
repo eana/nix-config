@@ -12,112 +12,126 @@ let
     types
     ;
   cfg = config.module.atuin;
+  # Explicitly define paths for needed tools to avoid Exit Code 127 errors
+  sed = "${pkgs.gnused}/bin/sed";
 in
 {
   options.module.atuin = {
-    client = {
-      enable = mkEnableOption "Atuin shell history client";
-      package = mkOption {
-        type = types.package;
-        default = pkgs.atuin;
-        description = "The Atuin package to use for the client";
+    enable = mkEnableOption "Atuin shell history client";
+    package = mkOption {
+      type = types.package;
+      default = pkgs.atuin;
+      description = "The Atuin package to use for the client";
+    };
+    sync = {
+      enable = mkEnableOption "Enable sync with atuin server";
+      address = mkOption {
+        type = types.str;
+        default = "";
+        description = "Atuin server address";
       };
-      settings = mkOption {
-        type = types.attrs;
-        default = { };
-        description = "Atuin client configuration settings";
-        example = {
-          auto_sync = true;
-          sync_frequency = "5m";
-          sync_address = "http://localhost:8888";
-          search_mode = "fuzzy";
-        };
+      credentialsFile = mkOption {
+        type = types.nullOr types.str;
+        default = null;
+        description = "Path to decrypted secrets file containing atuin credentials.";
       };
     };
-
-    server = {
-      enable = mkEnableOption "Atuin shell history server";
-      package = mkOption {
-        type = types.package;
-        default = pkgs.atuin;
-        description = "The Atuin package to use for the server";
-      };
-      host = mkOption {
-        type = types.str;
-        default = "127.0.0.1";
-        description = "Host address for the Atuin server";
-      };
-      port = mkOption {
-        type = types.port;
-        default = 8888;
-        description = "Port for the Atuin server";
-      };
-      openRegistration = mkOption {
-        type = types.bool;
-        default = false;
-        description = "Whether to allow open registration on the server";
-      };
-      dataDir = mkOption {
-        type = types.str;
-        default = "%h/.local/share/atuin-server";
-        description = "Directory to store the Atuin server database and data (supports systemd specifiers like %h for home)";
-      };
-      settings = mkOption {
-        type = types.attrs;
-        default = { };
-        description = "Additional Atuin server configuration settings";
-      };
+    settings = mkOption {
+      type = types.attrs;
+      default = { };
+      description = "Additional Atuin client configuration settings";
     };
   };
 
-  config = lib.mkMerge [
-    # Client configuration
-    (mkIf cfg.client.enable {
-      programs.atuin = {
-        enable = true;
-        inherit (cfg.client) package;
-        enableBashIntegration = true;
-        enableZshIntegration = true;
-        enableFishIntegration = true;
-        inherit (cfg.client) settings;
-      };
-    })
+  config = mkIf cfg.enable {
+    programs.atuin = {
+      enable = true;
+      inherit (cfg) package;
+      enableBashIntegration = true;
+      enableZshIntegration = true;
+      enableFishIntegration = true;
+      settings = lib.mkMerge [
+        cfg.settings
+        (mkIf cfg.sync.enable {
+          sync_address = cfg.sync.address;
+          auto_sync = true;
+        })
+      ];
+    };
 
-    # Server configuration (as user service)
-    (mkIf cfg.server.enable {
-      systemd.user.services.atuin-server = {
-        Unit = {
-          Description = "Atuin shell history server";
-          After = [ "network.target" ];
-        };
-
-        Service = {
-          Type = "simple";
-          WorkingDirectory = cfg.server.dataDir;
-          ExecStart = "${cfg.server.package}/bin/atuin server start";
-          Restart = "on-failure";
-          RestartSec = "5s";
-          Environment = [
-            "ATUIN_HOST=${cfg.server.host}"
-            "ATUIN_PORT=${toString cfg.server.port}"
-            "ATUIN_OPEN_REGISTRATION=${if cfg.server.openRegistration then "true" else "false"}"
-            "ATUIN_DB_URI=sqlite://${cfg.server.dataDir}/atuin.db"
-            "ATUIN_CONFIG_DIR=${cfg.server.dataDir}"
-          ]
-          ++ (lib.mapAttrsToList (name: value: "${name}=${toString value}") cfg.server.settings);
-        };
-
-        Install = {
-          WantedBy = [ "default.target" ];
-        };
+    # Systemd One-Shot Service for Login/Logout
+    systemd.user.services.atuin-login = mkIf (cfg.sync.enable && cfg.sync.credentialsFile != null) {
+      Unit = {
+        Description = "Atuin automatic login/logout service";
+        # Wait for network and secrets to be online
+        After = [
+          "network-online.target"
+          "sops-nix.service"
+        ];
+        Wants = [ "network-online.target" ];
+        ConditionPathExists = cfg.sync.credentialsFile;
       };
 
-      # Ensure the data directory exists
-      home.activation.atuinServerDir = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
-        $DRY_RUN_CMD mkdir -p $VERBOSE_ARG ${
-          lib.replaceStrings [ "%h" ] [ config.home.homeDirectory ] cfg.server.dataDir
-        }
-      '';
-    })
-  ];
+      Service = {
+        Type = "oneshot";
+        # Crucial for ExecStop: Keeps the service 'active' after login
+        RemainAfterExit = true;
+        Restart = "on-failure";
+        RestartSec = "30s";
+
+        # --- ExecStart (The Login Logic) ---
+        ExecStart =
+          let
+            atuinBin = "${cfg.package}/bin/atuin";
+            script = pkgs.writeShellScript "atuin-login-script" ''
+              set -e
+              CRED_FILE="${cfg.sync.credentialsFile}"
+
+              # 1. Check if already logged in. If so, exit successfully.
+              if ${atuinBin} account status &>/dev/null; then
+                echo "Atuin: Already logged in. Exiting."
+                ${atuinBin} sync # Optionally trigger a sync before exiting
+                exit 0
+              fi
+
+              echo "Atuin: Not logged in. Attempting authentication..."
+
+              # 2. Check for credentials file existence only if login failed.
+              if [ ! -f "$CRED_FILE" ]; then
+                 echo "Atuin: Error - Credentials file not found at $CRED_FILE"
+                 exit 1
+              fi
+
+              # 3. Safely extract credentials
+              USERNAME=$(${sed} -n 's/^username: //p' "$CRED_FILE")
+              PASSWORD=$(${sed} -n 's/^password: //p' "$CRED_FILE")
+              KEY=$(${sed} -n 's/^key: //p' "$CRED_FILE")
+
+              if [[ -z "$USERNAME" || -z "$PASSWORD" || -z "$KEY" ]]; then
+                echo "Atuin: Error - Missing credentials in $CRED_FILE"
+                exit 1
+              fi
+
+              # 4. Perform Login
+              ${atuinBin} login \
+                --username "$USERNAME" \
+                --password "$PASSWORD" \
+                --key "$KEY"
+
+              echo "Atuin: Login successful."
+              ${atuinBin} sync
+            '';
+          in
+          "${script}";
+
+        # --- ExecStop (The Logout Logic) ---
+        # Runs when 'systemctl --user stop atuin-login' is executed
+        ExecStop = "${cfg.package}/bin/atuin logout";
+      };
+
+      Install = {
+        WantedBy = [ "default.target" ];
+      };
+    };
+  };
 }
