@@ -14,10 +14,14 @@
     ssh-hosts = {
       file = ../../secrets/ssh-hosts.age;
       mode = "0400";
+      owner = "jonas";
+      group = "staff";
     };
     atuin = {
       file = ../../secrets/atuin.age;
       mode = "0400";
+      owner = "jonas";
+      group = "staff";
     };
   };
 
