@@ -4,6 +4,7 @@
   imports = [
     ./system/defaults.nix
     ./system/packages.nix
+    ./system/networking.nix
     ./system/environment.nix
     ./system/homebrew.nix
     ./home-manager/default.nix
