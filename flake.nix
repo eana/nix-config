@@ -110,17 +110,15 @@
         };
 
       flake = {
-        nixosConfigurations = {
-          nixbox = inputs.nixpkgs.lib.nixosSystem {
-            modules = [
-              ./hosts/nixbox/default.nix
-              inputs.disko.nixosModules.disko
-              inputs.agenix.nixosModules.default
-              inputs.home-manager.nixosModules.home-manager
-              inputs.nix-index-database.nixosModules.nix-index
-            ];
-            specialArgs = { inherit inputs; };
-          };
+        nixosConfigurations."nixbox" = inputs.nixpkgs.lib.nixosSystem {
+          modules = [
+            ./hosts/nixbox/default.nix
+            inputs.disko.nixosModules.disko
+            inputs.agenix.nixosModules.default
+            inputs.home-manager.nixosModules.home-manager
+            inputs.nix-index-database.nixosModules.nix-index
+          ];
+          specialArgs = { inherit inputs; };
         };
 
         darwinConfigurations."macbox" = inputs.nix-darwin.lib.darwinSystem {
@@ -141,13 +139,11 @@
           specialArgs = { inherit inputs; };
         };
 
-        homeConfigurations = {
-          nasbox = inputs.home-manager.lib.homeManagerConfiguration {
-            pkgs = import inputs.nixpkgs { system = "x86_64-linux"; };
-            modules = [
-              ./hosts/nasbox/default.nix
-            ];
-          };
+        homeConfigurations."nasbox" = inputs.home-manager.lib.homeManagerConfiguration {
+          pkgs = import inputs.nixpkgs { system = "x86_64-linux"; };
+          modules = [
+            ./hosts/nasbox/default.nix
+          ];
         };
 
         inherit homeModules;
