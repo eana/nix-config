@@ -1,4 +1,9 @@
-{ config, lib, ... }:
+{
+  config,
+  lib,
+  pkgs,
+  ...
+}:
 let
   inherit (lib)
     mkEnableOption
@@ -66,6 +71,32 @@ let
       };
     };
   };
+
+  sshProvisionScript = pkgs.writeShellScript "ssh-provision-secrets" ''
+    export PATH="${
+      lib.makeBinPath [
+        pkgs.coreutils
+      ]
+    }:$PATH"
+
+    set -euo pipefail
+
+    SECRETS_FILE="${toString cfg.secretsFile}"
+    SSH_CONFIG_DIR="$HOME/.ssh/config.d"
+    SSH_SECRETS_CONFIG="$SSH_CONFIG_DIR/ssh-hosts"
+
+    mkdir -p "$SSH_CONFIG_DIR"
+
+    if [ -f "$SECRETS_FILE" ]; then
+      echo "SSH Client: Copying secrets to $SSH_SECRETS_CONFIG"
+      cp "$SECRETS_FILE" "$SSH_SECRETS_CONFIG"
+      chmod 600 "$SSH_SECRETS_CONFIG"
+    else
+      echo "SSH Client: Secrets file not found at $SECRETS_FILE, removing config entry"
+      rm -f "$SSH_SECRETS_CONFIG"
+    fi
+  '';
+
 in
 {
   options.module.ssh-client = {
@@ -103,14 +134,12 @@ in
       enable = true;
       inherit (cfg) enableDefaultConfig;
 
-      # Include the secrets via config.d directory
       includes = mkIf (cfg.secretsFile != null) [
         "config.d/ssh-hosts"
       ];
 
       matchBlocks =
         let
-          # Only use manually defined hosts
           customHosts = lib.mapAttrs (_: host: {
             inherit (host)
               hostname
@@ -144,24 +173,36 @@ in
         customHosts // globalBlock;
     };
 
-    # Activation script to copy secrets to config.d
-    home.activation.sshSecretsConfig = mkIf (cfg.secretsFile != null) (
-      lib.hm.dag.entryAfter [ "writeBoundary" ] ''
-        secrets_file="${cfg.secretsFile}"
-        ssh_config_dir="$HOME/.ssh/config.d"
-        ssh_secrets_config="$ssh_config_dir/ssh-hosts"
+    # Linux
+    systemd.user.services.ssh-secret-provision = mkIf (pkgs.stdenv.isLinux && cfg.secretsFile != null) {
+      Unit = {
+        Description = "Provision SSH secret configuration";
+        After = [ "default.target" ];
+        ConditionPathExists = cfg.secretsFile;
+      };
 
-        $DRY_RUN_CMD mkdir -p "$ssh_config_dir"
+      Service = {
+        Type = "oneshot";
+        RemainAfterExit = true;
+        ExecStart = "${sshProvisionScript}";
+      };
 
-        if [ -f "$secrets_file" ]; then
-          $VERBOSE_ECHO "Copying SSH secrets to config.d/ssh-hosts"
-          $DRY_RUN_CMD cp "$secrets_file" "$ssh_secrets_config"
-          $DRY_RUN_CMD chmod 600 "$ssh_secrets_config"
-        else
-          $VERBOSE_ECHO "Secrets file not found, removing config.d/ssh-hosts"
-          $DRY_RUN_CMD rm -f "$ssh_secrets_config"
-        fi
-      ''
-    );
+      Install = {
+        WantedBy = [ "default.target" ];
+      };
+    };
+
+    # macOS
+    launchd.agents.ssh-secret-provision = mkIf (pkgs.stdenv.isDarwin && cfg.secretsFile != null) {
+      enable = true;
+      config = {
+        Label = "org.nix-community.ssh-secret-provision";
+        ProgramArguments = [ "${sshProvisionScript}" ];
+        RunAtLoad = true;
+        KeepAlive = false;
+        StandardOutPath = "${config.home.homeDirectory}/Library/Logs/ssh-secret-provision.out.log";
+        StandardErrorPath = "${config.home.homeDirectory}/Library/Logs/ssh-secret-provision.err.log";
+      };
+    };
   };
 }
