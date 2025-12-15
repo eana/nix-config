@@ -4,14 +4,17 @@
   pkgs,
   ...
 }:
-
 let
-  inherit (lib) mkEnableOption mkOption types;
+  inherit (lib)
+    mkEnableOption
+    mkOption
+    types
+    mkIf
+    ;
 
   cfg = config.module.neovim;
 
-  nvimConfigDir = ../../../assets/.config/nvim;
-
+  # Nushell Topiary support
   nu-scm = pkgs.fetchFromGitHub {
     owner = "blindFS";
     repo = "topiary-nushell";
@@ -19,40 +22,42 @@ let
     sha256 = "sha256-rV0BNLVg+cKJtAprKLPLpfwOvYjCSMjfCKzS/kSUFu0=";
   };
 
-  commonDeps = with pkgs; [
-    gcc # GNU Compiler Collection
-    gnumake # Build automation tool
-    go # Go programming language
-    nu-scm # Nushell with Topiary support
-    python3 # Python programming language
+  # Tools required specifically for plugin compilation (e.g., CopilotChat.nvim)
+  compilationTools = with pkgs; [
+    gcc
+    gnumake
+    unzip
+  ];
 
-    aider-chat-with-playwright # AI pair programming in terminal
-    glow # Markdown renderer for the terminal
-    unzip # Utility for unpacking zip files
+  # Core Language Servers and Formatters
+  lspAndFormatters = with pkgs; [
+    bash-language-server
+    black
+    gopls
+    gotools
+    jsonnet-language-server
+    lua-language-server
+    nil
+    nixfmt-rfc-style
+    prettierd
+    shellcheck
+    shfmt
+    stylua
+    terraform-ls
+    tflint
+    yaml-language-server
+    yamlfmt
+  ];
 
-    # Linters, formatters, and language servers
-    bash-language-server # Language server for Bash
-    black # Python code formatter
-    gopls # Go language server
-    gotools # Tools for Go programming
-    jsonnet-language-server # Language server for Jsonnet
-    lua # Lua programming language
-    lua-language-server # Language server for Lua
-    luajitPackages.luarocks # Package manager for Lua modules
-    luajitPackages.tiktoken_core # Tokenizer for Lua
-    nil # Nix language server
-    nixfmt-rfc-style # Nix code formatter
-    nodejs_22 # JavaScript runtime
-    prettierd # Prettier for formatting code
-    shellcheck # Shell script analysis tool
-    shfmt # Shell script formatter
-    stylua # Lua code formatter
-    terraform-ls # Language server for Terraform
-    tflint # Terraform linter
-    topiary # Uniform formatter for simple languages
-    tree-sitter # Incremental parsing system
-    yaml-language-server # Language server for YAML
-    yamlfmt # YAML formatter
+  # Integrated CLI tools
+  integratedClis = with pkgs; [
+    aider-chat-with-playwright
+    glow
+    topiary
+    tree-sitter
+    go
+    python3
+    nodejs_22
   ];
 
 in
@@ -60,44 +65,31 @@ in
   options.module.neovim = {
     enable = mkEnableOption "Neovim text editor";
 
+    configDir = mkOption {
+      type = types.path;
+      default = ../../../assets/.config/nvim;
+      description = "Path to the nvim configuration directory (init.lua, etc.)";
+    };
+
+    aider = {
+      model = mkOption {
+        type = types.str;
+        default = "openrouter/deepseek/deepseek-r1:free";
+      };
+    };
+
     vimAlias = mkOption {
       type = types.bool;
       default = true;
-      description = "Whether to create a 'vim' alias for Neovim";
-    };
-
-    withNodeJs = mkOption {
-      type = types.bool;
-      default = true;
-      description = "Whether to enable Node.js support";
     };
 
     defaultEditor = mkOption {
       type = types.bool;
       default = true;
-      description = "Whether to set Neovim as the default editor";
-    };
-
-    extraConfig = mkOption {
-      type = types.lines;
-      default = "";
-      description = "Additional Neovim configuration to append";
-    };
-
-    plugins = mkOption {
-      type = types.listOf types.package;
-      default = [ ];
-      description = "List of Neovim plugins to install";
-    };
-
-    extraPackages = mkOption {
-      type = types.listOf types.package;
-      default = [ ];
-      description = "Additional runtime dependencies";
     };
   };
 
-  config = lib.mkIf cfg.enable {
+  config = mkIf cfg.enable {
     home.sessionVariables = {
       AIDER_MODEL = lib.mkDefault "openrouter/deepseek/deepseek-r1:free";
 
@@ -112,17 +104,12 @@ in
       TOPIARY_LANGUAGE_DIR = lib.mkDefault "$HOME/.config/topiary/languages";
     };
 
-    home.packages =
-      with pkgs;
-      [
-        (lib.mkIf cfg.withNodeJs nodejs)
-      ]
-      ++ commonDeps
-      ++ cfg.extraPackages;
+    # System-level dependencies for LSPs, Compilers, and CLI tools
+    home.packages = compilationTools ++ lspAndFormatters ++ integratedClis;
 
     xdg.configFile = {
       "nvim" = {
-        source = nvimConfigDir;
+        source = cfg.configDir;
         recursive = true;
       };
       "topiary/languages.ncl".source = "${nu-scm}/languages.ncl";
@@ -131,14 +118,16 @@ in
 
     programs.neovim = {
       enable = true;
-      inherit (cfg)
-        vimAlias
-        withNodeJs
-        defaultEditor
-        plugins
-        ;
+      inherit (cfg) vimAlias defaultEditor;
 
-      inherit (cfg) extraConfig;
+      withNodeJs = true;
+      withPython3 = true;
+      withRuby = false;
+
+      extraLuaPackages = ps: [
+        ps.luarocks
+        ps.tiktoken_core
+      ];
     };
   };
 }

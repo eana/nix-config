@@ -50,4 +50,7 @@ require("lazy").setup({
       },
     },
   },
+  rocks = {
+    enabled = false, -- Use the Nix-provided luarocks
+  },
 })
