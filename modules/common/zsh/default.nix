@@ -108,16 +108,18 @@ in
         # -- Fix Keybindings --
         bindkey -e                           # Use Emacs mode
 
-        # 1. Fix Home and End keys
+        # 1. Fix Home, End, Del keys
         # We use the terminfo database to detect the correct escape sequences
         [[ -n "''${terminfo[khome]}" ]] && bindkey "''${terminfo[khome]}" beginning-of-line
         [[ -n "''${terminfo[kend]}"  ]] && bindkey "''${terminfo[kend]}"  end-of-line
+        [[ -n "''${terminfo[kdch1]}"  ]] && bindkey "''${terminfo[kdch1]}"  delete-char
 
         # 2. Manual fallbacks (some terminals don't report terminfo correctly)
         bindkey "^[[H" beginning-of-line
         bindkey "^[[F" end-of-line
         bindkey "^[OH" beginning-of-line
         bindkey "^[OF" end-of-line
+        bindkey "^[[3~" delete-char
 
         # macOS VT-style Home/End
         bindkey "^[[1~" beginning-of-line
