@@ -4,30 +4,17 @@
   pkgs,
   ...
 }:
-
 let
-  inherit (lib) mkEnableOption mkOption types;
+  inherit (lib)
+    mkEnableOption
+    mkOption
+    types
+    mkIf
+    ;
 
   cfg = config.module.zsh;
 
-  p10kConfig = ../../../assets/.p10k.zsh;
-
-  defaultOhMyZshExtraConfig = ''
-    # ZSH_TMUX_AUTOSTART=true
-
-    ### Fix slowness of pastes with zsh-syntax-highlighting.zsh
-    pasteinit() {
-      OLD_SELF_INSERT=''${''${(s.:.)widgets[self-insert]}[2,3]}
-      zle -N self-insert url-quote-magic
-    }
-
-    pastefinish() {
-      zle -N self-insert $OLD_SELF_INSERT
-    }
-    zstyle :bracketed-paste-magic paste-init pasteinit
-    zstyle :bracketed-paste-magic paste-finish pastefinish
-    ### Fix slowness of pastes
-
+  awsHelperScript = ''
     ax() {
       local profile
       profile="$( (echo "UNSET ALL"; sed -n -e 's/^\[profile \(.*\)\]/\1/p' ~/.aws/config) | fzf --tac --no-sort)"
@@ -47,180 +34,138 @@ let
     }
   '';
 
-  defaultInitContent = ''
-    # zmodload zsh/zprof
-    skip_global_compinit=1
+  pasteFixScript = ''
+    # ZSH_TMUX_AUTOSTART=true
 
-    # Fix ctrl + left/right arrow keys
-    bindkey "\e[1;5C" forward-word
-    bindkey "\e[1;5D" backward-word
-    # Bind esc + backspace to delete the word before the cursor
-    bindkey '\e^?' backward-kill-word
+    # Load necessary Zsh widgets for the fix
+    autoload -Uz bracketed-paste-magic
+    autoload -Uz url-quote-magic
+    zle -N bracketed-paste bracketed-paste-magic
+    zle -N self-insert url-quote-magic
 
-    source ${pkgs.zsh-powerlevel10k}/share/zsh-powerlevel10k/powerlevel10k.zsh-theme
-    [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
-
-    # zprof
-  '';
-
-  defaultCompletionInit = ''
-    autoload -Uz compinit
-    for dump in ~/.zcompdump(N.mh+24); do
-      compinit
-    done
-    compinit -C
-  '';
-
-  defaultPlugins = [
-    {
-      name = "zsh-fzf-history-search";
-      src = pkgs.fetchFromGitHub {
-        owner = "joshskidmore";
-        repo = "zsh-fzf-history-search";
-        rev = "d5a9730b5b4cb0b39959f7f1044f9c52743832ba";
-        sha256 = "1dm1asa4ff5r42nadmj0s6hgyk1ljrckw7val8fz2n0892b8h2mm";
-      };
+    pasteinit() {
+      OLD_SELF_INSERT=''${''${(s.:.)widgets[self-insert]}[2,3]}
+      zle -N self-insert url-quote-magic
     }
-  ];
-
-  defaultShellAliases = {
-    gapp = "gcloud auth application-default login";
-    gauth = "gcloud auth login";
-    ide = "idea-community . > /dev/null 2>&1";
-    k = "kubectl";
-  };
+    pastefinish() {
+      zle -N self-insert $OLD_SELF_INSERT
+    }
+    zstyle :bracketed-paste-magic paste-init pasteinit
+    zstyle :bracketed-paste-magic paste-finish pastefinish
+  '';
 
 in
 {
   options.module.zsh = {
-    enable = mkEnableOption "Z shell";
+    enable = mkEnableOption "Pure Z shell profile";
+
+    p10kConfigFile = mkOption {
+      type = types.nullOr types.path;
+      default = ../../../assets/.p10k.zsh;
+      description = "Path to the Powerlevel10k configuration file (.p10k.zsh)";
+      example = "./assets/.p10k.zsh";
+    };
 
     package = mkOption {
       type = types.package;
       default = pkgs.zsh;
-      description = "Z shell";
-    };
-
-    enableCompletion = mkOption {
-      type = types.bool;
-      default = true;
-      description = "Whether to enable Zsh completion";
-    };
-
-    ohMyZsh = {
-      enable = mkOption {
-        type = types.bool;
-        default = true;
-        description = "Whether to enable Oh My Zsh";
-      };
-
-      extraConfig = mkOption {
-        type = types.lines;
-        default = defaultOhMyZshExtraConfig;
-        description = "Extra configuration for Oh My Zsh";
-      };
-    };
-
-    history = {
-      size = mkOption {
-        type = types.int;
-        default = 10000;
-        description = "Maximum number of history entries to keep in memory";
-      };
-
-      save = mkOption {
-        type = types.int;
-        default = 10000;
-        description = "Maximum number of history entries to save to file";
-      };
-
-      share = mkOption {
-        type = types.bool;
-        default = true;
-        description = "Share history between all sessions";
-      };
-
-      extended = mkOption {
-        type = types.bool;
-        default = true;
-        description = "Save extended history (timestamp and duration)";
-      };
-    };
-
-    initContent = mkOption {
-      type = types.lines;
-      default = defaultInitContent;
-      description = "Extra initialization commands for Zsh";
-    };
-
-    completionInit = mkOption {
-      type = types.lines;
-      default = defaultCompletionInit;
-      description = "Initialization commands to run when completion is enabled";
-    };
-
-    plugins = mkOption {
-      type = types.listOf (types.attrsOf types.anything);
-      default = defaultPlugins;
-      description = "List of Zsh plugins to install";
-    };
-
-    shellAliases = mkOption {
-      type = types.attrsOf types.str;
-      default = defaultShellAliases;
-      description = "Shell aliases for Zsh";
-    };
-
-    autosuggestion = {
-      enable = mkOption {
-        type = types.bool;
-        default = true;
-        description = "Whether to enable zsh-autosuggestions";
-      };
-    };
-
-    syntaxHighlighting = {
-      enable = mkOption {
-        type = types.bool;
-        default = true;
-        description = "Whether to enable zsh-syntax-highlighting";
-      };
+      description = "Z shell package to use";
     };
   };
 
-  config = lib.mkIf cfg.enable {
-    # Install .p10k.zsh configuration
-    home.file.".p10k.zsh".source = p10kConfig;
+  config = mkIf cfg.enable {
+    home.file = mkIf (cfg.p10kConfigFile != null) {
+      ".p10k.zsh".source = cfg.p10kConfigFile;
+    };
 
     programs.zsh = {
       enable = true;
       inherit (cfg) package;
-      inherit (cfg)
-        enableCompletion
-        initContent
-        completionInit
-        plugins
-        shellAliases
-        ;
 
-      oh-my-zsh = lib.mkIf cfg.ohMyZsh.enable {
-        enable = true;
-        inherit (cfg.ohMyZsh) extraConfig;
-      };
+      enableCompletion = true;
+      autosuggestion.enable = true;
+      syntaxHighlighting.enable = true;
 
       history = {
-        inherit (cfg.history) size;
-        inherit (cfg.history) save;
-        inherit (cfg.history) share;
-        inherit (cfg.history) extended;
+        size = 10000;
+        save = 10000;
+        share = true;
+        extended = true;
+        ignoreDups = true;
+        ignoreSpace = true;
       };
 
-      autosuggestion = {
-        inherit (cfg.autosuggestion) enable;
-      };
+      completionInit = ''
+        autoload -Uz compinit
+        # Only run compinit if the dump file is older than 24h
+        for dump in ~/.zcompdump(N.mh+24); do
+          compinit
+        done
+        compinit -C
+      '';
 
-      syntaxHighlighting = {
-        inherit (cfg.syntaxHighlighting) enable;
+      initContent = ''
+        # -- Fix Keybindings --
+        bindkey -e                           # Use Emacs mode
+
+        # 1. Fix Home and End keys
+        # We use the terminfo database to detect the correct escape sequences
+        [[ -n "''${terminfo[khome]}" ]] && bindkey "''${terminfo[khome]}" beginning-of-line
+        [[ -n "''${terminfo[kend]}"  ]] && bindkey "''${terminfo[kend]}"  end-of-line
+
+        # 2. Manual fallbacks (some terminals don't report terminfo correctly)
+        bindkey "^[[H" beginning-of-line
+        bindkey "^[[F" end-of-line
+        bindkey "^[OH" beginning-of-line
+        bindkey "^[OF" end-of-line
+
+        # macOS VT-style Home/End
+        bindkey "^[[1~" beginning-of-line
+        bindkey "^[[4~" end-of-line
+
+        # 3. Word deletion style (from previous step)
+        autoload -U select-word-style
+        select-word-style bash
+
+        # ... Ctrl-A, E, K, etc. ...
+        bindkey '^K' kill-line
+        bindkey '^A' beginning-of-line
+        bindkey '^E' end-of-line
+        bindkey '^W' backward-kill-word
+
+        # -- Custom Scripts --
+        ${pasteFixScript}
+        ${awsHelperScript}
+
+        # Fix arrow keys and esc+backspace
+        bindkey "\e[1;5C" forward-word
+        bindkey "\e[1;5D" backward-word
+
+        # Bind esc + backspace to delete the word before the cursor
+        bindkey '\e^?' backward-kill-word
+
+        # -- FZF History Search --
+        source ${
+          pkgs.fetchFromGitHub {
+            owner = "joshskidmore";
+            repo = "zsh-fzf-history-search";
+            rev = "d5a9730b5b4cb0b39959f7f1044f9c52743832ba";
+            sha256 = "1dm1asa4ff5r42nadmj0s6hgyk1ljrckw7val8fz2n0892b8h2mm";
+          }
+        }/zsh-fzf-history-search.zsh
+
+        # -- Theme --
+        source ${pkgs.zsh-powerlevel10k}/share/zsh-powerlevel10k/powerlevel10k.zsh-theme
+
+        # Load user configuration if it exists
+        [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
+      '';
+
+      shellAliases = {
+        gapp = "gcloud auth application-default login";
+        gauth = "gcloud auth login";
+        ide = "idea-community . > /dev/null 2>&1";
+        k = "kubectl";
       };
     };
   };
