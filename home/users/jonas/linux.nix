@@ -120,7 +120,6 @@ in
 
       # Development Tools
       aws-export-profile # AWS profile exporter
-      meld # Visual diff and merge tool
       nix-tree # Visualize Nix dependencies
 
       # Fonts
