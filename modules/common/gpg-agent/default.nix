@@ -6,14 +6,19 @@
 }:
 
 let
-  inherit (lib) mkEnableOption mkOption types;
+  inherit (lib)
+    mkEnableOption
+    mkOption
+    types
+    mkIf
+    ;
 
   cfg = config.module.gpg-agent;
 
-  defaultSettings = {
-    defaultCacheTtl = 86400;
-    maxCacheTtl = 86400;
-    pinentryPackage = pkgs.pinentry-tty;
+  defaultGpgSettings = {
+    defaultCacheTtl = lib.mkDefault 86400;
+    maxCacheTtl = lib.mkDefault 86400;
+    pinentry.package = lib.mkDefault pkgs.pinentry-tty;
   };
 
 in
@@ -28,40 +33,23 @@ in
     };
 
     settings = mkOption {
-      type = types.submodule {
-        options = {
-          defaultCacheTtl = mkOption {
-            type = types.int;
-            default = defaultSettings.defaultCacheTtl;
-            description = "Default cache TTL in seconds";
-          };
-          maxCacheTtl = mkOption {
-            type = types.int;
-            default = defaultSettings.maxCacheTtl;
-            description = "Maximum cache TTL in seconds";
-          };
-          pinentryPackage = mkOption {
-            type = types.package;
-            default = defaultSettings.pinentryPackage;
-            description = "Pinentry package to use";
-          };
-        };
-      };
-      default = defaultSettings;
-      description = "GPG agent configuration settings";
+      type = types.attrs;
+      default = { };
+      description = ''
+        Configuration options to pass directly to 'services.gpg-agent'.
+      '';
     };
   };
 
-  config = lib.mkIf cfg.enable {
-    home.packages = [
-      cfg.package
-      cfg.settings.pinentryPackage
+  config = mkIf cfg.enable {
+    services.gpg-agent = lib.mkMerge [
+      defaultGpgSettings
+      cfg.settings
+      {
+        enable = true;
+      }
     ];
 
-    services.gpg-agent = {
-      enable = true;
-      inherit (cfg.settings) defaultCacheTtl maxCacheTtl;
-      pinentry.package = cfg.settings.pinentryPackage;
-    };
+    home.packages = [ cfg.package ];
   };
 }
