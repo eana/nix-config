@@ -66,7 +66,6 @@
       # Other
       neofetch # System information tool
       age # Simple, modern and secure encryption tool
-      sops # Secrets management tool
     ];
 
     sessionVariables = {
