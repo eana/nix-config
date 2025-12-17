@@ -157,10 +157,7 @@ in
       swayKeybinding = "Mod4+Shift+m";
     };
     mpv.enable = true;
-    ollama = {
-      enable = true;
-      acceleration = false;
-    };
+    ollama.enable = true;
     openra.enable = false;
     sway = {
       enable = true;
