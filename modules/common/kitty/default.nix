@@ -6,20 +6,22 @@
 }:
 
 let
-  inherit (lib) mkEnableOption mkOption types;
-
+  inherit (lib)
+    mkEnableOption
+    mkOption
+    mkIf
+    types
+    ;
   cfg = config.module.kitty;
 
   defaultFontFamily = "MesloLGS NF";
   defaultFontSize = 11.0;
-  defaultOpacity = 1.0;
 
   defaultSettings = {
     scrollback_lines = 10000;
     enable_audio_bell = false;
     confirm_os_window_close = 0;
     update_check_interval = 0;
-    background_opacity = toString defaultOpacity;
   };
 
   defaultColors = {
@@ -74,22 +76,24 @@ in
       };
     };
 
-    opacity = mkOption {
-      type = types.float;
-      default = defaultOpacity;
-      description = "Window opacity (0.0 transparent to 1.0 opaque)";
+    appearance = {
+      opacity = mkOption {
+        type = types.float;
+        default = 1.0;
+        description = "Window opacity (0.0 transparent to 1.0 opaque)";
+      };
+
+      colors = mkOption {
+        type = types.attrs;
+        default = defaultColors;
+        description = "Kitty color scheme settings";
+      };
     };
 
     settings = mkOption {
       type = types.attrs;
-      default = defaultSettings;
-      description = "Kitty configuration settings";
-    };
-
-    colors = mkOption {
-      type = types.attrs;
-      default = defaultColors;
-      description = "Kitty color settings";
+      default = { };
+      description = "Additional Kitty configuration settings";
     };
 
     extraConfig = mkOption {
@@ -99,10 +103,11 @@ in
     };
   };
 
-  config = lib.mkIf cfg.enable {
+  config = mkIf cfg.enable {
     programs.kitty = {
       enable = true;
       inherit (cfg) package;
+
       font = {
         name = cfg.font.family;
         inherit (cfg.font) size;
@@ -110,17 +115,20 @@ in
       // lib.optionalAttrs (cfg.font.package != null) {
         inherit (cfg.font) package;
       };
+
       settings = lib.recursiveUpdate defaultSettings (
         cfg.settings
         // {
-          background_opacity = toString cfg.opacity;
+          background_opacity = toString cfg.appearance.opacity;
         }
       );
-      extraConfig = ''
-        foreground ${cfg.colors.foreground}
-        background ${cfg.colors.background}
-        ${lib.concatStringsSep "\n" (lib.mapAttrsToList (name: value: "${name} ${value}") cfg.colors)}
 
+      extraConfig = ''
+        foreground ${cfg.appearance.colors.foreground}
+        background ${cfg.appearance.colors.background}
+        ${lib.concatStringsSep "\n" (
+          lib.mapAttrsToList (name: value: "${name} ${value}") cfg.appearance.colors
+        )}
         ${cfg.extraConfig}
       '';
     };
