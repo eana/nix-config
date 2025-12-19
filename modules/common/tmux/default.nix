@@ -6,19 +6,25 @@
 }:
 
 let
-  inherit (lib) mkEnableOption mkOption types;
-
+  inherit (lib)
+    mkEnableOption
+    mkOption
+    mkIf
+    types
+    ;
   cfg = config.module.tmux;
 
+  # Platform-specific clipboard configuration
   clipboardPackage = if pkgs.stdenv.isLinux then pkgs.wl-clipboard else null;
 
-  defaultClipboardCmdStr =
+  defaultClipboardCmd =
     if pkgs.stdenv.isDarwin then
       "pbcopy"
     else if pkgs.stdenv.isLinux then
       "${clipboardPackage}/bin/wl-paste"
     else
       "";
+
   commonExtraConfig = ''
     # Mouse
     bind-key m set-option -g mouse on \; display 'Mouse: ON'
@@ -124,6 +130,25 @@ let
     bind-key -n End send Escape "[4~"
   '';
 
+  clipboardCopyCommand =
+    if cfg.clipboard.command != "" then
+      ''
+        bind -T copy-mode-vi y send-keys -X copy-pipe-and-cancel '{{#if (eq os "windows-wsl")}}clip.exe{{else }}${cfg.clipboard.command}{{/if}}'
+      ''
+    else
+      "";
+
+  finalExtraConfig = ''
+    # Handle prefix key configuration manually
+    set -gu prefix2
+    unbind C-${cfg.shortcut}
+    unbind C-b
+    set -g prefix C-${cfg.shortcut}
+    bind C-${cfg.shortcut} send-prefix
+    ${commonExtraConfig}
+    ${clipboardCopyCommand}
+    ${cfg.extraConfig} # User's additional extraConfig lines
+  '';
 in
 {
   options.module.tmux = {
@@ -183,24 +208,25 @@ in
       description = "List of tmux plugins to install";
     };
 
-    extraConfig = mkOption {
-      type = types.lines;
-      default = ""; # Empty default, as it's constructed below
-      description = "Additional tmux configuration";
+    clipboard = {
+      command = mkOption {
+        type = types.str;
+        default = defaultClipboardCmd;
+        description = ''
+          Command for clipboard integration (e.g., "wl-paste", "pbcopy").
+          For WSL, "clip.exe" is handled internally by default.
+        '';
+      };
     };
 
-    # New option for the clipboard command. User can override this.
-    clipboardCmd = mkOption {
-      type = types.str;
-      default = defaultClipboardCmdStr;
-      description = ''
-        Command for clipboard integration (e.g., "wl-paste", "pbcopy").
-        For WSL, "clip.exe" is handled internally by default.
-      '';
+    extraConfig = mkOption {
+      type = types.lines;
+      default = "";
+      description = "Additional tmux configuration";
     };
   };
 
-  config = lib.mkIf cfg.enable {
+  config = mkIf cfg.enable {
     programs.tmux = {
       enable = true;
       inherit (cfg)
@@ -213,33 +239,9 @@ in
         keyMode
         plugins
         ;
-
-      extraConfig =
-        let
-          clipboardCopyCommand =
-            if cfg.clipboardCmd != "" then
-              ''
-                bind -T copy-mode-vi y send-keys -X copy-pipe-and-cancel '{{#if (eq os "windows-wsl")}}clip.exe{{else }}${cfg.clipboardCmd}{{/if}}'
-              ''
-            else
-              "";
-        in
-        ''
-          # Handle prefix key configuration manually
-          set -gu prefix2
-          unbind C-${cfg.shortcut}
-          unbind C-b
-          set -g prefix C-${cfg.shortcut}
-          bind C-${cfg.shortcut} send-prefix
-
-          ${commonExtraConfig}
-          ${clipboardCopyCommand}
-          ${cfg.extraConfig} # User's additional extraConfig lines
-        '';
+      extraConfig = finalExtraConfig;
     };
 
-    home.packages = lib.mkIf pkgs.stdenv.isLinux (
-      lib.optional (clipboardPackage != null) clipboardPackage
-    );
+    home.packages = mkIf pkgs.stdenv.isLinux (lib.optional (clipboardPackage != null) clipboardPackage);
   };
 }
