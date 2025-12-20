@@ -5,7 +5,6 @@
   ...
 }:
 {
-
   programs = {
     direnv = {
       enable = true;
@@ -95,8 +94,7 @@
     git.enable = true;
     gpg-agent.enable = true;
     kitty.enable = true;
-    # neovim.enable = true;
-    nixvim.enable = true;
+    neovim.enable = true;
 
     ssh-client = {
       enable = true;

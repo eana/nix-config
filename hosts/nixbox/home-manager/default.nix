@@ -1,9 +1,4 @@
-{
-  pkgs,
-  config,
-  inputs,
-  ...
-}:
+{ pkgs, config, ... }:
 {
   home-manager = {
     backupFileExtension = "backup";
@@ -18,8 +13,6 @@
         ../../../home/users/jonas/linux.nix
         ../../../modules/common/default.nix
         ../../../modules/linux/default.nix
-
-        inputs.nixvim.homeManagerModules.nixvim
       ];
     };
   };
