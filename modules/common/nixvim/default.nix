@@ -1,6 +1,7 @@
 {
   config,
   lib,
+  pkgs,
   ...
 }:
 let
@@ -16,9 +17,13 @@ in
     programs.nixvim = {
       enable = true;
       globals.mapleader = " ";
-      clipboard.providers.wl-copy.enable = true;
 
-      options = {
+      clipboard = {
+        register = "unnamedplus";
+        providers.wl-copy.enable = pkgs.stdenv.hostPlatform.isLinux;
+      };
+
+      opts = {
         number = true;
         relativenumber = false;
         shiftwidth = 2;
