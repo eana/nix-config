@@ -3,7 +3,7 @@
 {
   environment.systemPackages = with pkgs; [
     home-manager
-    jetbrains.idea-community-bin
+    # jetbrains.idea-oss
     m-cli
     mkalias
     zsh-powerlevel10k

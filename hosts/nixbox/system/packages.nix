@@ -8,7 +8,7 @@
       dive
       docker-compose
       gparted
-      jetbrains.idea-community-bin
+      # jetbrains.idea-oss
       podman-tui
       zsh-powerlevel10k
     ];
