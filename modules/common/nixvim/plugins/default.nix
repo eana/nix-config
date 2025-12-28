@@ -6,6 +6,7 @@
     ./fzf-lua.nix
     ./keymaps.nix
     ./lsp.nix
+    ./lualine.nix
     ./persistence.nix
     ./telescope.nix
     ./treesitter.nix
@@ -19,7 +20,7 @@
       copilot-chat.enable = true;
       lint.enable = true;
       better-comments.enable = true;
-      lualine.enable = true;
+
       web-devicons.enable = true;
       which-key.enable = true;
 
