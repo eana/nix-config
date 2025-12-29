@@ -3,6 +3,7 @@
     ./bufferline.nix
     ./colorscheme.nix
     ./conform-nvim.nix
+    ./copilot.nix
     ./fzf-lua.nix
     ./keymaps.nix
     ./lsp.nix
@@ -17,7 +18,6 @@
       # Lazy loading
       lz-n.enable = true;
 
-      copilot-chat.enable = true;
       lint.enable = true;
       better-comments.enable = true;
 
