@@ -4,6 +4,27 @@ _:
   programs.nixvim.plugins.telescope = {
     enable = true;
 
+    settings = {
+      defaults = {
+        file_ignore_patterns = [ "^.git/" ];
+        sorting_strategy = "ascending";
+        layout_config.prompt_position = "top";
+      };
+
+      pickers = {
+        find_files = {
+          hidden = true;
+        };
+        live_grep = {
+          additional_args.__raw = ''
+            function(_)
+              return { "--hidden" }
+            end
+          '';
+        };
+      };
+    };
+
     extensions = {
       fzf-native.enable = true;
       ui-select.enable = true;
