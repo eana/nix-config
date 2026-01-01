@@ -4,6 +4,7 @@
     ./colorscheme.nix
     ./conform-nvim.nix
     ./copilot.nix
+    ./d2.nix
     ./fzf-lua.nix
     ./git-rebase-mappings.nix
     ./keymaps.nix
