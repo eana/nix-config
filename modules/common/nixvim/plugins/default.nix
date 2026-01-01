@@ -6,8 +6,6 @@
     ./copilot.nix
     ./d2.nix
     ./fzf-lua.nix
-    ./git-rebase-mappings.nix
-    ./keymaps.nix
     ./lsp.nix
     ./lualine.nix
     ./persistence.nix
