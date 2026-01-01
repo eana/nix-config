@@ -104,6 +104,11 @@ in
         undotree
       ];
 
+      extraConfigLua = ''
+        vim.cmd([[highlight TrailingWhitespace ctermbg=red guibg=red]])
+        vim.cmd([[match TrailingWhitespace /\s\+$/]])
+      '';
+
       # Highlight on yanking
       autoGroups = {
         highlight-yank = {
