@@ -3,10 +3,11 @@
 {
   imports = [
     ./system/defaults.nix
-    ./system/packages.nix
-    ./system/networking.nix
     ./system/environment.nix
     ./system/homebrew.nix
+    ./system/networking.nix
+    ./system/packages.nix
+    ./system/security.nix
     ./home-manager/default.nix
     ./nix/default.nix
   ];
