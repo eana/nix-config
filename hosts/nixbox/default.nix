@@ -10,6 +10,7 @@
     ./system/networking.nix
     ./system/nvidia.nix
     ./system/packages.nix
+    ./system/security.nix
     ./system/services.nix
     ./system/virtualization.nix
     ./home-manager/default.nix
