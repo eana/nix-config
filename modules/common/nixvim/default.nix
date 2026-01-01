@@ -93,6 +93,7 @@ in
           wl-copy.enable = pkgs.stdenv.isLinux;
           pbcopy.enable = pkgs.stdenv.isDarwin;
         };
+        register = "unnamedplus";
       };
 
       defaultEditor = true;
