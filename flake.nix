@@ -22,6 +22,11 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
+    nixvim = {
+      url = "github:nix-community/nixvim";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
     home-manager = {
       url = "github:nix-community/home-manager";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -57,6 +62,7 @@
         "git"
         "gpg-agent"
         "neovim"
+        "nixvim"
         "ollama"
         "tmux"
         "zsh"
@@ -118,6 +124,7 @@
             inputs.home-manager.nixosModules.home-manager
             inputs.nix-index-database.nixosModules.nix-index
           ];
+
           specialArgs = { inherit inputs; };
         };
 
@@ -144,9 +151,10 @@
           modules = [
             ./hosts/nasbox/default.nix
           ];
-        };
 
-        inherit homeModules;
+          inherit homeModules;
+          extraSpecialArgs = { inherit inputs; };
+        };
       };
     };
 

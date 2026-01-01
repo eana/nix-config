@@ -1,4 +1,9 @@
-{ pkgs, config, ... }:
+{
+  pkgs,
+  config,
+  inputs,
+  ...
+}:
 {
   home-manager = {
     backupFileExtension = "backup";
@@ -15,6 +20,8 @@
         ../../../modules/linux/default.nix
       ];
     };
+
+    extraSpecialArgs = { inherit inputs; };
   };
 
   programs = {
