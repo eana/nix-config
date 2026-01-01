@@ -305,6 +305,74 @@
           desc = "Change without yanking";
         };
       }
+
+      # ========================================================================
+      # EDITING UTILITIES
+      # ========================================================================
+      {
+        key = "<Esc>";
+        mode = "n";
+        action = "<cmd>nohlsearch<CR>";
+        options.desc = "Clear search highlight";
+      }
+      {
+        key = "<Esc><Esc>";
+        mode = "t";
+        action = "<C-\\><C-n>";
+        options.desc = "Exit terminal mode";
+      }
+      {
+        key = "<F5>";
+        mode = "n";
+        action = ":%s/\\s\\+$//e<CR>";
+        options = {
+          noremap = true;
+          silent = true;
+          desc = "Remove all trailing whitespace by pressing F5";
+        };
+      }
+      {
+        key = "<C-S-Up>";
+        mode = [
+          "n"
+          "v"
+        ];
+        action = ":m -2<CR>";
+        options.desc = "Move the current line up";
+      }
+      {
+        key = "<C-S-Down>";
+        mode = [
+          "n"
+          "v"
+        ];
+        action = ":m +1<CR>";
+        options.desc = "Move the current line down";
+      }
+
+      # ========================================================================
+      # WINDOW RESIZING
+      # ========================================================================
+      {
+        key = "<C-Up>";
+        mode = "n";
+        action = "<Cmd>resize -1<CR>";
+        options = {
+          noremap = true;
+          silent = true;
+          desc = "Increase Message Window Height";
+        };
+      }
+      {
+        key = "<C-Down>";
+        mode = "n";
+        action = "<Cmd>resize +1<CR>";
+        options = {
+          noremap = true;
+          silent = true;
+          desc = "Decrease Message Window Height";
+        };
+      }
     ];
   };
 }
