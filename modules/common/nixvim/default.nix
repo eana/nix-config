@@ -12,7 +12,12 @@ in
     enable = lib.mkEnableOption "nixvim";
   };
 
-  imports = [ ./plugins ];
+  imports = [
+    ./autocmds.nix
+    ./keymaps.nix
+
+    ./plugins
+  ];
 
   config = lib.mkIf cfg.enable {
 
@@ -108,25 +113,6 @@ in
         vim.cmd([[highlight TrailingWhitespace ctermbg=red guibg=red]])
         vim.cmd([[match TrailingWhitespace /\s\+$/]])
       '';
-
-      # Highlight on yanking
-      autoGroups = {
-        highlight-yank = {
-          clear = true;
-        };
-      };
-      autoCmd = [
-        {
-          event = [ "TextYankPost" ];
-          desc = "Highlight when yanking (copying) text";
-          group = "highlight-yank";
-          callback.__raw = ''
-            function()
-              vim.highlight.on_yank()
-            end
-          '';
-        }
-      ];
     };
   };
 }
