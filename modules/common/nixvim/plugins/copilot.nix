@@ -28,24 +28,27 @@ _:
             insert = "<Tab>";
           };
         };
+        window = {
+          layout = "vertical";
+        };
       };
     };
 
     extraConfigLua = ''
-            vim.api.nvim_create_user_command("CopilotToggle", function()
-              if copilot_enabled then
-                vim.cmd("Copilot disable")
-                print("Copilot disabled")
-              else
-                vim.cmd("Copilot enable")
-                print("Copilot enabled")
-              end
-              copilot_enabled = not copilot_enabled
-            end, {})
+      vim.api.nvim_create_user_command("CopilotToggle", function()
+        if copilot_enabled then
+          vim.cmd("Copilot disable")
+          print("Copilot disabled")
+        else
+          vim.cmd("Copilot enable")
+          print("Copilot enabled")
+        end
+        copilot_enabled = not copilot_enabled
+      end, {})
 
-            vim.api.nvim_create_user_command("CopilotGitMessage", function()
-              vim.cmd("normal! GVgg")
-              local prompt = [[
+      vim.api.nvim_create_user_command("CopilotGitMessage", function()
+        vim.cmd("normal! GVgg")
+        local prompt = [[
       You are an expert at writing Git commits. Your job is to write a short clear commit message that summarizes the changes
 
       The commit message should be structured as follows:
@@ -76,8 +79,8 @@ _:
       - Omit the body entirely if it does not add useful detail beyond the subject
       ]]
 
-              vim.cmd.CopilotChat(prompt)
-            end, {})
+        vim.cmd.CopilotChat(prompt)
+      end, {})
     '';
 
     keymaps = [
