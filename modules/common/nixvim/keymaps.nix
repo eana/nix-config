@@ -47,7 +47,7 @@
       {
         key = "<leader>bd";
         mode = "n";
-        action = "<cmd>bdelete<cr>";
+        action = "<cmd>buffer # | bdelete #<cr>";
         options.desc = "Delete buffer";
       }
       {
