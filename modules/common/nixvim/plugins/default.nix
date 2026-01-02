@@ -87,13 +87,6 @@
               hide_hidden = false;
             };
           };
-          window.mappings = {
-            "<bs>" = "navigate_up";
-            "." = "set_root";
-            "f" = "fuzzy_finder";
-            "/" = "filter_on_submit";
-            "h" = "show_help";
-          };
         };
       };
       grug-far.enable = true;
@@ -111,6 +104,13 @@
             replace = "gsr";
             update_n_lines = "gsn";
           };
+        };
+      };
+
+      snacks = {
+        enable = true;
+        settings = {
+          bufdelete.enabled = true;
         };
       };
 

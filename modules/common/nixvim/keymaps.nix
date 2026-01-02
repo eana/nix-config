@@ -44,27 +44,33 @@
         options.desc = "Switch to other buffer";
       }
       {
+        key = "<leader>be";
+        mode = "n";
+        action = "<cmd>lua Snacks.picker.buffers()<cr>";
+        options.desc = "Buffer Explorer";
+      }
+      {
         key = "<leader>bd";
         mode = "n";
-        action = "<cmd>buffer # | bdelete #<cr>";
+        action = "<cmd>lua Snacks.bufdelete()<cr>";
         options.desc = "Delete buffer";
       }
       {
         key = "<leader>bl";
         mode = "n";
-        action = "<cmd>BufferLineCloseLeft<cr>";
+        action = "<cmd>lua Snacks.bufdelete.left()<cr>";
         options.desc = "Close buffers to the left";
       }
       {
         key = "<leader>br";
         mode = "n";
-        action = "<cmd>BufferLineCloseRight<cr>";
+        action = "<cmd>lua Snacks.bufdelete.right()<cr>";
         options.desc = "Close buffers to the right";
       }
       {
         key = "<leader>bo";
         mode = "n";
-        action = "<cmd>BufferLineCloseOthers<cr>";
+        action = "<cmd>lua Snacks.bufdelete.other()<cr>";
         options.desc = "Close other buffers";
       }
 
@@ -82,12 +88,6 @@
         mode = "n";
         action = "<cmd>Neotree toggle<CR>";
         options.desc = "Explorer (current working dir)";
-      }
-      {
-        key = "<leader>be";
-        mode = "n";
-        action = ":Neotree buffers<CR>";
-        options.desc = "Buffer explorer";
       }
       {
         key = "<leader>ge";
