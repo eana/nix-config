@@ -99,7 +99,21 @@
       grug-far.enable = true;
       trouble.enable = true;
 
-      mini-surround.enable = true;
+      mini = {
+        enable = true;
+        modules.surround = {
+          mappings = {
+            add = "gsa";
+            delete = "gsd";
+            find = "gsf";
+            find_left = "gsF";
+            highlight = "gsh";
+            replace = "gsr";
+            update_n_lines = "gsn";
+          };
+        };
+      };
+
       nvim-autopairs.enable = true;
       gitsigns = {
         enable = true;
