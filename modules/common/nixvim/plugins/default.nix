@@ -6,6 +6,7 @@
     ./copilot.nix
     ./d2.nix
     ./fzf-lua.nix
+    ./lint.nix
     ./lsp.nix
     ./lualine.nix
     ./persistence.nix
@@ -18,7 +19,6 @@
       # Lazy loading
       lz-n.enable = true;
 
-      lint.enable = true;
       better-comments.enable = true;
 
       web-devicons.enable = true;
