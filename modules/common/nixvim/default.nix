@@ -105,8 +105,50 @@ in
       viAlias = true;
       vimAlias = true;
 
+      withNodeJs = true;
+      withPython3 = true;
+      withRuby = false;
+
+      extraLuaPackages = ps: [
+        ps.luarocks
+        ps.tiktoken_core
+      ];
+
       extraPlugins = with pkgs.vimPlugins; [
         undotree
+      ];
+
+      extraPackages = with pkgs; [
+        # --- LSPs (Logic & Intelligence) ---
+        bash-language-server
+        gopls
+        jsonnet-language-server
+        lua-language-server
+        nil
+        terraform-ls
+        yaml-language-server
+
+        # --- Linters (Style & Safety) ---
+        actionlint
+        deadnix
+        statix
+        selene
+        tflint
+        yamllint
+        markdownlint-cli
+        shellcheck
+
+        # --- Formatters (Code cleanup) ---
+        gotools
+        nixfmt-rfc-style
+        prettierd
+        shfmt
+        stylua
+        yamlfmt
+
+        # --- Multi-tools (Lint + Format) ---
+        ruff
+        jq
       ];
 
       extraConfigLua = ''

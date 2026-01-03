@@ -6,7 +6,6 @@
     };
 
     keymaps = [
-
       # ========================================================================
       # TABS
       # ========================================================================
@@ -371,6 +370,54 @@
           noremap = true;
           silent = true;
           desc = "Decrease Message Window Height";
+        };
+      }
+
+      # ========================================================================
+      # DIAGNOSTICS
+      # ========================================================================
+      {
+        mode = "n";
+        key = "[d";
+        action = "<cmd>lua vim.diagnostic.goto_prev()<cr>";
+        options.desc = "Go to previous diagnostic";
+      }
+      {
+        mode = "n";
+        key = "]d";
+        action = "<cmd>lua vim.diagnostic.goto_next()<cr>";
+        options.desc = "Go to next diagnostic";
+      }
+      {
+        mode = "n";
+        key = "<leader>cd";
+        action = "<cmd>lua vim.diagnostic.open_float()<cr>";
+        options.desc = "Line Diagnostics";
+      }
+      {
+        mode = "n";
+        key = "<leader>cl";
+        action = "<cmd>lua vim.diagnostic.setloclist()<cr>";
+        options.desc = "Linter Quickfix List";
+      }
+      {
+        mode = "n";
+        key = "<leader>cv";
+        action.__raw = ''
+          function()
+            local virtual_text_enabled = vim.diagnostic.config().virtual_text
+            if virtual_text_enabled then
+              vim.diagnostic.config({ virtual_text = false })
+              print("Virtual Text Off")
+            else
+              vim.diagnostic.config({ virtual_text = true })
+              print("Virtual Text On")
+            end
+          end
+        '';
+        options = {
+          desc = "Toggle Diagnostic Virtual Text";
+          silent = true;
         };
       }
     ];
