@@ -51,7 +51,6 @@ in
           jq
           json
           json5
-          jsonc
           nix
           sql
           terraform
