@@ -57,23 +57,6 @@
 
   outputs =
     inputs@{ flake-parts, ... }:
-    let
-      moduleList = [
-        "git"
-        "gpg-agent"
-        "neovim"
-        "nixvim"
-        "ollama"
-        "tmux"
-        "zsh"
-      ];
-      homeModules = builtins.listToAttrs (
-        map (name: {
-          inherit name;
-          value = import ./modules/common/${name}/default.nix;
-        }) moduleList
-      );
-    in
     flake-parts.lib.mkFlake { inherit inputs; } {
       systems = [
         "x86_64-linux"
@@ -152,7 +135,6 @@
             ./hosts/nasbox/default.nix
           ];
 
-          inherit homeModules;
           extraSpecialArgs = { inherit inputs; };
         };
       };
