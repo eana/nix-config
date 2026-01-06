@@ -24,6 +24,11 @@ in
       enable = true;
       package = pkgs.git;
 
+      signing = {
+        signByDefault = mkDefault true;
+        key = mkDefault "C01D2E8FCFCB6358";
+      };
+
       settings = {
         user = {
           name = mkDefault "Jonas Eana";
@@ -31,7 +36,6 @@ in
         };
 
         commit.gpgsign = mkDefault true;
-        user.signingkey = mkDefault "C01D2E8FCFCB6358";
 
         alias = {
           "co" = "checkout";
