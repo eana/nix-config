@@ -56,6 +56,7 @@
   module = {
     git.enable = true;
     gpg-agent.enable = true;
+    nixvim.enable = true;
     tmux.enable = true;
     zsh.enable = true;
   };
