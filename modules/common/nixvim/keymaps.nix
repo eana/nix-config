@@ -131,67 +131,94 @@
       }
 
       # ========================================================================
-      # GIT — HUNKS (GITSIGNS)
+      # GITSIGNS
       # ========================================================================
       {
-        key = "<leader>gs";
+        key = "]H";
         mode = "n";
+        action = "<cmd>lua require('gitsigns').nav_hunk('last')<CR>";
+        options.desc = "Last Hunk";
+      }
+      {
+        key = "[H";
+        mode = "n";
+        action = "<cmd>lua require('gitsigns').nav_hunk('first')<CR>";
+        options.desc = "First Hunk";
+      }
+      {
+        key = "<leader>ghs";
+        mode = [
+          "n"
+          "x"
+        ];
         action = "<cmd>Gitsigns stage_hunk<CR>";
-        options.desc = "Stage hunk";
+        options.desc = "Stage Hunk";
       }
       {
-        key = "<leader>gs";
-        mode = "v";
-        action = ":Gitsigns stage_hunk<CR>";
-        options.desc = "Stage hunk (visual)";
-      }
-      {
-        key = "<leader>gr";
-        mode = "n";
+        key = "<leader>ghr";
+        mode = [
+          "n"
+          "x"
+        ];
         action = "<cmd>Gitsigns reset_hunk<CR>";
-        options.desc = "Reset hunk";
+        options.desc = "Reset Hunk";
       }
       {
-        key = "<leader>gr";
-        mode = "v";
-        action = ":Gitsigns reset_hunk<CR>";
-        options.desc = "Reset hunk (visual)";
-      }
-      {
-        key = "<leader>gS";
+        key = "<leader>ghS";
         mode = "n";
-        action = "<cmd>Gitsigns stage_buffer<CR>";
-        options.desc = "Stage buffer";
+        action = "<cmd>lua require('gitsigns').stage_buffer()<CR>";
+        options.desc = "Stage Buffer";
       }
       {
-        key = "<leader>gu";
+        key = "<leader>ghu";
         mode = "n";
-        action = "<cmd>Gitsigns undo_stage_hunk<CR>";
-        options.desc = "Undo stage";
+        action = "<cmd>lua require('gitsigns').undo_stage_hunk()<CR>";
+        options.desc = "Undo Stage Hunk";
       }
       {
-        key = "<leader>gR";
+        key = "<leader>ghR";
         mode = "n";
-        action = "<cmd>Gitsigns reset_buffer<CR>";
-        options.desc = "Reset buffer";
+        action = "<cmd>lua require('gitsigns').reset_buffer()<CR>";
+        options.desc = "Reset Buffer";
       }
       {
-        key = "<leader>gp";
+        key = "<leader>ghp";
         mode = "n";
-        action = "<cmd>Gitsigns preview_hunk<CR>";
-        options.desc = "Preview hunk";
+        action = "<cmd>lua require('gitsigns').preview_hunk_inline()<CR>";
+        options.desc = "Preview Hunk Inline";
       }
       {
-        key = "<leader>gb";
+        key = "<leader>ghb";
         mode = "n";
-        action = "<cmd>Gitsigns blame_line<CR>";
-        options.desc = "Blame line";
+        action = "<cmd>lua require('gitsigns').blame_line({ full = true })<CR>";
+        options.desc = "Blame Line";
       }
       {
-        key = "<leader>gf";
+        key = "<leader>ghB";
         mode = "n";
-        action = "<cmd>Gitsigns diffthis<CR>";
-        options.desc = "Diff file";
+        action = "<cmd>lua require('gitsigns').blame()<CR>";
+        options.desc = "Blame Buffer";
+      }
+      {
+        key = "<leader>ghd";
+        mode = "n";
+        action = "<cmd>lua require('gitsigns').diffthis()<CR>";
+        options.desc = "Diff This";
+      }
+      {
+        key = "<leader>ghD";
+        mode = "n";
+        action = "<cmd>lua require('gitsigns').diffthis('~')<CR>";
+        options.desc = "Diff This ~";
+      }
+      {
+        key = "ih";
+        mode = [
+          "o"
+          "x"
+        ];
+        action = ":<C-U>Gitsigns select_hunk<CR>";
+        options.desc = "GitSigns Select Hunk";
       }
       {
         key = "<leader>gB";

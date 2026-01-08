@@ -122,39 +122,34 @@
       nvim-autopairs.enable = true;
       gitsigns = {
         enable = true;
-        settings.signs = {
-          add.text = "+";
-          change.text = "~";
-        };
-        keymaps = {
-          "]c" = {
-            action.__raw = ''
-              function()
-                if vim.wo.diff then return ']c' end
-                vim.schedule(function() require('gitsigns').nav_hunk('next') end)
-                return '<Ignore>'
-              end
-            '';
-            options = {
-              expr = true;
-              desc = "Next Hunk";
-            };
+        settings = {
+          signs = {
+            add.text = "▎";
+            change.text = "▎";
+            delete.text = "";
+            topdelete.text = "";
+            changedelete.text = "▎";
+            untracked.text = "▎";
           };
-
-          "[c" = {
-            action.__raw = ''
-              function()
-                if vim.wo.diff then return '[c' end
-                vim.schedule(function() require('gitsigns').nav_hunk('prev') end)
-                return '<Ignore>'
-              end
-            '';
-            options = {
-              expr = true;
-              desc = "Previous Hunk";
-            };
+          signs_staged = {
+            add.text = "▎";
+            change.text = "▎";
+            delete.text = "";
+            topdelete.text = "";
+            changedelete.text = "▎";
           };
         };
+        luaConfig.post = ''
+          require("snacks").toggle({
+            name = "Git Signs",
+            get = function()
+              return require("gitsigns.config").config.signcolumn
+            end,
+            set = function(state)
+              require("gitsigns").toggle_signs(state)
+            end,
+          }):map("<leader>uG")
+        '';
       };
       diffview.enable = true;
       trim = {
