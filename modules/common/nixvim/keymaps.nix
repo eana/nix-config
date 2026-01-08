@@ -78,6 +78,12 @@
       # FILE & PROJECT EXPLORERS (NEO-TREE)
       # ========================================================================
       {
+        key = "<leader>fn";
+        mode = "n";
+        action = "<Cmd>enew<CR>";
+        options.desc = "New file";
+      }
+      {
         key = "<leader>fe";
         mode = "n";
         action = ":Neotree toggle reveal_force_cwd<cr>";
