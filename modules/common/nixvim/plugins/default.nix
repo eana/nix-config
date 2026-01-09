@@ -179,7 +179,10 @@
       };
 
       # --- Search & Navigation ---
-      grug-far.enable = true;
+      grug-far = {
+        enable = true;
+        settings.headerMaxWidth = 80;
+      };
 
       # --- Session/State Management ---
       persistence.enable = true;
