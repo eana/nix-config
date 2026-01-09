@@ -21,7 +21,7 @@ in
         black
         go
         gotools
-        nixfmt-rfc-style
+        nixfmt
         prettierd
         ruff
         shfmt
@@ -50,7 +50,7 @@ in
               "black"
               "ruff_format"
             ];
-            nix = [ "nixfmt-rfc-style" ];
+            nix = [ "nixfmt" ];
 
             go = [
               "gofmt"
@@ -74,8 +74,6 @@ in
 
           formatters = {
             injected.options.ignore_errors = true;
-
-            nixfmt-rfc-style.command = "nixfmt";
 
             shfmt.prepend_args = [
               "-i"

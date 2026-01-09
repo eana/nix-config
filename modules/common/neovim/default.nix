@@ -38,7 +38,7 @@ let
     jsonnet-language-server
     lua-language-server
     nil
-    nixfmt-rfc-style
+    nixfmt
     prettierd
     shellcheck
     shfmt

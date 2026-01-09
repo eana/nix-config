@@ -146,7 +146,7 @@ in
 
         # --- Formatters (Code cleanup) ---
         gotools
-        nixfmt-rfc-style
+        nixfmt
         prettierd
         shfmt
         stylua
