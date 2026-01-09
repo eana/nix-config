@@ -43,14 +43,20 @@ in
         list = true; # Show special characters
         background = "dark"; # Set dark background
         termguicolors = true; # Enable 24-bit RGB colors
-        conceallevel = 0; # Make `` visible in markdown files
         signcolumn = "yes"; # Always show the sign column to avoid text shifting
+        wrap = false; # Disable line wrapping
+        cursorline = true; # Highlight the current line
+        sidescrolloff = 8; # Keep 8 characters visible when scrolling horizontally
+        scrolloff = 8; # Keep 8 lines visible when scrolling vertically
+
+        # ================ Completion ======================
         completeopt = [
           "menuone"
           "noselect"
         ]; # Provide a better completion experience
-        wrap = false; # Disable line wrapping
-        cursorline = true; # Highlight the current line
+
+        # ================ Conceal ======================
+        conceallevel = 0; # Make `` visible in markdown files
 
         # ================ Persistent undo ==================
         undofile = true; # Enable persistent undo

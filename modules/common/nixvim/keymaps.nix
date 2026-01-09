@@ -6,9 +6,7 @@
     };
 
     keymaps = [
-      # ========================================================================
-      # TABS
-      # ========================================================================
+      # ==================== Tabs ====================
       {
         key = "<leader>tc";
         mode = "n";
@@ -34,9 +32,13 @@
         options.desc = "Close tab";
       }
 
-      # ========================================================================
-      # BUFFERS
-      # ========================================================================
+      # ==================== Buffers ====================
+      {
+        key = "<leader>,";
+        mode = "n";
+        action = "<cmd>lua Snacks.picker.buffers()<cr>";
+        options.desc = "Switch Buffer";
+      }
       {
         key = "<leader>bb";
         mode = "n";
@@ -74,9 +76,7 @@
         options.desc = "Close other buffers";
       }
 
-      # ========================================================================
-      # FILE & PROJECT EXPLORERS (NEO-TREE)
-      # ========================================================================
+      # ==================== File & Project Explorer ====================
       {
         key = "<leader>fn";
         mode = "n";
@@ -86,25 +86,228 @@
       {
         key = "<leader>fe";
         mode = "n";
-        action = ":Neotree toggle reveal_force_cwd<cr>";
+        action = "<cmd>lua Snacks.explorer.open()<cr>";
         options.desc = "Project explorer (root dir)";
       }
       {
         key = "<leader>fE";
         mode = "n";
-        action = "<cmd>Neotree toggle<CR>";
+        action = "<cmd>lua Snacks.explorer.open({ cwd = vim.fn.getcwd() })<cr>";
         options.desc = "Explorer (current working dir)";
       }
       {
         key = "<leader>ge";
         mode = "n";
-        action = ":Neotree git_status<CR>";
+        action = "<cmd>lua Snacks.picker.git_status()<cr>";
         options.desc = "Git status explorer";
       }
 
-      # ========================================================================
-      # GIT — DIFFVIEW
-      # ========================================================================
+      # ==================== Search / Picker ====================
+      # Quick Access
+      {
+        key = "<leader><space>";
+        mode = "n";
+        action = "<cmd>lua Snacks.picker.smart()<cr>";
+        options.desc = "Find Files (Smart)";
+      }
+      {
+        key = "<leader>,";
+        mode = "n";
+        action = "<cmd>lua Snacks.picker.buffers()<cr>";
+        options.desc = "Switch Buffer";
+      }
+      {
+        key = "<leader>/";
+        mode = "n";
+        action = "<cmd>lua Snacks.picker.grep()<cr>";
+        options.desc = "Grep (Root Dir)";
+      }
+      {
+        key = "<leader>:";
+        mode = "n";
+        action = "<cmd>lua Snacks.picker.command_history()<cr>";
+        options.desc = "Command History";
+      }
+
+      # File Namespace (f)
+      {
+        key = "<leader>ff";
+        mode = "n";
+        action = "<cmd>lua Snacks.picker.files()<cr>";
+        options.desc = "Find Files (Root)";
+      }
+      {
+        key = "<leader>fF";
+        mode = "n";
+        action = "<cmd>lua Snacks.picker.files({ cwd = vim.fn.getcwd() })<cr>";
+        options.desc = "Find Files (CWD)";
+      }
+      {
+        key = "<leader>fg";
+        mode = "n";
+        action = "<cmd>lua Snacks.picker.git_files()<cr>";
+        options.desc = "Find Git Files";
+      }
+      {
+        key = "<leader>fr";
+        mode = "n";
+        action = "<cmd>lua Snacks.picker.recent()<cr>";
+        options.desc = "Recent";
+      }
+      {
+        key = "<leader>fR";
+        mode = "n";
+        action = "<cmd>lua Snacks.picker.recent({ filter = { cwd = true }})<cr>";
+        options.desc = "Recent (cwd)";
+      }
+
+      # Search Namespace (s)
+      {
+        key = "<leader>sa";
+        mode = "n";
+        action = "<cmd>lua Snacks.picker.autocmds()<cr>";
+        options.desc = "Auto Commands";
+      }
+      {
+        key = "<leader>sb";
+        mode = "n";
+        action = "<cmd>lua Snacks.picker.lines()<cr>";
+        options.desc = "Buffer Lines (Fuzzy)";
+      }
+      {
+        key = "<leader>sc";
+        mode = "n";
+        action = "<cmd>lua Snacks.picker.command_history()<cr>";
+        options.desc = "Command History";
+      }
+      {
+        key = "<leader>sC";
+        mode = "n";
+        action = "<cmd>lua Snacks.picker.commands()<cr>";
+        options.desc = "Commands";
+      }
+      {
+        key = "<leader>sd";
+        mode = "n";
+        action = "<cmd>lua Snacks.picker.diagnostics()<cr>";
+        options.desc = "Diagnostics (Workspace)";
+      }
+      {
+        key = "<leader>sD";
+        mode = "n";
+        action = "<cmd>lua Snacks.picker.diagnostics({ filter = { bufnr = 0 }})<cr>";
+        options.desc = "Diagnostics (Buffer)";
+      }
+      {
+        key = "<leader>sg";
+        mode = "n";
+        action = "<cmd>lua Snacks.picker.grep()<cr>";
+        options.desc = "Grep (Root)";
+      }
+      {
+        key = "<leader>sG";
+        mode = "n";
+        action = "<cmd>lua Snacks.picker.grep({ cwd = vim.fn.getcwd() })<cr>";
+        options.desc = "Grep (CWD)";
+      }
+      {
+        key = "<leader>sh";
+        mode = "n";
+        action = "<cmd>lua Snacks.picker.help()<cr>";
+        options.desc = "Help Pages";
+      }
+      {
+        key = "<leader>sH";
+        mode = "n";
+        action = "<cmd>lua Snacks.picker.highlights()<cr>";
+        options.desc = "Search Highlights";
+      }
+      {
+        key = "<leader>sj";
+        mode = "n";
+        action = "<cmd>lua Snacks.picker.jumps()<cr>";
+        options.desc = "Jumplist";
+      }
+      {
+        key = "<leader>sk";
+        mode = "n";
+        action = "<cmd>lua Snacks.picker.keymaps()<cr>";
+        options.desc = "Keymaps";
+      }
+      {
+        key = "<leader>sl";
+        mode = "n";
+        action = "<cmd>lua Snacks.picker.loclist()<cr>";
+        options.desc = "Location List";
+      }
+      {
+        key = "<leader>sm";
+        mode = "n";
+        action = "<cmd>lua Snacks.picker.marks()<cr>";
+        options.desc = "Jump to Mark";
+      }
+      {
+        key = "<leader>sM";
+        mode = "n";
+        action = "<cmd>lua Snacks.picker.man()<cr>";
+        options.desc = "Man Pages";
+      }
+      {
+        key = "<leader>sq";
+        mode = "n";
+        action = "<cmd>lua Snacks.picker.qflist()<cr>";
+        options.desc = "Quickfix List";
+      }
+      {
+        key = "<leader>sr";
+        mode = "n";
+        action = "<cmd>lua Snacks.picker.recent()<cr>";
+        options.desc = "Recent";
+      }
+      {
+        key = "<leader>sR";
+        mode = "n";
+        action = "<cmd>lua Snacks.picker.resume()<cr>";
+        options.desc = "Resume Last Picker";
+      }
+      {
+        key = "<leader>ss";
+        mode = "n";
+        action = "<cmd>lua Snacks.picker.lsp_symbols()<cr>";
+        options.desc = "LSP Symbols (Document)";
+      }
+      {
+        key = "<leader>sS";
+        mode = "n";
+        action = "<cmd>lua Snacks.picker.lsp_workspace_symbols()<cr>";
+        options.desc = "LSP Symbols (Workspace)";
+      }
+      {
+        key = "<leader>sw";
+        mode = "n";
+        action = "<cmd>lua Snacks.picker.grep_word()<cr>";
+        options.desc = "Word (Root Dir)";
+      }
+      {
+        key = "<leader>sW";
+        mode = "n";
+        action = "<cmd>lua Snacks.picker.grep_word({ cwd = vim.fn.getcwd() })<cr>";
+        options.desc = "Word (CWD)";
+      }
+      {
+        key = "<leader>s/";
+        mode = "n";
+        action = "<cmd>lua Snacks.picker.search_history()<cr>";
+        options.desc = "Search History";
+      }
+      {
+        key = "<leader>s\"";
+        mode = "n";
+        action = "<cmd>lua Snacks.picker.registers()<cr>";
+        options.desc = "Registers";
+      }
+
+      # ==================== Git — Diffview ====================
       {
         key = "<leader>gd";
         mode = "n";
@@ -130,9 +333,7 @@
         options.desc = "Repo history";
       }
 
-      # ========================================================================
-      # GITSIGNS
-      # ========================================================================
+      # ==================== Gitsigns ====================
       {
         key = "]H";
         mode = "n";
@@ -230,9 +431,7 @@
         options.desc = "Browse repo";
       }
 
-      # ========================================================================
-      # SESSION & HISTORY
-      # ========================================================================
+      # ==================== Session & History ====================
       {
         key = "<leader>qs";
         mode = "n";
@@ -264,19 +463,27 @@
         options.desc = "Undo tree";
       }
 
-      # ========================================================================
-      # TODO COMMENTS
-      # ========================================================================
+      # ==================== Todo Comments / Diagnostics ====================
       {
         key = "<leader>xt";
         mode = "n";
         action = "<cmd>TodoQuickFix<CR>";
         options.desc = "Todo list";
       }
+      {
+        key = "<leader>sd";
+        mode = "n";
+        action = "<cmd>lua Snacks.picker.diagnostics()<cr>";
+        options.desc = "Diagnostics (Workspace)";
+      }
+      {
+        key = "<leader>sD";
+        mode = "n";
+        action = "<cmd>lua Snacks.picker.diagnostics({ filter = { bufnr = 0 }})<cr>";
+        options.desc = "Diagnostics (Buffer)";
+      }
 
-      # ========================================================================
-      # REMOVE FRUSTRATIONS
-      # ========================================================================
+      # ==================== Editing / Remove Frustrations ====================
       {
         key = "C";
         mode = "n";
@@ -337,10 +544,6 @@
           desc = "Change without yanking";
         };
       }
-
-      # ========================================================================
-      # EDITING UTILITIES
-      # ========================================================================
       {
         key = "<Esc>";
         mode = "n";
@@ -360,7 +563,7 @@
         options = {
           noremap = true;
           silent = true;
-          desc = "Remove all trailing whitespace by pressing F5";
+          desc = "Remove all trailing whitespace";
         };
       }
       {
@@ -381,10 +584,32 @@
         action = ":m +1<CR>";
         options.desc = "Move the current line down";
       }
+      {
+        key = "<C-S-Up>";
+        mode = "v";
+        action = ":m '<-2<CR>gv=gv";
+        options.desc = "Move the selected lines up";
+      }
+      {
+        key = "<C-S-Down>";
+        mode = "v";
+        action = ":m '>+1<CR>gv=gv";
+        options.desc = "Move the selected lines down";
+      }
+      {
+        key = "<";
+        mode = "v";
+        action = "<gv";
+        options.desc = "Indent left and reselect";
+      }
+      {
+        key = ">";
+        mode = "v";
+        action = ">gv";
+        options.desc = "Indent right and reselect";
+      }
 
-      # ========================================================================
-      # WINDOW RESIZING
-      # ========================================================================
+      # ==================== Window Resizing ====================
       {
         key = "<C-Up>";
         mode = "n";
@@ -406,9 +631,7 @@
         };
       }
 
-      # ========================================================================
-      # DIAGNOSTICS
-      # ========================================================================
+      # ==================== Core Diagnostics ====================
       {
         mode = "n";
         key = "[d";
@@ -439,13 +662,8 @@
         action.__raw = ''
           function()
             local virtual_text_enabled = vim.diagnostic.config().virtual_text
-            if virtual_text_enabled then
-              vim.diagnostic.config({ virtual_text = false })
-              print("Virtual Text Off")
-            else
-              vim.diagnostic.config({ virtual_text = true })
-              print("Virtual Text On")
-            end
+            vim.diagnostic.config({ virtual_text = not virtual_text_enabled })
+            print("Virtual Text " .. (virtual_text_enabled and "Off" or "On"))
           end
         '';
         options = {

@@ -1,0 +1,36 @@
+_:
+
+{
+  programs.nixvim = {
+    plugins.snacks = {
+      enable = true;
+
+      settings = {
+        bufdelete.enabled = true;
+
+        explorer = {
+          enabled = true;
+          replace_netrw = true;
+        };
+
+        picker = {
+          enabled = true;
+          ui_select = true;
+
+          sources = {
+            explorer = {
+              hidden = true;
+              ignored = true;
+            };
+            files = {
+              hidden = true;
+            };
+            grep = {
+              hidden = true;
+            };
+          };
+        };
+      };
+    };
+  };
+}

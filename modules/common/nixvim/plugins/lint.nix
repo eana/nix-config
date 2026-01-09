@@ -65,7 +65,7 @@
 
     diagnostic.settings = {
       # Enable virtual text for inline diagnostics
-      virtual_text = false;
+      virtual_text = true;
 
       # Configure signs in the sign column
       signs = {
