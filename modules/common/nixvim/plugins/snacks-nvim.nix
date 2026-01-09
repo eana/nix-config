@@ -6,6 +6,7 @@ _:
       enable = true;
 
       settings = {
+        bigfile.enabled = true;
         bufdelete.enabled = true;
 
         explorer = {
@@ -30,6 +31,9 @@ _:
             };
           };
         };
+
+        quickfile.enabled = true;
+        rename.enabled = true;
       };
     };
   };
