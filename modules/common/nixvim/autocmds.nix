@@ -3,6 +3,7 @@
     autoGroups = {
       auto_create_dir = { };
       checktime = { };
+      fix_comment_indent = { };
       git_rebase_mappings = { };
       highlight_yank = { };
       json_conceal = { };
@@ -38,6 +39,22 @@
             if vim.o.buftype ~= "nofile" then
               vim.cmd("checktime")
             end
+          end
+        '';
+      }
+
+      # Stop '#' from jumping to column 1 in all filetypes
+      {
+        event = [ "FileType" ];
+        group = "fix_comment_indent";
+        pattern = [ "*" ];
+        callback.__raw = ''
+          function()
+            -- Disable smartindent which is the primary cause
+            vim.opt_local.smartindent = false
+            -- Remove the '#' trigger from indentkeys and cinkeys
+            vim.opt_local.indentkeys:remove("0#")
+            vim.opt_local.cinkeys:remove("0#")
           end
         '';
       }
