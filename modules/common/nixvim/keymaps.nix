@@ -259,18 +259,6 @@
         options.desc = "Quickfix List";
       }
       {
-        key = "<leader>sr";
-        mode = "n";
-        action = "<cmd>lua Snacks.picker.recent()<cr>";
-        options.desc = "Recent";
-      }
-      {
-        key = "<leader>sR";
-        mode = "n";
-        action = "<cmd>lua Snacks.picker.resume()<cr>";
-        options.desc = "Resume Last Picker";
-      }
-      {
         key = "<leader>ss";
         mode = "n";
         action = "<cmd>lua Snacks.picker.lsp_symbols()<cr>";
@@ -305,6 +293,26 @@
         mode = "n";
         action = "<cmd>lua Snacks.picker.registers()<cr>";
         options.desc = "Registers";
+      }
+      {
+        mode = [
+          "n"
+          "x"
+        ];
+        key = "<leader>sr";
+        action.__raw = ''
+          function()
+            local grug = require("grug-far")
+            local ext = vim.bo.buftype == "" and vim.fn.expand("%:e")
+            grug.open({
+              transient = true,
+              prefills = {
+                filesFilter = ext and ext ~= "" and "*." .. ext or nil,
+              },
+            })
+          end
+        '';
+        options.desc = "Search and Replace";
       }
 
       # ==================== Git — Diffview ====================
