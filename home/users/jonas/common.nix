@@ -94,6 +94,7 @@
     git.enable = true;
     gpg-agent.enable = true;
     kitty.enable = true;
+    neovim.enable = false;
     nixvim.enable = true;
 
     ssh-client = {
