@@ -1,7 +1,6 @@
 {
   imports = [
     ./bufferline.nix
-    ./colorscheme.nix
     ./conform-nvim.nix
     ./copilot.nix
     ./d2.nix
