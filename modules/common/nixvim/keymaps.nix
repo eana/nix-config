@@ -111,12 +111,6 @@
         options.desc = "Find Files (Smart)";
       }
       {
-        key = "<leader>,";
-        mode = "n";
-        action = "<cmd>lua Snacks.picker.buffers()<cr>";
-        options.desc = "Switch Buffer";
-      }
-      {
         key = "<leader>/";
         mode = "n";
         action = "<cmd>lua Snacks.picker.grep()<cr>";
@@ -185,18 +179,6 @@
         mode = "n";
         action = "<cmd>lua Snacks.picker.commands()<cr>";
         options.desc = "Commands";
-      }
-      {
-        key = "<leader>sd";
-        mode = "n";
-        action = "<cmd>lua Snacks.picker.diagnostics()<cr>";
-        options.desc = "Diagnostics (Workspace)";
-      }
-      {
-        key = "<leader>sD";
-        mode = "n";
-        action = "<cmd>lua Snacks.picker.diagnostics({ filter = { bufnr = 0 }})<cr>";
-        options.desc = "Diagnostics (Buffer)";
       }
       {
         key = "<leader>sg";
@@ -313,6 +295,24 @@
           end
         '';
         options.desc = "Search and Replace";
+      }
+
+      # ==================== UI Toggles ====================
+      {
+        mode = [ "n" ];
+        key = "<leader>ug";
+        action.__raw = ''
+          function()
+            local ibl = require("ibl")
+            local config = require("ibl.config")
+
+            local cfg = config.get_config(0)
+            local enabled = cfg.enabled ~= false
+
+            ibl.setup_buffer(0, { enabled = not enabled })
+          end
+        '';
+        options.desc = "Toggle indent guides";
       }
 
       # ==================== Git — Diffview ====================
@@ -678,6 +678,56 @@
           desc = "Toggle Diagnostic Virtual Text";
           silent = true;
         };
+      }
+
+      # ==================== Copilot Chat ====================
+      {
+        key = "<leader>cc";
+        mode = "n";
+        action = "<CMD>CopilotChatToggle<CR>";
+        options.desc = "Toggle Copilot Chat Window";
+      }
+      {
+        key = "<leader>cs";
+        mode = "n";
+        action = "<CMD>CopilotChatStop<CR>";
+        options.desc = "Stop current Copilot output";
+      }
+      {
+        key = "<leader>cr";
+        mode = "v";
+        action = "<CMD>CopilotChatReview<CR>";
+        options.desc = "Review the selected code";
+      }
+      {
+        key = "<leader>ce";
+        mode = "v";
+        action = "<CMD>CopilotChatExplain<CR>";
+        options.desc = "Give an explanation for the selected code";
+      }
+      {
+        key = "<leader>cD";
+        mode = "v";
+        action = "<CMD>CopilotChatDocs<CR>";
+        options.desc = "Add documentation for the selection";
+      }
+      {
+        key = "<leader>cp";
+        mode = "v";
+        action = "<CMD>CopilotChatTests<CR>";
+        options.desc = "Add tests for my code";
+      }
+      {
+        mode = "n";
+        key = "<leader>cg";
+        action = "<cmd>CopilotGitMessage<CR>";
+        options.desc = "Generate git commit message";
+      }
+      {
+        mode = "n";
+        key = "<leader>ct";
+        action = "<cmd>CopilotToggle<CR>";
+        options.desc = "Toggle Copilot";
       }
     ];
   };
