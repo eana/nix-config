@@ -80,6 +80,7 @@ in
       };
 
       nixGrammars = true;
+      folding.enable = false;
     };
     hmts.enable = true;
   };

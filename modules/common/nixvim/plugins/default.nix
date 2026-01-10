@@ -15,11 +15,26 @@
     plugins = {
       # --- UI/UX Enhancements ---
       better-comments.enable = true;
+      indent-blankline = {
+        enable = true;
+
+        settings = {
+          indent.char = "│";
+          scope.enabled = false;
+        };
+      };
       mini = {
         enable = true;
         mockDevIcons = true;
         modules = {
           icons = { };
+          indentscope = {
+            symbol = "│";
+            draw = {
+              delay = 0;
+              animation.__raw = "require('mini.indentscope').gen_animation.none()";
+            };
+          };
           surround = {
             mappings = {
               add = "gsa";
