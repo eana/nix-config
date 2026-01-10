@@ -82,20 +82,5 @@ _:
         vim.cmd.CopilotChat(prompt)
       end, {})
     '';
-
-    keymaps = [
-      {
-        mode = "n";
-        key = "<leader>ct";
-        action = "<cmd>CopilotToggle<CR>";
-        options.desc = "Toggle Copilot";
-      }
-      {
-        mode = "n";
-        key = "<leader>cg";
-        action = "<cmd>CopilotGitMessage<CR>";
-        options.desc = "Copilot generate git commit message";
-      }
-    ];
   };
 }
