@@ -48,17 +48,7 @@
           };
         };
       };
-      trim = {
-        enable = true;
-        settings = {
-          highlight = true;
-          ft_blocklist = [
-            "checkhealth"
-            "floaterm"
-            "lspinfo"
-          ];
-        };
-      };
+      trim.enable = true;
       web-devicons.enable = true;
       which-key = {
         enable = true;

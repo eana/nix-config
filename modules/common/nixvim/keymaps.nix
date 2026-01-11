@@ -567,7 +567,7 @@
       {
         key = "<F5>";
         mode = "n";
-        action = ":%s/\\s\\+$//e<CR>";
+        action = "<cmd>Trim<CR>";
         options = {
           noremap = true;
           silent = true;
