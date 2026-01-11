@@ -1,3 +1,16 @@
+let
+  btrfsBaseOpts = [
+    "rw"
+    "noatime"
+    "discard=async"
+    "space_cache=v2"
+    "commit=120"
+  ];
+
+  btrfsCompress = [ "compress=zstd:1" ];
+
+  btrfsCompressForce = [ "compress-force=zstd:1" ];
+in
 {
   disko.devices = {
     disk = {
@@ -24,10 +37,10 @@
                 name = "nixos";
                 # disable settings.keyFile if you want to use interactive password entry
                 # passwordFile = "/tmp/secret.key"; # Interactive
-                # settings = {
-                #   allowDiscards = true;
-                #   keyFile = "/tmp/secret.key";
-                # };
+                settings = {
+                  allowDiscards = true;
+                  # keyFile = "/tmp/secret.key";
+                };
                 # additionalKeyFiles = [ "/tmp/additionalSecret.key" ];
                 content = {
                   type = "btrfs";
@@ -35,58 +48,23 @@
                   subvolumes = {
                     "@" = {
                       mountpoint = "/";
-                      mountOptions = [
-                        "rw"
-                        "noatime"
-                        "discard=async"
-                        "compress-force=zstd:1"
-                        "space_cache=v2"
-                        "commit=120"
-                      ];
+                      mountOptions = btrfsBaseOpts ++ btrfsCompress;
                     };
                     "@home" = {
                       mountpoint = "/home";
-                      mountOptions = [
-                        "rw"
-                        "noatime"
-                        "discard=async"
-                        "compress-force=zstd:1"
-                        "space_cache=v2"
-                        "commit=120"
-                      ];
+                      mountOptions = btrfsBaseOpts ++ btrfsCompress;
                     };
                     "@nix" = {
                       mountpoint = "/nix";
-                      mountOptions = [
-                        "rw"
-                        "noatime"
-                        "discard=async"
-                        "compress-force=zstd:1"
-                        "space_cache=v2"
-                        "commit=120"
-                      ];
+                      mountOptions = btrfsBaseOpts ++ btrfsCompressForce;
                     };
                     "@snapshots" = {
                       mountpoint = "/.snapshots";
-                      mountOptions = [
-                        "rw"
-                        "noatime"
-                        "discard=async"
-                        "compress-force=zstd:1"
-                        "space_cache=v2"
-                        "commit=120"
-                      ];
+                      mountOptions = btrfsBaseOpts ++ btrfsCompress;
                     };
                     "@log" = {
                       mountpoint = "/var/log";
-                      mountOptions = [
-                        "rw"
-                        "noatime"
-                        "discard=async"
-                        "compress-force=zstd:1"
-                        "space_cache=v2"
-                        "commit=120"
-                      ];
+                      mountOptions = btrfsBaseOpts ++ btrfsCompress;
                     };
                   };
                 };
