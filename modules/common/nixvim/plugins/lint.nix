@@ -30,6 +30,36 @@
             "."
           ];
         };
+
+        yamllint = {
+          args = [
+            "-d"
+            "{rules: {line-length: disable, document-start: disable, truthy: {allowed-values: ['true', 'false', 'yes', 'no'], check-keys: false}}}"
+            "--format"
+            "parsable"
+            "-"
+          ];
+        };
+
+        markdownlint = {
+          args =
+            let
+              # Create the config file in the Nix store
+              mdConfig = pkgs.writeText "md-config.json" (
+                builtins.toJSON {
+                  MD013 = false;
+                  MD033 = false;
+                  MD041 = false;
+                }
+              );
+            in
+            [
+              "--config"
+              "${mdConfig}"
+              "--" # Signals the end of options
+              "-" # Crucial: Tells the linter to read from stdin
+            ];
+        };
       };
 
       lintersByFt = {
