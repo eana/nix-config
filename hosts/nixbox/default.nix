@@ -3,6 +3,8 @@
     ./disko.nix
     ./gdm.nix
     ./hardware-configuration.nix
+    ./home-manager/default.nix
+    ./nix/default.nix
     ./system/audio.nix
     ./system/boot.nix
     ./system/environment.nix
@@ -13,8 +15,8 @@
     ./system/security.nix
     ./system/services.nix
     ./system/virtualization.nix
-    ./home-manager/default.nix
-    ./nix/default.nix
+
+    ../../modules/linux/libvirt/default.nix
   ];
 
   age.secrets = {
@@ -39,6 +41,12 @@
   i18n = {
     defaultLocale = "en_US.UTF-8";
     inputMethod.enabled = null;
+  };
+
+  module.libvirt = {
+    enable = true;
+    gui.enable = true;
+    platformCpu = "intel";
   };
 
   system.stateVersion = "24.05";

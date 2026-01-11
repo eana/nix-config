@@ -2,14 +2,14 @@
 
 {
   imports = [
+    ./home-manager/default.nix
+    ./nix/default.nix
     ./system/defaults.nix
     ./system/environment.nix
     ./system/homebrew.nix
     ./system/networking.nix
     ./system/packages.nix
     ./system/security.nix
-    ./home-manager/default.nix
-    ./nix/default.nix
   ];
 
   age.secrets = {
