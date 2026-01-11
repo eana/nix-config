@@ -35,8 +35,8 @@
   users.users.jonas = {
     isNormalUser = true;
     extraGroups = [
-      "wheel"
       "video"
+      "wheel"
       "ydotool"
     ];
   };
