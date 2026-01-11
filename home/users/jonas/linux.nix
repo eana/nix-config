@@ -167,7 +167,6 @@ in
         settings.indicator-radius = 45;
       };
     };
-    tmux.enable = true;
     waybar = {
       enable = true;
       systemdIntegration.enable = true;
