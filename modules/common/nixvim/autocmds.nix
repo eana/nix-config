@@ -6,6 +6,7 @@
       fix_comment_indent = { };
       git_rebase_mappings = { };
       highlight_yank = { };
+      highlight_trailing_whitespaces = { };
       json_conceal = { };
       last_loc = { };
     };
@@ -148,6 +149,18 @@
         callback.__raw = ''
           function()
             vim.highlight.on_yank()
+          end
+        '';
+      }
+
+      # Highlight trailing whitespace
+      {
+        event = [ "VimEnter" ];
+        group = "highlight_trailing_whitespaces";
+        callback.__raw = ''
+          function()
+            vim.api.nvim_set_hl(0, "TrailingWhitespace", { bg = "red" })
+            vim.fn.matchadd("TrailingWhitespace", "\\s\\+$")
           end
         '';
       }

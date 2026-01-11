@@ -94,6 +94,9 @@ in
 
       highlight = {
         CursorLine = { };
+        TrailingWhitespace = {
+          bg = "red";
+        };
         SpellBad = {
           underline = true;
           fg = "#E06C75";
@@ -157,11 +160,6 @@ in
         ruff
         jq
       ];
-
-      extraConfigLua = ''
-        vim.cmd([[highlight TrailingWhitespace ctermbg=red guibg=red]])
-        vim.cmd([[match TrailingWhitespace /\s\+$/]])
-      '';
     };
   };
 }
