@@ -3,10 +3,11 @@
     autoGroups = {
       auto_create_dir = { };
       checktime = { };
+      copilot_chat_attach = { };
       fix_comment_indent = { };
       git_rebase_mappings = { };
-      highlight_yank = { };
       highlight_trailing_whitespaces = { };
+      highlight_yank = { };
       json_conceal = { };
       last_loc = { };
       lsp_keymaps = { };
@@ -41,6 +42,23 @@
             if vim.o.buftype ~= "nofile" then
               vim.cmd("checktime")
             end
+          end
+        '';
+      }
+
+      # Auto attach Copilot to copilot-chat buffer
+      {
+        event = [ "FileType" ];
+        pattern = [ "copilot-chat" ];
+        group = "copilot_chat_attach";
+        callback.__raw = ''
+          function(event)
+            vim.defer_fn(function()
+              local buf = event.buf
+              if vim.bo[buf].filetype == "copilot-chat" then
+                vim.cmd("Copilot! attach")
+              end
+            end, 100)
           end
         '';
       }
