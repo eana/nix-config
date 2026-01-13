@@ -4,11 +4,17 @@ _:
   programs.nixvim = {
     plugins.copilot-lua = {
       enable = true;
-
       settings = {
+        server_opts_overrides = {
+          settings = {
+            telemetry.telemetryLevel = "off";
+          };
+        };
         suggestion = {
           enabled = true;
           auto_trigger = true;
+          hide_during_completion = false;
+          debounce = 150;
           keymap = {
             accept = "<C-f>";
           };
