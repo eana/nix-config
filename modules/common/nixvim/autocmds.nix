@@ -9,6 +9,7 @@
       highlight_trailing_whitespaces = { };
       json_conceal = { };
       last_loc = { };
+      lsp_keymaps = { };
     };
 
     autoCmd = [
@@ -198,6 +199,32 @@
             if mark[1] > 0 and mark[1] <= lcount then
               pcall(vim.api.nvim_win_set_cursor, 0, mark)
             end
+          end
+        '';
+      }
+
+      # Buffer-local LSP keymaps when a language server attaches
+      {
+        event = [ "LspAttach" ];
+        group = "lsp_keymaps";
+        desc = "Setup buffer-local LSP keymaps when a language server attaches";
+        callback.__raw = ''
+          function(event)
+            local buf = event.buf
+            local opts = { buffer = buf, silent = true }
+
+            -- Navigation
+            vim.keymap.set("n", "gd", vim.lsp.buf.definition, vim.tbl_extend("force", opts, { desc = "Go to definition" }))
+            vim.keymap.set("n", "gD", vim.lsp.buf.declaration, vim.tbl_extend("force", opts, { desc = "Go to declaration" }))
+            vim.keymap.set("n", "gi", vim.lsp.buf.implementation, vim.tbl_extend("force", opts, { desc = "Go to implementation" }))
+            vim.keymap.set("n", "gr", vim.lsp.buf.references, vim.tbl_extend("force", opts, { desc = "Find references" }))
+
+            -- Documentation
+            vim.keymap.set("n", "K", vim.lsp.buf.hover, vim.tbl_extend("force", opts, { desc = "Hover documentation" }))
+
+            -- Refactor / actions
+            vim.keymap.set("n", "<leader>rn", vim.lsp.buf.rename, vim.tbl_extend("force", opts, { desc = "Rename symbol" }))
+            vim.keymap.set({ "n", "v" }, "<leader>ca", vim.lsp.buf.code_action, vim.tbl_extend("force", opts, { desc = "Code actions" }))
           end
         '';
       }
