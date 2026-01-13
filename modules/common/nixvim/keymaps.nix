@@ -682,10 +682,27 @@
 
       # ==================== Copilot Chat ====================
       {
-        key = "<leader>cc";
         mode = "n";
-        action = "<CMD>CopilotChatToggle<CR>";
-        options.desc = "Toggle Copilot Chat Window";
+        key = "<leader>cc";
+        action.__raw = ''
+          function()
+            local attached = false
+            for _, client in pairs(vim.lsp.get_active_clients({ bufnr = 0 })) do
+              if client.name == "copilot" then
+                attached = true
+                break
+              end
+            end
+            vim.cmd("CopilotChatToggle")
+            if not attached then
+              vim.cmd("Copilot! attach")
+            end
+          end
+        '';
+        options = {
+          desc = "Toggle Copilot Chat Window";
+          silent = true;
+        };
       }
       {
         key = "<leader>cs";
