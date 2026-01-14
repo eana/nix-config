@@ -1,7 +1,22 @@
-_:
+{ pkgs, ... }:
 
 {
   programs.nixvim = {
+    extraPlugins = with pkgs.vimPlugins; [
+      catppuccin-nvim
+      gruvbox-material
+      vim-hybrid-material
+    ];
+
+    opts = {
+      termguicolors = true;
+      background = "dark";
+    };
+
+    globals = {
+      enable_bold_font = 1;
+    };
+
     colorschemes = {
       gruvbox-material = {
         enable = true;
@@ -71,9 +86,6 @@ _:
     };
 
     extraConfigLua = ''
-      -- vim.cmd("colorscheme catppuccin")
-      vim.cmd("colorscheme gruvbox-material")
-
       vim.api.nvim_create_user_command("ToggleTheme", function()
         if vim.opt.background:get() == "dark" then
           vim.opt.background = "light"
@@ -82,14 +94,5 @@ _:
         end
       end, {})
     '';
-
-    keymaps = [
-      {
-        mode = "n";
-        key = "<Leader>tt";
-        action = "<cmd>ToggleTheme<CR>";
-        options.desc = "Toggle between dark and light themes";
-      }
-    ];
   };
 }

@@ -734,6 +734,19 @@ _:
         action = "<cmd>CopilotToggle<CR>";
         options.desc = "Toggle Copilot";
       }
+
+      # ==================== Theme Switching ====================
+      {
+        mode = "n";
+        key = "<Leader>tt";
+        action = "<cmd>ToggleTheme<CR>";
+        options.desc = "Switch between dark and light themes";
+      }
+      {
+        key = "<leader>ts";
+        action = "<cmd>Themery<CR>";
+        options.desc = "Theme switcher";
+      }
     ];
   };
 }

@@ -9,6 +9,7 @@
     ./lsp.nix
     ./lualine.nix
     ./snacks-nvim.nix
+    ./themery-nvim.nix
     ./treesitter.nix
   ];
 
