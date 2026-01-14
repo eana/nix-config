@@ -19,6 +19,9 @@ _:
             accept = "<C-f>";
           };
         };
+        filetypes = {
+          "*" = true;
+        };
       };
     };
 
