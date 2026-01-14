@@ -17,18 +17,6 @@ in
 {
   config = lib.mkIf cfg.enable {
     programs.nixvim = {
-      extraPackages = with pkgs; [
-        black
-        go
-        gotools
-        nixfmt
-        prettierd
-        ruff
-        shfmt
-        stylua
-        topiary
-      ];
-
       plugins.conform-nvim = {
         enable = true;
 
@@ -46,10 +34,7 @@ in
             tf = [ "terraform_fmt" ];
             "terraform-vars" = [ "terraform_fmt" ];
 
-            python = [
-              "black"
-              "ruff_format"
-            ];
+            python = [ "ruff" ];
             nix = [ "nixfmt" ];
 
             go = [

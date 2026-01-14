@@ -149,12 +149,14 @@ in
         shellcheck
 
         # --- Formatters (Code cleanup) ---
+        go
         gotools
         nixfmt
         prettierd
         shfmt
         stylua
         yamlfmt
+        topiary
 
         # --- Multi-tools (Lint + Format) ---
         ruff
