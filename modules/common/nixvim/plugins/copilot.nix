@@ -10,15 +10,8 @@ _:
             telemetry.telemetryLevel = "off";
           };
         };
-        suggestion = {
-          enabled = true;
-          auto_trigger = true;
-          hide_during_completion = false;
-          debounce = 150;
-          keymap = {
-            accept = "<C-f>";
-          };
-        };
+        suggestion.enabled = false;
+        panel.enabled = false;
         filetypes = {
           "*" = true;
         };
@@ -37,9 +30,7 @@ _:
             insert = "<Tab>";
           };
         };
-        window = {
-          layout = "vertical";
-        };
+        window.layout = "vertical";
       };
     };
 

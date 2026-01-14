@@ -1,5 +1,6 @@
 {
   imports = [
+    ./blink-cmp.nix
     ./bufferline.nix
     ./conform-nvim.nix
     ./copilot.nix
@@ -137,50 +138,6 @@
 
       # --- Editing Productivity ---
       nvim-autopairs.enable = true;
-
-      # --- Completion & Snippets ---
-      blink-cmp = {
-        enable = true;
-        settings = {
-          keymap.preset = "enter";
-          appearance = {
-            nerd_font_variant = "mono";
-          };
-          sources = {
-            default = [
-              "lsp"
-              "path"
-              "snippets"
-              "buffer"
-            ];
-          };
-          cmdline = {
-            sources = [
-              "buffer"
-              "cmdline"
-            ];
-          };
-          completion = {
-            list = {
-              selection = {
-                preselect = true;
-                auto_insert = false;
-              };
-            };
-            menu = {
-              auto_show = true;
-              border = "rounded";
-            };
-            documentation = {
-              auto_show = true;
-              auto_show_delay_ms = 500;
-            };
-            ghost_text = {
-              enabled = false;
-            };
-          };
-        };
-      };
 
       # --- Search & Navigation ---
       grug-far = {
