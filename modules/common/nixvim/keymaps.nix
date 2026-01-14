@@ -561,12 +561,6 @@ _:
         options.desc = "Clear search highlight";
       }
       {
-        key = "<Esc><Esc>";
-        mode = "t";
-        action = "<C-\\><C-n>";
-        options.desc = "Exit terminal mode";
-      }
-      {
         key = "<F5>";
         mode = "n";
         action = "<cmd>Trim<CR>";
@@ -617,6 +611,14 @@ _:
         mode = "v";
         action = ">gv";
         options.desc = "Indent right and reselect";
+      }
+
+      # ==================== Terminal Mode ====================
+      {
+        key = "<Esc><Esc>";
+        mode = "t";
+        action = "<C-\\><C-n>";
+        options.desc = "Exit terminal mode";
       }
 
       # ==================== Window Resizing ====================
