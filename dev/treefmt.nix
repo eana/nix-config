@@ -1,21 +1,20 @@
 { pkgs }:
 {
   programs = {
+    # keep-sorted start block=yes
+    keep-sorted.enable = true;
+    mdformat.enable = true;
     nixfmt = {
       enable = true;
       package = pkgs.nixfmt;
     };
     stylua = {
       enable = true;
-      package = pkgs.stylua;
       settings = {
         indent_type = "Spaces";
         indent_width = 2;
       };
     };
-    mdformat = {
-      enable = true;
-      package = pkgs.mdformat;
-    };
+    # keep-sorted end
   };
 }

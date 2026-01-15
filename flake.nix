@@ -59,6 +59,7 @@
     inputs@{ flake-parts, ... }:
     let
       moduleList = [
+        # keep-sorted start
         "git"
         "gpg-agent"
         "neovim"
@@ -66,6 +67,7 @@
         "ollama"
         "tmux"
         "zsh"
+        # keep-sorted end
       ];
       homeModules = builtins.listToAttrs (
         map (name: {
