@@ -13,11 +13,12 @@ in
   };
 
   imports = [
+    # keep-sorted start
     ./autocmds.nix
     ./colorscheme.nix
     ./keymaps.nix
-
     ./plugins
+    # keep-sorted end
   ];
 
   config = lib.mkIf cfg.enable {

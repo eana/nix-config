@@ -2,6 +2,7 @@
 
 {
   imports = [
+    # keep-sorted start
     ./home-manager/default.nix
     ./nix/default.nix
     ./system/defaults.nix
@@ -10,6 +11,7 @@
     ./system/networking.nix
     ./system/packages.nix
     ./system/security.nix
+    # keep-sorted end
   ];
 
   age.secrets = {

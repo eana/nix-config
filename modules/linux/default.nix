@@ -1,5 +1,6 @@
 {
   imports = [
+    # keep-sorted start
     ./avizo/default.nix
     ./foot/default.nix
     ./fuzzel/default.nix
@@ -10,5 +11,6 @@
     ./openra/default.nix
     ./sway/default.nix
     ./waybar/default.nix
+    # keep-sorted end
   ];
 }
