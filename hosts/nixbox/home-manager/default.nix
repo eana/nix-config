@@ -15,9 +15,11 @@
         atuinSecretsPath = config.age.secrets.atuin.path;
       };
       imports = [
+        # keep-sorted start
         ../../../home/users/jonas/linux.nix
         ../../../modules/common/default.nix
         ../../../modules/linux/default.nix
+        # keep-sorted end
       ];
     };
 

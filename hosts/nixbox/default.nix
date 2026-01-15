@@ -1,5 +1,6 @@
 {
   imports = [
+    # keep-sorted start
     ./disko.nix
     ./gdm.nix
     ./hardware-configuration.nix
@@ -15,6 +16,7 @@
     ./system/security.nix
     ./system/services.nix
     ./system/virtualization.nix
+    # keep-sorted end
 
     ../../modules/linux/libvirt/default.nix
   ];

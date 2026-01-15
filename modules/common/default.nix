@@ -3,6 +3,7 @@
   imports = [
     inputs.nixvim.homeModules.nixvim
 
+    # keep-sorted start
     ./atuin/default.nix
     ./git/default.nix
     ./gpg-agent/default.nix
@@ -13,5 +14,6 @@
     ./ssh-client/default.nix
     ./tmux/default.nix
     ./zsh/default.nix
+    # keep-sorted end
   ];
 }
