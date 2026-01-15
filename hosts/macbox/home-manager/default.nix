@@ -10,8 +10,10 @@
         atuinSecretsPath = config.age.secrets.atuin.path;
       };
       imports = [
+        # keep-sorted start
         ../../../home/users/jonas/darwin.nix
         ../../../modules/common/default.nix
+        # keep-sorted end
       ];
       home.packages = [ ];
       home.stateVersion = "24.05";
