@@ -3,9 +3,10 @@ _:
 {
   programs.nixvim = {
     autoGroups = {
+      # keep-sorted start
       auto_create_dir = { };
       checktime = { };
-      copilot_chat_attach = { };
+      copilot_chat = { };
       fix_comment_indent = { };
       git_rebase_mappings = { };
       highlight_trailing_whitespaces = { };
@@ -13,10 +14,11 @@ _:
       json_conceal = { };
       last_loc = { };
       lsp_keymaps = { };
+      # keep-sorted end
     };
 
     autoCmd = [
-      # Auto create dir when saving a file
+      # Auto-create directory when saving a file
       {
         event = [ "BufWritePre" ];
         group = "auto_create_dir";
@@ -31,7 +33,7 @@ _:
         '';
       }
 
-      # Check if we need to reload the file when it changed
+      # Reload file if it changed on disk
       {
         event = [
           "FocusGained"
@@ -48,11 +50,11 @@ _:
         '';
       }
 
-      # Auto attach Copilot to copilot-chat buffer
+      # Attach Copilot to copilot-chat buffer
       {
         event = [ "FileType" ];
-        pattern = [ "copilot-chat" ];
-        group = "copilot_chat_attach";
+        pattern = [ "copilot-*" ];
+        group = "copilot_chat";
         callback.__raw = ''
           function(event)
             vim.defer_fn(function()
@@ -65,11 +67,23 @@ _:
         '';
       }
 
-      # Stop '#' from jumping to column 1 in all filetypes
+      # Configure Copilot chat buffer behavior
+      {
+        event = [ "BufEnter" ];
+        pattern = [ "copilot-*" ];
+        group = "copilot_chat";
+        callback.__raw = ''
+          function()
+            vim.opt_local.conceallevel = 0
+          end
+        '';
+      }
+
+      # Prevent '#' from jumping to column 1 in all filetypes
       {
         event = [ "FileType" ];
-        group = "fix_comment_indent";
         pattern = [ "*" ];
+        group = "fix_comment_indent";
         callback.__raw = ''
           function()
             -- Disable smartindent which is the primary cause
@@ -81,11 +95,11 @@ _:
         '';
       }
 
-      # Git rebase: single-key command mappings (pick/squash/etc) + help footer
+      # Git rebase: single-key command mappings and help footer
       {
         event = [ "FileType" ];
-        group = "git_rebase_mappings";
         pattern = [ "gitrebase" ];
+        group = "git_rebase_mappings";
         callback.__raw = ''
           function(event)
             local buf = event.buf
@@ -165,8 +179,8 @@ _:
       # Highlight on yank
       {
         event = [ "TextYankPost" ];
-        desc = "Highlight when yanking (copying) text";
         group = "highlight_yank";
+        desc = "Highlight when yanking (copying) text";
         callback.__raw = ''
           function()
             vim.highlight.on_yank()
@@ -186,15 +200,15 @@ _:
         '';
       }
 
-      # Fix conceallevel for json files
+      # Disable conceallevel for JSON filetypes
       {
         event = [ "FileType" ];
-        group = "json_conceal";
         pattern = [
           "json"
-          "jsonc"
           "json5"
+          "jsonc"
         ];
+        group = "json_conceal";
         callback.__raw = ''
           function()
             vim.opt_local.conceallevel = 0
@@ -202,7 +216,7 @@ _:
         '';
       }
 
-      # Go to last loc when opening a buffer
+      # Restore last cursor location when opening a buffer
       {
         event = [ "BufReadPost" ];
         group = "last_loc";
@@ -223,11 +237,11 @@ _:
         '';
       }
 
-      # Buffer-local LSP keymaps when a language server attaches
+      # Set up buffer-local LSP keymaps when a language server attaches
       {
         event = [ "LspAttach" ];
         group = "lsp_keymaps";
-        desc = "Setup buffer-local LSP keymaps when a language server attaches";
+        desc = "Set up buffer-local LSP keymaps when a language server attaches";
         callback.__raw = ''
           function(event)
             local buf = event.buf
