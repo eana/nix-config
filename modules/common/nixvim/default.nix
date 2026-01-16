@@ -163,6 +163,18 @@ in
         ruff
         jq
       ];
+
+      # Support WSL clipboard integration
+      extraConfigLuaPost = ''
+        if os.getenv('WSL_DISTRO_NAME') ~= nil then
+          vim.g.clipboard = {
+            name = 'wsl clipboard',
+            copy =  { ["+"] = { "clip.exe" },   ["*"] = { "clip.exe" } },
+            paste = { ["+"] = { "win32yank.exe", "-o", "--lf" }, ["*"] = { "win32yank.exe", "-o", "--lf" } },
+            cache_enabled = true
+          }
+        end
+      '';
     };
   };
 }
