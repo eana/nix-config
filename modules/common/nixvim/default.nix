@@ -46,7 +46,7 @@ in
         background = "dark"; # Set dark background
         termguicolors = true; # Enable 24-bit RGB colors
         signcolumn = "yes"; # Always show the sign column to avoid text shifting
-        wrap = false; # Disable line wrapping
+        wrap = true; # Enable line wrapping
         cursorline = true; # Highlight the current line
         sidescrolloff = 8; # Keep 8 characters visible when scrolling horizontally
         scrolloff = 8; # Keep 8 lines visible when scrolling vertically

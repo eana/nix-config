@@ -749,6 +749,26 @@ _:
         action = "<cmd>Themery<CR>";
         options.desc = "Theme switcher";
       }
+
+      # ==================== Wrapped Line Movement ====================
+      {
+        key = "<Up>";
+        mode = "n";
+        action = "gk";
+        options = {
+          silent = true;
+          desc = "Move up by wrapped line";
+        };
+      }
+      {
+        key = "<Down>";
+        mode = "n";
+        action = "gj";
+        options = {
+          silent = true;
+          desc = "Move down by wrapped line";
+        };
+      }
     ];
   };
 }
