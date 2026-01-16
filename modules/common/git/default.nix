@@ -116,6 +116,8 @@ in
         };
 
         settings = {
+          core.pager = mkDefault "less";
+
           user = {
             name = mkDefault (chosen.name or "Jonas Eana");
             email = mkDefault (chosen.email or "jonas@eana.ro");
