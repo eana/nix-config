@@ -23,6 +23,9 @@ _:
       jsonls.enable = true;
       yamlls.enable = true;
       nixd.enable = true;
+
+      # Markdown
+      marksman.enable = true;
     };
 
     onAttach = ''
