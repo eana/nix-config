@@ -63,9 +63,14 @@
       # Nix Tools
       cachix # Binary cache client for Nix
 
-      # Other
+      # System Information
       neofetch # System information tool
+
+      # Security & Encryption
       age # Simple, modern and secure encryption tool
+
+      # AI & Coding Agents
+      opencode # the open source AI coding agent
     ];
 
     sessionVariables = {
