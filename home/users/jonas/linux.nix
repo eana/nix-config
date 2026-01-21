@@ -114,6 +114,7 @@ in
 
       # Networking
       iproute2 # Utilities for controlling TCP/IP networking and traffic control in Linux
+      protonvpn-gui # ProtonVPN
 
       # Media
       freetube # YouTube client
@@ -125,18 +126,24 @@ in
       # Fonts
       cantarell-fonts # Cantarell font family
 
-      # Other
+      # Development Tools
+      aws-export-profile # AWS profile exporter
       awscli2 # AWS command-line interface
-      fuse-emulator # ZX Spectrum emulator
+      nix-tree # Visualize Nix dependencies
       oath-toolkit # OATH one-time password tool
-      protonvpn-gui # ProtonVPN
+
+      # Emulators
+      fuse-emulator # ZX Spectrum (Z80) emulator
 
       # Browsers
       firefox # Web browser
       google-chrome # Web browser
 
-      # Other
+      # Messaging apps
       telegram-desktop # Telegram client
+
+      # AI & Coding Agents
+      opencode # the open source AI coding agent
     ];
 
     sessionVariables = {
