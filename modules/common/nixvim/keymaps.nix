@@ -112,6 +112,18 @@ _:
         action = "<cmd>lua Snacks.picker.smart()<cr>";
         options.desc = "Find Files (Smart)";
       }
+
+      # ==================== Toggles ====================
+      {
+        key = "<F3>";
+        mode = "n";
+        action.__raw = ''
+          function()
+            vim.opt_local.spell = not vim.opt_local.spell:get()
+          end
+        '';
+        options.desc = "Toggle spellcheck";
+      }
       {
         key = "<leader>/";
         mode = "n";

@@ -14,6 +14,7 @@ _:
       json_conceal = { };
       last_loc = { };
       lsp_keymaps = { };
+      spell_highlight = { };
       # keep-sorted end
     };
 
@@ -176,18 +177,6 @@ _:
         '';
       }
 
-      # Highlight on yank
-      {
-        event = [ "TextYankPost" ];
-        group = "highlight_yank";
-        desc = "Highlight when yanking (copying) text";
-        callback.__raw = ''
-          function()
-            vim.highlight.on_yank()
-          end
-        '';
-      }
-
       # Highlight trailing whitespace
       {
         event = [ "VimEnter" ];
@@ -196,6 +185,18 @@ _:
           function()
             vim.api.nvim_set_hl(0, "TrailingWhitespace", { bg = "red" })
             vim.fn.matchadd("TrailingWhitespace", "\\s\\+$")
+          end
+        '';
+      }
+
+      # Highlight on yank
+      {
+        event = [ "TextYankPost" ];
+        group = "highlight_yank";
+        desc = "Highlight when yanking (copying) text";
+        callback.__raw = ''
+          function()
+            vim.highlight.on_yank()
           end
         '';
       }
@@ -259,6 +260,23 @@ _:
             -- Refactor / actions
             vim.keymap.set("n", "<leader>rn", vim.lsp.buf.rename, vim.tbl_extend("force", opts, { desc = "Rename symbol" }))
             vim.keymap.set({ "n", "v" }, "<leader>ca", vim.lsp.buf.code_action, vim.tbl_extend("force", opts, { desc = "Code actions" }))
+          end
+        '';
+      }
+
+      # Force spell highlight style after colorscheme/theme loads
+      {
+        event = [
+          "ColorScheme"
+          "VimEnter"
+        ];
+        group = "spell_highlight";
+        callback.__raw = ''
+          function()
+            vim.api.nvim_set_hl(0, "SpellBad", { fg = "#FFFFFF", bg = "#E06C75"})
+            vim.api.nvim_set_hl(0, "SpellCap", { fg = "#FFFFFF", bg = "#E5C07B"})
+            vim.api.nvim_set_hl(0, "SpellLocal", { fg = "#FFFFFF", bg = "#56B6C2"})
+            vim.api.nvim_set_hl(0, "SpellRare", { fg = "#FFFFFF", bg = "#61AFEF"})
           end
         '';
       }
