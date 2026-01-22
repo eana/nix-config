@@ -119,7 +119,24 @@ _:
         mode = "n";
         action.__raw = ''
           function()
-            vim.opt_local.spell = not vim.opt_local.spell:get()
+            local function apply_spell_highlights()
+              vim.api.nvim_set_hl(0, "SpellBad", { fg = "#FFFFFF", bg = "#E06C75" })
+              vim.api.nvim_set_hl(0, "SpellCap", { fg = "#FFFFFF", bg = "#E5C07B" })
+              vim.api.nvim_set_hl(0, "SpellLocal", { fg = "#FFFFFF", bg = "#56B6C2" })
+              vim.api.nvim_set_hl(0, "SpellRare", { fg = "#FFFFFF", bg = "#61AFEF" })
+            end
+
+            local enabled = not vim.wo.spell
+            vim.wo.spell = enabled
+            vim.opt_local.spell = enabled
+            vim.opt_local.spelllang = { "en_us" }
+            vim.opt_local.spelloptions = "camel"
+
+            if enabled then
+              apply_spell_highlights()
+            end
+
+            vim.api.nvim_echo({ { "Spellcheck " .. (enabled and "ON" or "OFF"), "None" } }, false, {})
           end
         '';
         options.desc = "Toggle spellcheck";
@@ -329,7 +346,7 @@ _:
         options.desc = "Toggle indent guides";
       }
 
-      # ==================== Git — Diffview ====================
+      # ==================== Git - Diffview ====================
       {
         key = "<leader>gd";
         mode = "n";
