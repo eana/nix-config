@@ -8,7 +8,7 @@ _:
       checktime = { };
       copilot_chat = { };
       fix_comment_indent = { };
-      git_rebase_mappings = { };
+      git = { };
       highlight_trailing_whitespaces = { };
       highlight_yank = { };
       json_conceal = { };
@@ -76,6 +76,8 @@ _:
         callback.__raw = ''
           function()
             vim.opt_local.conceallevel = 0
+            vim.wo.spell = false
+            vim.opt_local.spell = false
           end
         '';
       }
@@ -96,11 +98,27 @@ _:
         '';
       }
 
+      # Enable spell in git commit/rebase buffers
+      {
+        event = [ "FileType" ];
+        pattern = [
+          "gitcommit"
+          "gitrebase"
+        ];
+        group = "git";
+        callback.__raw = ''
+          function()
+            vim.wo.spell = true
+            vim.opt_local.spell = true
+          end
+        '';
+      }
+
       # Git rebase: single-key command mappings and help footer
       {
         event = [ "FileType" ];
         pattern = [ "gitrebase" ];
-        group = "git_rebase_mappings";
+        group = "git";
         callback.__raw = ''
           function(event)
             local buf = event.buf
