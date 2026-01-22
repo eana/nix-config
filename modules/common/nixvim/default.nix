@@ -88,7 +88,7 @@ in
         backspace = "indent,eol,start"; # Allow backspace in insert mode
 
         # ================ Spellchecking ========================
-        spell = true; # Enable spellchecking
+        spell = false; # Disable global spell; toggle via keymap
         spelllang = [ "en_us" ]; # Set spellchecking language
         spelloptions = "camel"; # Enable camel case spellchecking
       };
@@ -97,10 +97,6 @@ in
         CursorLine = { };
         TrailingWhitespace = {
           bg = "red";
-        };
-        SpellBad = {
-          underline = true;
-          fg = "#E06C75";
         };
       };
 
