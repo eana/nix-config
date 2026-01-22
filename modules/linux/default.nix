@@ -8,6 +8,7 @@
     ./kanshi/default.nix
     ./mhalo/default.nix
     ./mpv/default.nix
+    ./niri/default.nix
     ./openra/default.nix
     ./sway/default.nix
     ./waybar/default.nix

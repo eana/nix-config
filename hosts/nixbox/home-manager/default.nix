@@ -27,19 +27,23 @@
   };
 
   programs = {
-    zsh.enable = true;
-    sway.enable = true;
-    ydotool.enable = true;
+    # keep-sorted start
     nix-index-database.comma.enable = true;
     ssh.startAgent = true;
+    sway.enable = true;
+    ydotool.enable = true;
+    zsh.enable = true;
+    # keep-sorted end
   };
 
   users.users.jonas = {
     isNormalUser = true;
     extraGroups = [
+      # keep-sorted start
       "video"
       "wheel"
       "ydotool"
+      # keep-sorted end
     ];
   };
 

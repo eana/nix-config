@@ -157,6 +157,7 @@ in
       swayKeybinding = "Mod4+Shift+m";
     };
     mpv.enable = true;
+    niri.enable = true;
     ollama.enable = true;
     openra.enable = false;
     sway = {
