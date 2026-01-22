@@ -48,10 +48,23 @@ let
         };
       }
   ) { } (lib.attrNames cfg.identities);
+
+  includeEntries = lib.concatMap (
+    id:
+    let
+      ident = cfg.identities.${id};
+      pats = ident.pathPatterns or [ ];
+    in
+    map (pattern: {
+      condition = "gitdir:" + pattern;
+      path = "~/.gitconfig-${id}";
+    }) pats
+  ) (lib.attrNames cfg.identities);
 in
 {
   options.module.git = {
     enable = mkEnableOption "Git version control system";
+
     identity = lib.mkOption {
       type = lib.types.nullOr lib.types.str;
       default = null;
@@ -71,35 +84,7 @@ in
         meld
       ];
 
-      file = fileAttrset // {
-        ".gitconfig" = {
-          text =
-            let
-              mkInclude =
-                id:
-                let
-                  ident = cfg.identities.${id};
-                  pats = ident.pathPatterns or [ ];
-                  txt = renderIdentity ident;
-                in
-                if txt == "" || pats == [ ] then
-                  ""
-                else
-                  ''
-                    [includeIf "gitdir:${lib.concatStringsSep "|" pats}"] path = ~/.gitconfig-${id}
-                  '';
-
-              includeLines = lib.concatStringsSep "" (map mkInclude (lib.attrNames cfg.identities));
-
-              chosen = if cfg.identity == null then { } else (lib.getAttr cfg.identity cfg.identities or { });
-              globalUser = ''
-                [user]
-                  signingkey = ${chosen.key or "C01D2E8FCFCB6358"}
-              '';
-            in
-            includeLines + "\n" + globalUser;
-        };
-      };
+      file = fileAttrset;
     };
 
     programs.git =
@@ -112,15 +97,17 @@ in
 
         signing = {
           signByDefault = mkDefault true;
-          key = mkDefault (chosen.key or "C01D2E8FCFCB6358");
+          key = mkDefault (chosen.key or identityDefaults.key);
         };
+
+        includes = includeEntries;
 
         settings = {
           core.pager = mkDefault "less";
 
           user = {
-            name = mkDefault (chosen.name or "Jonas Eana");
-            email = mkDefault (chosen.email or "jonas@eana.ro");
+            name = mkDefault (chosen.name or identityDefaults.name);
+            email = mkDefault (chosen.email or identityDefaults.email);
           };
 
           alias = {
