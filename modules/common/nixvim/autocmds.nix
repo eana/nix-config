@@ -246,6 +246,13 @@ _:
         callback.__raw = ''
           function(event)
             local buf = event.buf
+            local client = vim.lsp.get_client_by_id(event.data.client_id)
+            local ft = vim.bo[buf].filetype
+
+            if ft == "copilot-chat" or (client and client.name == "copilot") then
+              return
+            end
+
             local opts = { buffer = buf, silent = true }
 
             -- Navigation
