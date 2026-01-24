@@ -28,6 +28,8 @@
 
   programs = {
     # keep-sorted start
+    dms-shell.enable = true;
+    niri.enable = true;
     nix-index-database.comma.enable = true;
     ssh.startAgent = true;
     sway.enable = true;

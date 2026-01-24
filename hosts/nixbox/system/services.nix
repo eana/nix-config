@@ -19,9 +19,6 @@
 
     displayManager = {
       defaultSession = "sway";
-    };
-
-    displayManager = {
       gdm = {
         enable = true;
         wayland = true;
