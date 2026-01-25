@@ -155,10 +155,6 @@ in
         ps.tiktoken_core
       ];
 
-      extraPlugins = with pkgs.vimPlugins; [
-        undotree
-      ];
-
       extraPackages = with pkgs; [
         # --- LSPs (Logic & Intelligence) ---
         bash-language-server
