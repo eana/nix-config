@@ -1,3 +1,5 @@
+{ pkgs, ... }:
+
 {
   imports = [
     # keep-sorted start
@@ -54,5 +56,9 @@
       # --- Lazy Loading/Performance ---
       lz-n.enable = true;
     };
+
+    extraPlugins = with pkgs.vimPlugins; [
+      undotree
+    ];
   };
 }
