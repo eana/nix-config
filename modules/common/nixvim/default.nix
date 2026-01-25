@@ -10,6 +10,18 @@ in
 {
   options.module.nixvim = {
     enable = lib.mkEnableOption "nixvim";
+
+    wrapColumn = lib.mkOption {
+      type = lib.types.int;
+      default = 80;
+      description = "Soft wrap column target.";
+    };
+
+    softWrapEnabled = lib.mkOption {
+      type = lib.types.bool;
+      default = false;
+      description = "Whether soft wrapping is enabled by default.";
+    };
   };
 
   imports = [
@@ -26,10 +38,15 @@ in
     programs.nixvim = {
       enable = true;
 
+      globals = {
+        nixvim_wrap_column = cfg.wrapColumn;
+      };
+
       opts = {
         # ================ General appearance ======================
         hidden = true; # Make Vim act like other editors; buffers can exist in the background without being in a window. http://items.sjbach.com/319/configuring-vim-right
         number = true; # Show line numbers
+        numberwidth = 1; # Keep a fixed gutter width
         relativenumber = false; # Show relative line numbers
         laststatus = 0; # Always display the status line
         history = 1000; # Store lots of command-line history
@@ -46,7 +63,10 @@ in
         background = "dark"; # Set dark background
         termguicolors = true; # Enable 24-bit RGB colors
         signcolumn = "yes"; # Always show the sign column to avoid text shifting
-        wrap = true; # Enable line wrapping
+        wrap = cfg.softWrapEnabled; # Enable line wrapping if configured
+        linebreak = cfg.softWrapEnabled; # Break lines at word boundaries when wrapping
+        breakindent = cfg.softWrapEnabled; # Preserve indentation on wrapped lines
+        showbreak = "↪ "; # Prefix for visually wrapped lines
         cursorline = true; # Highlight the current line
         sidescrolloff = 8; # Keep 8 characters visible when scrolling horizontally
         scrolloff = 8; # Keep 8 lines visible when scrolling vertically
@@ -115,6 +135,20 @@ in
       withNodeJs = true;
       withPython3 = true;
       withRuby = false;
+
+      extraConfigLua = lib.mkIf cfg.softWrapEnabled ''
+        vim.g._nixvim_prev_columns = vim.o.columns
+        if vim.wo.wrap then
+          local target = tonumber(vim.g.nixvim_wrap_column) or 80
+          local cols = math.max(12, (vim.o.numberwidth or 6) + target)
+          vim.o.columns = cols
+          local buf = vim.api.nvim_get_current_buf()
+          vim.keymap.set({ "n", "v" }, "<Home>", "g0", { buffer = buf, silent = true })
+          vim.keymap.set({ "n", "v" }, "<End>", "g$", { buffer = buf, silent = true })
+          vim.keymap.set("i", "<Home>", "<C-o>g0", { buffer = buf, silent = true })
+          vim.keymap.set("i", "<End>", "<C-o>g$", { buffer = buf, silent = true })
+        end
+      '';
 
       extraLuaPackages = ps: [
         ps.luarocks

@@ -112,35 +112,6 @@ _:
         action = "<cmd>lua Snacks.picker.smart()<cr>";
         options.desc = "Find Files (Smart)";
       }
-
-      # ==================== Toggles ====================
-      {
-        key = "<F3>";
-        mode = "n";
-        action.__raw = ''
-          function()
-            local function apply_spell_highlights()
-              vim.api.nvim_set_hl(0, "SpellBad", { fg = "#FFFFFF", bg = "#E06C75" })
-              vim.api.nvim_set_hl(0, "SpellCap", { fg = "#FFFFFF", bg = "#E5C07B" })
-              vim.api.nvim_set_hl(0, "SpellLocal", { fg = "#FFFFFF", bg = "#56B6C2" })
-              vim.api.nvim_set_hl(0, "SpellRare", { fg = "#FFFFFF", bg = "#61AFEF" })
-            end
-
-            local enabled = not vim.wo.spell
-            vim.wo.spell = enabled
-            vim.opt_local.spell = enabled
-            vim.opt_local.spelllang = { "en_us" }
-            vim.opt_local.spelloptions = "camel"
-
-            if enabled then
-              apply_spell_highlights()
-            end
-
-            vim.api.nvim_echo({ { "Spellcheck " .. (enabled and "ON" or "OFF"), "None" } }, false, {})
-          end
-        '';
-        options.desc = "Toggle spellcheck";
-      }
       {
         key = "<leader>/";
         mode = "n";
@@ -328,7 +299,82 @@ _:
         options.desc = "Search and Replace";
       }
 
-      # ==================== UI Toggles ====================
+      # ==================== Toggles ====================
+      {
+        key = "<F3>";
+        mode = "n";
+        action.__raw = ''
+          function()
+            local function apply_spell_highlights()
+              vim.api.nvim_set_hl(0, "SpellBad", { fg = "#FFFFFF", bg = "#E06C75" })
+              vim.api.nvim_set_hl(0, "SpellCap", { fg = "#FFFFFF", bg = "#E5C07B" })
+              vim.api.nvim_set_hl(0, "SpellLocal", { fg = "#FFFFFF", bg = "#56B6C2" })
+              vim.api.nvim_set_hl(0, "SpellRare", { fg = "#FFFFFF", bg = "#61AFEF" })
+            end
+
+            local enabled = not vim.wo.spell
+            vim.wo.spell = enabled
+            vim.opt_local.spell = enabled
+            vim.opt_local.spelllang = { "en_us" }
+            vim.opt_local.spelloptions = "camel"
+
+            if enabled then
+              apply_spell_highlights()
+            end
+
+            vim.api.nvim_echo({ { "Spellcheck " .. (enabled and "ON" or "OFF"), "None" } }, false, {})
+          end
+        '';
+        options.desc = "Toggle spellcheck";
+      }
+      {
+        key = "<F4>";
+        mode = [
+          "n"
+          "i"
+          "v"
+        ];
+        action.__raw = ''
+          function()
+            local enabled = not vim.wo.wrap
+            vim.wo.wrap = enabled
+            vim.wo.linebreak = enabled
+            vim.wo.breakindent = enabled
+
+            local target = tonumber(vim.g.nixvim_wrap_column)
+
+            if enabled then
+              vim.g._nixvim_prev_columns = vim.g._nixvim_prev_columns or vim.o.columns
+              local nw = vim.o.numberwidth
+              local cols = math.max(12, nw + target)
+              vim.o.columns = cols
+              local buf = vim.api.nvim_get_current_buf()
+              vim.keymap.set({ "n", "v" }, "<Home>", "g0", { buffer = buf, silent = true })
+              vim.keymap.set({ "n", "v" }, "<End>", "g$", { buffer = buf, silent = true })
+              vim.keymap.set("i", "<Home>", "<C-o>g0", { buffer = buf, silent = true })
+              vim.keymap.set("i", "<End>", "<C-o>g$", { buffer = buf, silent = true })
+            else
+              if vim.g._nixvim_prev_columns then
+                vim.o.columns = vim.g._nixvim_prev_columns
+                vim.g._nixvim_prev_columns = nil
+              end
+              local buf = vim.api.nvim_get_current_buf()
+              pcall(vim.keymap.del, "n", "<Home>", { buffer = buf })
+              pcall(vim.keymap.del, "v", "<Home>", { buffer = buf })
+              pcall(vim.keymap.del, "i", "<Home>", { buffer = buf })
+              pcall(vim.keymap.del, "n", "<End>", { buffer = buf })
+              pcall(vim.keymap.del, "v", "<End>", { buffer = buf })
+              pcall(vim.keymap.del, "i", "<End>", { buffer = buf })
+            end
+
+            vim.api.nvim_echo({ { "Softwrap at column " .. target .. " " .. (enabled and "ON" or "OFF"), "None" } }, false, {})
+          end
+        '';
+        options = {
+          silent = true;
+          desc = "Toggle soft wrap";
+        };
+      }
       {
         mode = [ "n" ];
         key = "<leader>ug";
