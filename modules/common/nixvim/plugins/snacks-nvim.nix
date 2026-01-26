@@ -22,13 +22,10 @@ _:
             explorer = {
               hidden = true;
               ignored = true;
+              layout.layout.width = 45;
             };
-            files = {
-              hidden = true;
-            };
-            grep = {
-              hidden = true;
-            };
+            files.hidden = true;
+            grep.hidden = true;
           };
         };
 
