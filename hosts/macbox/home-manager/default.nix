@@ -21,6 +21,4 @@
 
     extraSpecialArgs = { inherit inputs; };
   };
-
-  programs.nix-index-database.comma.enable = true;
 }
