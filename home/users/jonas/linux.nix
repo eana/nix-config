@@ -153,6 +153,24 @@ in
     };
   };
 
+  xdg.configFile."opencode/config.json".text = builtins.toJSON {
+    "$schema" = "https://opencode.ai/config.json";
+    autoshare = false;
+    autoupdate = false;
+    experimental = {
+      disable_paste_summary = true;
+    };
+    keybinds = {
+      session_export = "none";
+      session_share = "none";
+      session_unshare = "none";
+      terminal_suspend = "none";
+      messages_first = "ctrl+home";
+      messages_last = "ctrl+end";
+    };
+    share = "disabled";
+  };
+
   module = {
     avizo.enable = true;
     foot.enable = true;
