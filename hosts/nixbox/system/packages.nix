@@ -3,7 +3,7 @@
 {
   programs = {
     # keep-sorted start
-    dms-shell.enable = true;
+    dms-shell.enable = false;
     niri.enable = true;
     nix-index-database.comma.enable = true;
     ssh.startAgent = true;
