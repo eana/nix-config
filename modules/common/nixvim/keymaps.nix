@@ -349,10 +349,14 @@ _:
               local cols = math.max(12, nw + target)
               vim.o.columns = cols
               local buf = vim.api.nvim_get_current_buf()
-              vim.keymap.set({ "n", "v" }, "<Home>", "g0", { buffer = buf, silent = true })
-              vim.keymap.set({ "n", "v" }, "<End>", "g$", { buffer = buf, silent = true })
-              vim.keymap.set("i", "<Home>", "<C-o>g0", { buffer = buf, silent = true })
-              vim.keymap.set("i", "<End>", "<C-o>g$", { buffer = buf, silent = true })
+              vim.keymap.set({ "n", "v" }, "<Home>", "g0", { buffer = buf, silent = true, desc = "Go to start of wrapped line" })
+              vim.keymap.set({ "n", "v" }, "<End>", "g$", { buffer = buf, silent = true, desc = "Go to end of wrapped line" })
+              vim.keymap.set("i", "<Home>", "<C-o>g0", { buffer = buf, silent = true, desc = "Go to start of wrapped line (insert mode)" })
+              vim.keymap.set("i", "<End>", "<C-o>g$", { buffer = buf, silent = true, desc = "Go to end of wrapped line (insert mode)" })
+              vim.keymap.set({ "n", "v" }, "<Up>", "gk", { buffer = buf, silent = true, desc = "Move up by wrapped line" })
+              vim.keymap.set({ "n", "v" }, "<Down>", "gj", { buffer = buf, silent = true, desc = "Move down by wrapped line" })
+              vim.keymap.set("i", "<Up>", "<C-o>gk", { buffer = buf, silent = true, desc = "Move up by wrapped line (insert mode)" })
+              vim.keymap.set("i", "<Down>", "<C-o>gj", { buffer = buf, silent = true, desc = "Move down by wrapped line (insert mode)" })
             else
               if vim.g._nixvim_prev_columns then
                 vim.o.columns = vim.g._nixvim_prev_columns
@@ -365,6 +369,10 @@ _:
               pcall(vim.keymap.del, "n", "<End>", { buffer = buf })
               pcall(vim.keymap.del, "v", "<End>", { buffer = buf })
               pcall(vim.keymap.del, "i", "<End>", { buffer = buf })
+              pcall(vim.keymap.del, "n", "<Up>", { buffer = buf })
+              pcall(vim.keymap.del, "n", "<Down>", { buffer = buf })
+              pcall(vim.keymap.del, "i", "<Up>", { buffer = buf })
+              pcall(vim.keymap.del, "i", "<Down>", { buffer = buf })
             end
 
             vim.api.nvim_echo({ { "Softwrap at column " .. target .. " " .. (enabled and "ON" or "OFF"), "None" } }, false, {})
@@ -823,26 +831,6 @@ _:
         key = "<leader>ts";
         action = "<cmd>Themery<CR>";
         options.desc = "Theme switcher";
-      }
-
-      # ==================== Wrapped Line Movement ====================
-      {
-        key = "<Up>";
-        mode = "n";
-        action = "gk";
-        options = {
-          silent = true;
-          desc = "Move up by wrapped line";
-        };
-      }
-      {
-        key = "<Down>";
-        mode = "n";
-        action = "gj";
-        options = {
-          silent = true;
-          desc = "Move down by wrapped line";
-        };
       }
     ];
   };
