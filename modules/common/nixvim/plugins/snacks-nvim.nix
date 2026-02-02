@@ -22,7 +22,7 @@ _:
             explorer = {
               hidden = true;
               ignored = true;
-              layout.layout.width = 45;
+              layout.layout.width = 0.15; # 15% of the screen or 35 absolute columns
             };
             files.hidden = true;
             grep.hidden = true;
