@@ -95,7 +95,13 @@
 
     git.enable = true;
     gpg-agent.enable = true;
-    kitty.enable = true;
+    kitty = {
+      enable = true;
+      keybindings = {
+        "shift+enter" = "send_text all \\x1b[13;2u";
+        "ctrl+enter" = "send_text all \\x1b[13;5u";
+      };
+    };
     neovim.enable = false;
     nixvim.enable = true;
 

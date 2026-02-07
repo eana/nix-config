@@ -96,6 +96,20 @@ in
       description = "Additional Kitty configuration settings";
     };
 
+    keybindings = mkOption {
+      type = types.attrsOf types.str;
+      default = { };
+      description = "Kitty keybindings mapping";
+      example = lib.literalExpression ''
+        {
+          "ctrl+shift+t" = "new_tab";
+          "ctrl+shift+n" = "new_window";
+          "shift+enter" = "send_text all \\x1b[13;2u";
+          "ctrl+enter" = "send_text all \\x1b[13;5u";
+        }
+      '';
+    };
+
     extraConfig = mkOption {
       type = types.lines;
       default = "";
@@ -124,11 +138,18 @@ in
       );
 
       extraConfig = ''
+        # Color scheme
         foreground ${cfg.appearance.colors.foreground}
         background ${cfg.appearance.colors.background}
         ${lib.concatStringsSep "\n" (
           lib.mapAttrsToList (name: value: "${name} ${value}") cfg.appearance.colors
         )}
+
+        # Keybindings
+        ${lib.concatStringsSep "\n" (
+          lib.mapAttrsToList (key: action: "map ${key} ${action}") cfg.keybindings
+        )}
+
         ${cfg.extraConfig}
       '';
     };
