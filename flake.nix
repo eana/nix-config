@@ -65,6 +65,7 @@
         "neovim"
         "nixvim"
         "ollama"
+        "opencode"
         "tmux"
         "zsh"
         # keep-sorted end

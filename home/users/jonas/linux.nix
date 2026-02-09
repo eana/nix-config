@@ -141,9 +141,6 @@ in
 
       # Messaging apps
       telegram-desktop # Telegram client
-
-      # AI & Coding Agents
-      opencode # the open source AI coding agent
     ];
 
     sessionVariables = {
@@ -151,24 +148,6 @@ in
       DOCKER_HOST = "unix://$XDG_RUNTIME_DIR/podman/podman.sock";
       KPT_FN_RUNTIME = "podman";
     };
-  };
-
-  xdg.configFile."opencode/config.json".text = builtins.toJSON {
-    "$schema" = "https://opencode.ai/config.json";
-    autoshare = false;
-    autoupdate = false;
-    experimental = {
-      disable_paste_summary = true;
-    };
-    keybinds = {
-      session_export = "none";
-      session_share = "none";
-      session_unshare = "none";
-      terminal_suspend = "none";
-      messages_first = "ctrl+home";
-      messages_last = "ctrl+end";
-    };
-    share = "disabled";
   };
 
   module = {
@@ -183,6 +162,7 @@ in
     };
     mpv.enable = true;
     ollama.enable = true;
+    opencode.enable = true;
     openra.enable = false;
     sway = {
       enable = true;
