@@ -68,6 +68,9 @@
 
       # Security & Encryption
       age # Simple, modern and secure encryption tool
+
+      # Messaging apps
+      telegram-desktop # Telegram client
     ];
 
     sessionVariables = {

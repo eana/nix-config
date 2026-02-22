@@ -7,13 +7,13 @@ in
   homebrew = {
     enable = true;
     casks = [
+      # keep-sorted start
       "firefox"
       "google-chrome"
       "iterm2"
-      "openvpn-connect"
       "podman-desktop"
-      "telegram-desktop"
       "vlc"
+      # keep-sorted end
     ];
     # masApps = {
     #   Bitwarden = 1352778147;
