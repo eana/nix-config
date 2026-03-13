@@ -43,7 +43,7 @@
       cachix # Binary cache client for Nix
 
       # Other
-      neofetch # System information tool
+      fastfetch # System information tool
     ];
 
     sessionVariables = {
