@@ -64,7 +64,7 @@
       cachix # Binary cache client for Nix
 
       # System Information
-      neofetch # System information tool
+      fastfetch # System information tool
 
       # Security & Encryption
       age # Simple, modern and secure encryption tool
