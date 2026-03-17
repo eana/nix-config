@@ -49,7 +49,7 @@ in
   config = lib.mkIf cfg.enable {
     home.packages = [ cfg.package ];
 
-    xdg.configFile."opencode/config.json".text = builtins.toJSON (
+    xdg.configFile."opencode/opencode.json".text = builtins.toJSON (
       lib.recursiveUpdate defaultSettings cfg.settings
     );
   };
