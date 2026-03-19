@@ -79,7 +79,7 @@ jobs:
             accept-flake-config = true
             max-jobs = auto
       - name: Cache Cachix
-        uses: cachix/cachix-action@3ba601ff5bbb07c7220846facfa2cd81eeee15a1 # v16
+        uses: cachix/cachix-action@1eb2ef646ac0255473d23a5907ad7b04ce94065c # v17
         with:
           useDaemon: true
           name: eana
@@ -106,7 +106,7 @@ jobs:
             accept-flake-config = true
             max-jobs = auto
       - name: Cache Cachix
-        uses: cachix/cachix-action@3ba601ff5bbb07c7220846facfa2cd81eeee15a1 # v16
+        uses: cachix/cachix-action@1eb2ef646ac0255473d23a5907ad7b04ce94065c # v17
         with:
           useDaemon: true
           name: eana
@@ -131,7 +131,7 @@ jobs:
             accept-flake-config = true
             max-jobs = auto
       - name: Cache Cachix
-        uses: cachix/cachix-action@3ba601ff5bbb07c7220846facfa2cd81eeee15a1 # v16
+        uses: cachix/cachix-action@1eb2ef646ac0255473d23a5907ad7b04ce94065c # v17
         with:
           useDaemon: true
           name: eana
