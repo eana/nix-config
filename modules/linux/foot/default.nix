@@ -22,7 +22,7 @@ let
       font = mkFontString cfg.font.family cfg.font.size;
       dpi-aware = if cfg.dpiAware then "yes" else "no";
     };
-    colors = {
+    colors-dark = {
       foreground = "c0caf5";
       background = "1a1b26";
       regular0 = "81807f"; # black
