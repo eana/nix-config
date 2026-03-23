@@ -50,7 +50,7 @@
       LESS = "-iXFR";
     };
 
-    stateVersion = "24.05";
+    stateVersion = "26.05";
   };
 
   module = {

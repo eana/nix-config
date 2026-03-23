@@ -79,7 +79,7 @@
       TERM = "xterm-256color";
     };
 
-    stateVersion = "24.05";
+    stateVersion = "26.05";
   };
 
   module = {

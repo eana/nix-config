@@ -98,6 +98,7 @@ in
         signing = {
           signByDefault = mkDefault true;
           key = mkDefault (chosen.key or identityDefaults.key);
+          format = mkDefault "openpgp";
         };
 
         includes = includeEntries;
