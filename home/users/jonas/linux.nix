@@ -102,7 +102,10 @@ in
     inherit theme;
     iconTheme = theme;
     gtk3.extraConfig.gtk-application-prefer-dark-theme = 0;
-    gtk4.extraConfig.gtk-application-prefer-dark-theme = 0;
+    gtk4 = {
+      inherit theme;
+      extraConfig.gtk-application-prefer-dark-theme = 0;
+    };
   };
 
   # Install packages for user.
