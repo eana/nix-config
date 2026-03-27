@@ -18,6 +18,27 @@
         dates = "weekly";
       };
     };
+    opencode = {
+      enable = true;
+      settings = {
+        autoshare = false;
+        autoupdate = false;
+        experimental.disable_paste_summary = true;
+        keybinds = {
+          session_export = "none";
+          session_share = "none";
+          session_unshare = "none";
+          terminal_suspend = "none";
+          messages_first = "ctrl+home";
+          messages_last = "ctrl+end";
+        };
+        share = "disabled";
+      };
+      skills = {
+        git-commit = ../../../assets/.config/opencode/skills/git-commit;
+        style = ../../../assets/.config/opencode/skills/style;
+      };
+    };
   };
 
   services.ssh-agent.enable = true;
