@@ -17,4 +17,8 @@
     };
     # keep-sorted end
   };
+
+  # SKILL.md files contain YAML frontmatter that mdformat misinterprets as
+  # horizontal rules and headings.  Exclude them from Markdown formatting.
+  settings.formatter.mdformat.excludes = [ "**/SKILL.md" ];
 }

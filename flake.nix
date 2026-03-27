@@ -73,7 +73,7 @@
       homeModules = builtins.listToAttrs (
         map (name: {
           inherit name;
-          value = import ./modules/common/${name}/default.nix;
+          value = import ./modules/common/${name};
         }) moduleList
       );
     in
