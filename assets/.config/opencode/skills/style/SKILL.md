@@ -1,6 +1,7 @@
 ---
 name: style
-description: Personal style rules for all written output: code, comments, documentation, and commit messages
+description: >
+  Personal style rules for all written output: code, comments, documentation, and commit messages
 compatibility: opencode
 ---
 

@@ -162,7 +162,6 @@ in
     };
     mpv.enable = true;
     ollama.enable = true;
-    opencode.enable = true;
     openra.enable = false;
     sway = {
       enable = true;
