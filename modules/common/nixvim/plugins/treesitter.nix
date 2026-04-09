@@ -82,6 +82,8 @@ in
       nixGrammars = true;
       folding.enable = false;
     };
-    hmts.enable = true;
+    # TODO: Enable this once hmts.nvim fixes the nil-node crash on recent Neovim.
+    # Upstream issue: https://github.com/calops/hmts.nvim/issues/24
+    # hmts.enable = true;
   };
 }
