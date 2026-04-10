@@ -174,14 +174,6 @@ in
         - Follow repository pre-commit and CI rules.
         - Include integration tests for cross-service behavior when applicable.
 
-        # Git Commit Messages and Branching
-        - Write a short summary line.
-        - Add a body that explains the why and what.
-        - Reference issue or PR numbers in the commit body.
-        - Use feature branch names that describe the work and include the issue number when applicable.
-        - Rebase to keep history linear unless policy requires merge commits.
-        - Squash trivial fixup commits before merging.
-
         # Security and Dependencies
         - Run dependency checks and static analysis when adding or updating dependencies.
         - Report vulnerabilities immediately and follow escalation procedures.
