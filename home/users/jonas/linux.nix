@@ -41,14 +41,6 @@ in
         autoupdate = false;
         experimental.disable_paste_summary = true;
         share = "disabled";
-        keybinds = {
-          session_export = "none";
-          session_share = "none";
-          session_unshare = "none";
-          terminal_suspend = "none";
-          messages_first = "ctrl+home";
-          messages_last = "ctrl+end";
-        };
         permission = {
           bash = {
             # Don't want it to see my secrets
@@ -68,6 +60,17 @@ in
             "*tf destroy*" = "deny";
             "*tf *" = "ask";
           };
+        };
+      };
+      tui = {
+        theme = "gruvbox";
+        keybinds = {
+          session_export = "none";
+          session_share = "none";
+          session_unshare = "none";
+          terminal_suspend = "none";
+          messages_first = "ctrl+home";
+          messages_last = "ctrl+end";
         };
       };
       rules = ''
