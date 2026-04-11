@@ -122,10 +122,6 @@ in
       # Media
       freetube # YouTube client
 
-      # Development Tools
-      aws-export-profile # AWS profile exporter
-      nix-tree # Visualize Nix dependencies
-
       # Fonts
       cantarell-fonts # Cantarell font family
 
