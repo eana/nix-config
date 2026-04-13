@@ -73,7 +73,7 @@ in
           messages_last = "ctrl+end";
         };
       };
-      rules = ''
+      context = ''
         # Hacks
         - When you have to write a hack for a limitation in a library, and especially if it's a bug or known issue, try to keep it away from the main logic, and clearly marked.
         - Encapsulate hacks in a clearly named function or module, for example `workaroundForX`.
