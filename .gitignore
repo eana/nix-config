@@ -1,3 +1,6 @@
+# Worktrees
+/.worktrees
+
 # Nix
 /.direnv
 /.pre-commit-config.yaml
