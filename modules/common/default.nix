@@ -11,6 +11,7 @@
     ./neovim/default.nix
     ./nixvim/default.nix
     ./ollama/default.nix
+    ./opencode/default.nix
     ./ssh-client/default.nix
     ./tmux/default.nix
     ./zsh/default.nix
