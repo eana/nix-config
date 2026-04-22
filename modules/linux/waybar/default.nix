@@ -38,10 +38,10 @@ in
       };
 
       target = mkOption {
-        type = types.str;
-        default = "sway-session.target";
+        type = types.listOf types.str;
+        default = [ "sway-session.target" ];
         description = ''
-          The systemd target that will automatically start the Waybar service.
+          The systemd targets that will automatically start the Waybar service.
           When setting this value to "sway-session.target", make sure to also enable
           wayland.windowManager.sway.systemd.enable, otherwise the service may never be started.
         '';
@@ -478,7 +478,7 @@ in
       inherit (cfg) style;
       systemd = lib.mkIf cfg.systemdIntegration.enable {
         enable = true;
-        inherit (cfg.systemdIntegration) target;
+        targets = cfg.systemdIntegration.target;
       };
     };
   };

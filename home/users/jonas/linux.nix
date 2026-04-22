@@ -117,7 +117,7 @@ in
 
       # Networking
       iproute2 # Utilities for controlling TCP/IP networking and traffic control in Linux
-      protonvpn-gui # ProtonVPN
+      proton-vpn # ProtonVPN
 
       # Media
       freetube # YouTube client
