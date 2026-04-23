@@ -19,6 +19,7 @@ let
 
   defaultSkills = {
     # keep-sorted start
+    ghq-lookup = ../../../assets/.config/opencode/skills/ghq-lookup;
     git-commit = ../../../assets/.config/opencode/skills/git-commit;
     style = ../../../assets/.config/opencode/skills/style;
     superpowers-brainstorming = "${superpowersSrc}/skills/brainstorming";
