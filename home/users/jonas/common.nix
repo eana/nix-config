@@ -96,7 +96,14 @@
       };
     };
 
-    git.enable = true;
+    git = {
+      enable = true;
+      ghq = {
+        enable = true;
+        options.root = "~/repos";
+      };
+    };
+
     gpg-agent.enable = true;
     kitty = {
       enable = true;
