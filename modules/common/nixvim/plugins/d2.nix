@@ -2,7 +2,8 @@
 
 let
   d2-vim = pkgs.vimUtils.buildVimPlugin {
-    name = "d2-vim";
+    pname = "d2-vim";
+    version = "0-unstable-2025-08-19";
     src = pkgs.fetchFromGitHub {
       owner = "terrastruct";
       repo = "d2-vim";
@@ -14,12 +15,13 @@ let
   d2-grammar-src = pkgs.fetchFromGitHub {
     owner = "ravsii";
     repo = "tree-sitter-d2";
-    rev = "ffb66ce4c801a1e37ed145ebd5eca1ea8865e00f";
-    hash = "sha256-E8NcTrPsann8NMB8yLTbJghyf19chhpnKFlthuZ4l14=";
+    rev = "200434618a6bede20ebd4982aa4d4f1edeb0b5c1";
+    hash = "sha256-xN6yb7amTu61E8dFHB5Vrv52FOZUKOh3u5zfOIao7rQ=";
   };
 
   d2-queries = pkgs.vimUtils.buildVimPlugin {
-    name = "d2-queries";
+    pname = "d2-queries";
+    version = "0-unstable-2026-04-10";
     src = d2-grammar-src;
     postInstall = ''
       mkdir -p $out/queries/d2
