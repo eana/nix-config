@@ -208,7 +208,7 @@ in
         permission.bash = {
           # Don't want it to see my secrets
           "age *" = "deny";
-          # In case the command has the "sops" string by chance
+          # In case the command has the "sops" or "age" string by chance
           "*age *" = "ask";
 
           # Don't like it committing without my permission
