@@ -17,6 +17,21 @@ let
 
   opentofu-mcp-server = pkgs.callPackage ./packages/opentofu-mcp-server.nix { };
 
+  # HACK: aioboto3-15.5.0 test suite fails against aiobotocore-3.1.1 with
+  # "Duplicate 'Server' header" errors in test_dynamo.py. The package itself
+  # is functional; only the tests are broken. Scoped to mcp-nixos to avoid
+  # affecting the global nixpkgs instance.
+  # TODO: remove once nixpkgs fixes the aioboto3 test suite upstream.
+  mcp-nixos = pkgs.mcp-nixos.override {
+    python3Packages = pkgs.python3Packages.overrideScope (
+      _final: prev: {
+        aioboto3 = prev.aioboto3.overridePythonAttrs (_old: {
+          doCheck = false;
+        });
+      }
+    );
+  };
+
   defaultSkills = {
     # keep-sorted start
     ghq-lookup = ../../../assets/.config/opencode/skills/ghq-lookup;
@@ -232,7 +247,7 @@ in
 
           nix = {
             type = "local";
-            command = [ "${pkgs.mcp-nixos}/bin/mcp-nixos" ];
+            command = [ "${mcp-nixos}/bin/mcp-nixos" ];
           };
 
           opentofu = {
