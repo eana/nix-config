@@ -1,4 +1,5 @@
 {
+  lib,
   pkgs,
   sshSecretsPath ? null,
   atuinSecretsPath ? null,
@@ -58,7 +59,11 @@
       xh # Friendly and fast HTTP client
 
       # Diagramming Tools
-      d2 # Modern diagram scripting language
+      # HACK: pkgs.d2 gained mesa-libgbm as a build input after the nixpkgs
+      # lock update, which transitively requires libdrm (Linux-only). Guard it
+      # so macbox does not attempt to evaluate the Linux-only dep chain.
+      # TODO: remove the guard once nixpkgs fixes d2 darwin compatibility.
+      (lib.mkIf stdenv.isLinux d2)
 
       # Nix Tools
       cachix # Binary cache client for Nix
