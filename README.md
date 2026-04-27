@@ -56,7 +56,7 @@ sudo nix run --experimental-features "nix-command flakes" nix-darwin/master#darw
 Use `nix-darwin`:
 
 ```shell
-cd ~/repos/nix-config
+cd ~/repos/github.com/eana/nix-config
 mkdir -vp "/Users/jonas/Applications/Home Manager Apps/"
 sudo darwin-rebuild switch --flake .#macbox
 ```
