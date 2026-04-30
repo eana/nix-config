@@ -5,7 +5,12 @@
   ...
 }:
 let
-  inherit (lib) mkIf mkOption types;
+  inherit (lib)
+    literalExpression
+    mkIf
+    mkOption
+    types
+    ;
   cfg = config.module.opencode;
 
   superpowersSrc = pkgs.fetchFromGitHub {
@@ -197,6 +202,13 @@ in
   options.module.opencode = {
     enable = lib.mkEnableOption "opencode";
 
+    package = mkOption {
+      type = types.package;
+      default = pkgs.opencode;
+      defaultText = literalExpression "pkgs.opencode";
+      description = "The opencode package to use.";
+    };
+
     extraSkills = mkOption {
       type = types.attrsOf types.path;
       default = { };
@@ -213,6 +225,7 @@ in
   config = mkIf cfg.enable {
     programs.opencode = {
       enable = true;
+      inherit (cfg) package;
 
       settings = {
         autoshare = false;
