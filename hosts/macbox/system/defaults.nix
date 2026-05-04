@@ -4,6 +4,7 @@
       # For this to work you need to give the terminal/kitty/iTerm the necessary permissions in:
       # System Preferences -> Security & Privacy -> Input Monitoring
       enableKeyMapping = true;
+      swapLeftCommandAndLeftAlt = true;
       nonUS.remapTilde = true;
     };
     defaults = {
