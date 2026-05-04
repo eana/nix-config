@@ -26,10 +26,11 @@ let
   renderIdentity =
     attrs:
     let
-      merged = attrs // {
-        name = attrs.name or identityDefaults.name;
-        email = attrs.email or identityDefaults.email;
-        key = attrs.key or identityDefaults.key;
+      merged = {
+        name = if attrs.name != null then attrs.name else identityDefaults.name;
+        email = if attrs.email != null then attrs.email else identityDefaults.email;
+        key = if attrs.key != null then attrs.key else identityDefaults.key;
+        sshKey = if attrs.sshKey != null then attrs.sshKey else "~/.ssh/id_ed25519";
       };
     in
     ''
@@ -37,6 +38,8 @@ let
         name = ${merged.name}
         email = ${merged.email}
         signingkey = ${merged.key}
+      [core]
+        sshCommand = ssh -i ${merged.sshKey} -o IdentitiesOnly=yes
     '';
 
   fileAttrset = lib.foldl' (
@@ -61,7 +64,7 @@ let
     id:
     let
       ident = cfg.identities.${id};
-      pats = ident.pathPatterns or [ ];
+      pats = ident.pathPatterns;
     in
     map (pattern: {
       condition = "gitdir:" + pattern;
@@ -81,7 +84,42 @@ in
 
     identities = lib.mkOption {
       default = { };
-      description = "Attrset of identities. Each identity should have name,email,key and optional pathPatterns (list of gitdir patterns).";
+      description = "Attrset of named identities. Each entry configures user info, GPG key, gitdir path patterns, and an optional SSH private key path.";
+      type = types.attrsOf (
+        types.submodule {
+          options = {
+            name = mkOption {
+              type = types.nullOr types.str;
+              default = null;
+              description = "Git user.name override. Falls back to the module default when null.";
+            };
+            email = mkOption {
+              type = types.nullOr types.str;
+              default = null;
+              description = "Git user.email override. Falls back to the module default when null.";
+            };
+            key = mkOption {
+              type = types.nullOr types.str;
+              default = null;
+              description = "GPG signing key override. Falls back to the module default when null.";
+            };
+            pathPatterns = mkOption {
+              type = types.listOf types.str;
+              default = [ ];
+              description = "List of gitdir: patterns that activate this identity.";
+            };
+            sshKey = mkOption {
+              type = types.nullOr types.str;
+              default = null;
+              description = ''
+                Path to the SSH private key used for git operations in repos matching
+                this identity. When null, defaults to ~/.ssh/id_ed25519.
+                The key file is not managed by this module — only the path is referenced.
+              '';
+            };
+          };
+        }
+      );
     };
 
     ghq = {
