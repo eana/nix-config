@@ -60,3 +60,44 @@ cd ~/repos/github.com/eana/nix-config
 mkdir -vp "/Users/jonas/Applications/Home Manager Apps/"
 sudo darwin-rebuild switch --flake .#macbox
 ```
+
+#### Secrets (agenix) after a macOS reinstall
+
+A macOS reinstall generates new SSH host keys. `agenix` uses `/etc/ssh/ssh_host_ed25519_key` to decrypt secrets at activation, so the secrets must be re-keyed before running `darwin-rebuild switch` or decryption will silently fail and `/run/agenix/` will be empty at runtime.
+
+Steps:
+
+1. Generate the ssh key on the new host:
+
+   ```shell
+   # On the newly created macOS host, generate the ssh key
+   ssh-keygen -t ed25519 -b 4096
+   ```
+
+1. Retrieve the new host public key:
+
+   ```shell
+   # Retrieve the ssh user key
+   ssh-keygen -y -f ~/.ssh/id_ed25519
+   # Retrieve the ssh host key
+   ssh-keygen -y -f /etc/ssh/ssh_host_ed25519_key
+   ```
+
+1. Update the `macbox` entries in `secrets.nix` with the output above.
+
+1. On a host that can re-encrypt all secrets for the new key:
+
+   ```shell
+   find-src github.com/eana/nix-config
+   agenix -r -i ~/.ssh/id_ed25519
+   ```
+
+1. Commit the updated `secrets.nix` and re-encrypted `.age` files, then run
+   `sudo darwin-rebuild switch --flake .#macbox`.
+
+**If secrets are still missing after a successful switch**, it is a launchd registration timing issue — the `activate-agenix` daemon was not reloaded on the first boot. Fix it without a full rebuild:
+
+```shell
+sudo launchctl kickstart -k system/org.nixos.activate-agenix
+ls -alh /run/agenix/
+```
