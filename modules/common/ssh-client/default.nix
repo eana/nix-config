@@ -200,6 +200,9 @@ in
         ProgramArguments = [ "${sshProvisionScript}" ];
         RunAtLoad = true;
         KeepAlive = false;
+        # Re-run whenever agenix (re)writes the secret, eliminating the race
+        # between activate-agenix and this agent at login.
+        WatchPaths = [ cfg.secretsFile ];
         StandardOutPath = "${config.home.homeDirectory}/Library/Logs/ssh-secret-provision.out.log";
         StandardErrorPath = "${config.home.homeDirectory}/Library/Logs/ssh-secret-provision.err.log";
       };

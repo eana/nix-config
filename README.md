@@ -101,3 +101,19 @@ Steps:
 sudo launchctl kickstart -k system/org.nixos.activate-agenix
 ls -alh /run/agenix/
 ```
+
+#### SSH host config after login (`~/.ssh/config.d/ssh-hosts`)
+
+The `ssh-hosts` secret is decrypted by `activate-agenix` at boot and then copied to `~/.ssh/config.d/ssh-hosts` by the `org.nix-community.ssh-secret-provision` launchd agent. The agent uses `WatchPaths` on `/run/agenix/ssh-hosts` so it re-runs automatically once agenix writes the secret, regardless of boot ordering.
+
+**If `~/.ssh/config.d/ssh-hosts` is missing after login**, check the agent log:
+
+```shell
+cat ~/Library/Logs/ssh-secret-provision.out.log
+```
+
+A line reading `Secrets file not found` means the agent ran before agenix finished. Kick the agent manually to recover without rebooting:
+
+```shell
+launchctl kickstart -k gui/$(id -u)/org.nix-community.ssh-secret-provision
+```
