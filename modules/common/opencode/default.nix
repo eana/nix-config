@@ -22,6 +22,8 @@ let
 
   opentofu-mcp-server = pkgs.callPackage ./packages/opentofu-mcp-server.nix { };
 
+  context-mode = pkgs.callPackage ./packages/context-mode.nix { };
+
   # HACK: test-only issues in the mcp-nixos Python dependency tree,
   # scoped via overrideScope to avoid affecting the global nixpkgs instance.
   #
@@ -306,7 +308,17 @@ in
             type = "local";
             command = [ "${pkgs.terraform-mcp-server}/bin/terraform-mcp-server" ];
           };
+
+          "context-mode" = {
+            type = "local";
+            command = [ "${context-mode}/bin/context-mode" ];
+          };
         };
+
+        # Load the context-mode TypeScript plugin for hook-based routing enforcement,
+        # session continuity on compaction, and output compression. The plugin runs
+        # inside OpenCode's bun process, so bun:sqlite is used (no native addon needed).
+        plugin = [ "${context-mode}/lib/context-mode" ];
       };
 
       tui = {
