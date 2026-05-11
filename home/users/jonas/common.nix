@@ -142,8 +142,14 @@ in
         "ctrl+enter" = "send_text all \\x1b[13;5u";
       };
     };
+
     neovim.enable = false;
-    nixvim.enable = true;
+
+    nixvim = {
+      enable = true;
+      wrapColumn = 120;
+    };
+
     opencode = {
       enable = true;
       package = if pkgs.stdenv.isDarwin then opencodeForDarwin else pkgs.opencode;
