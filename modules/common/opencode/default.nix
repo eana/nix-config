@@ -149,7 +149,7 @@ let
     - Change system configuration by editing declarative files and running `nixos-rebuild switch`.
     - Use `nix`, `nix shell`, or `nix run` to obtain tools.
     - Use `nix-locate` to find items in `/nix/store`.
-    - Do not run `find` on `/nix/store`.
+    - Do NOT run `find` on `/nix/store`.
 
     # Environment and Remote Targets
     - Confirm whether the target environment is local or remote before searching for services or installing software.
@@ -159,15 +159,8 @@ let
     # Secrets
     - Never decrypt or open secret files.
     - Never run `sops`, `age`, or any secret-decrypting command directly or via `nix run`.
-    - Do not open `.env` files or reveal secret contents.
+    - Do NOT open `.env` files or reveal secret contents.
     - You may note that secrets exist and reference their presence without exposing values.
-
-    # File Operations and Cloning
-    - Clone repositories for development or persistent work to `~/Code`.
-    - Clone repositories for temporary inspection to `/tmp`.
-    - If a path is tracked by git, put test files in `/tmp/dirname`.
-    - If a path is not tracked by git, you may put test files directly in it.
-    - Do not modify tracked files without creating a branch and a commit.
 
     # Pre-commit Hooks and CI
     - Run pre-commit hooks before committing.
@@ -209,9 +202,9 @@ let
     - Summarize changes made in response to reviews in the PR.
 
     # General Rules
-    - Do not remove comments unless explicitly asked.
-    - Do not snoop into secrets.
-    - Do not search `/nix/store` with `find`.
+    - Do NOT remove comments unless explicitly asked.
+    - Do NOT snoop into secrets.
+    - Do NOT search `/nix/store` with `find`.
     - Ask before restoring code that appears intentionally removed.
     - Be concise and explicit in changes and communications.
     - Use the two OpenCode skills for coding style and commit messages: apply coding style rules and follow commit message conventions.
