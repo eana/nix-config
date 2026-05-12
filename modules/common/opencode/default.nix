@@ -291,6 +291,7 @@ in
         mcp = {
           k8s = {
             type = "local";
+            enabled = false;
             command = [ "${pkgs.mcp-k8s-go}/bin/mcp-k8s-go" ];
           };
 
@@ -301,12 +302,26 @@ in
 
           opentofu = {
             type = "local";
+            enabled = false;
             command = [ "${opentofu-mcp-server}/bin/opentofu-mcp-server" ];
           };
 
           terraform = {
             type = "local";
+            enabled = false;
             command = [ "${pkgs.terraform-mcp-server}/bin/terraform-mcp-server" ];
+          };
+
+          context7 = {
+            type = "local";
+            enabled = false;
+            command = [ "${pkgs.context7-mcp}/bin/context7-mcp" ];
+          };
+
+          sequential-thinking = {
+            type = "local";
+            enabled = false;
+            command = [ "${pkgs.mcp-server-sequential-thinking}/bin/mcp-server-sequential-thinking" ];
           };
 
           "context-mode" = {
