@@ -6,9 +6,10 @@
 }:
 let
   inherit (lib)
+    literalExpression
     mkEnableOption
-    mkOption
     mkIf
+    mkOption
     types
     ;
 
@@ -61,6 +62,7 @@ in
     package = mkOption {
       type = types.package;
       default = pkgs.atuin;
+      defaultText = literalExpression "pkgs.atuin";
       description = "The Atuin package to use for the client";
     };
     sync = {

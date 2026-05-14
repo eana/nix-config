@@ -10,6 +10,7 @@ let
     mkOption
     types
     mkIf
+    literalExpression
     ;
 
   cfg = config.module.zsh;
@@ -67,6 +68,7 @@ in
     package = mkOption {
       type = types.package;
       default = pkgs.zsh;
+      defaultText = literalExpression "pkgs.zsh";
       description = "Z shell package to use";
     };
   };
