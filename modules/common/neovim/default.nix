@@ -95,7 +95,7 @@ in
     ];
 
     home.sessionVariables = {
-      AIDER_MODEL = lib.mkDefault "openrouter/deepseek/deepseek-r1:free";
+      AIDER_MODEL = lib.mkDefault cfg.aider.model;
 
       AIDER_AUTO_COMMITS = lib.mkDefault "0";
       AIDER_GITIGNORE = lib.mkDefault "0";
