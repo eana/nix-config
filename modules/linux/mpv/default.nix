@@ -26,10 +26,10 @@ let
     ];
     doCheck = false;
 
-    meta = with pkgs.lib; {
+    meta = {
       description = "Python UPnP client library used by mpvDLNA";
       homepage = "https://github.com/StevenLooman/upnpclient";
-      license = licenses.mit;
+      license = lib.licenses.mit;
     };
   };
 

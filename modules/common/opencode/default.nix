@@ -7,6 +7,7 @@
 let
   inherit (lib)
     literalExpression
+    mkEnableOption
     mkIf
     mkOption
     types
@@ -229,7 +230,7 @@ let
 in
 {
   options.module.opencode = {
-    enable = lib.mkEnableOption "opencode";
+    enable = mkEnableOption "opencode";
 
     package = mkOption {
       type = types.package;
