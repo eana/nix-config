@@ -31,85 +31,53 @@ let
     });
 in
 {
-  programs = {
-    direnv = {
-      enable = true;
-      nix-direnv.enable = true;
-    };
-    nh = {
-      enable = true;
-      flake = "/etc/nixos";
-      clean = {
-        enable = true;
-        dates = "weekly";
-      };
-    };
-  };
-
-  services.ssh-agent.enable = true;
+  imports = [ ../shared.nix ];
 
   # Install packages for user.
   # Search for packages here: https://search.nixos.org/packages
-  home = {
-    packages = with pkgs; [
-      # File Management
-      axel # Download utility
-      fd # File search utility
-      lsof # List open files
-      tree # Directory tree viewer
-      unzip # Unzip utility
-      wget # Download utility
-      zip # Zip utility
+  home.packages = with pkgs; [
+    # File Management
+    fd # File search utility
+    lsof # List open files
+    wget # Download utility
+    zip # Zip utility
 
-      # Networking
-      inetutils # Collection of common network programs (ftp, telnet, etc.)
-      net-tools # Network tools (ifconfig, netstat, etc.)
+    # Networking
+    inetutils # Collection of common network programs (ftp, telnet, etc.)
+    net-tools # Network tools (ifconfig, netstat, etc.)
 
-      # Media
-      mpg123 # Audio player
+    # Media
+    mpg123 # Audio player
 
-      # Development Tools
-      fzf # Fuzzy finder
-      pre-commit # Framework for managing pre-commit hooks
-      ripgrep # Search tool
+    # Development Tools
+    pre-commit # Framework for managing pre-commit hooks
+    ripgrep # Search tool
 
-      # Version Control
-      git-absorb # Automatically fixup commits
-      lazygit # Simple terminal UI for Git commands
-      tig # Text-mode interface for Git
+    # Version Control
+    git-absorb # Automatically fixup commits
 
-      # File and Text Manipulation
-      jaq # JSON processor
-      jq # Command-line JSON processor
-      xh # Friendly and fast HTTP client
+    # File and Text Manipulation
+    jaq # JSON processor
+    jq # Command-line JSON processor
+    xh # Friendly and fast HTTP client
 
-      # Diagramming Tools
-      # HACK: pkgs.d2 gained mesa-libgbm as a build input after the nixpkgs
-      # lock update, which transitively requires libdrm (Linux-only). Guard it
-      # so macbox does not attempt to evaluate the Linux-only dep chain.
-      # TODO: remove the guard once nixpkgs fixes d2 darwin compatibility.
-      (lib.mkIf stdenv.isLinux d2)
+    # Diagramming Tools
+    # HACK: pkgs.d2 gained mesa-libgbm as a build input after the nixpkgs
+    # lock update, which transitively requires libdrm (Linux-only). Guard it
+    # so macbox does not attempt to evaluate the Linux-only dep chain.
+    # TODO: remove the guard once nixpkgs fixes d2 darwin compatibility.
+    (lib.mkIf stdenv.isLinux d2)
 
-      # Nix Tools
-      cachix # Binary cache client for Nix
+    # Security & Encryption
+    age # Simple, modern and secure encryption tool
 
-      # System Information
-      fastfetch # System information tool
+    # Messaging apps
+    telegram-desktop # Telegram client
+  ];
 
-      # Security & Encryption
-      age # Simple, modern and secure encryption tool
-
-      # Messaging apps
-      telegram-desktop # Telegram client
-    ];
-
-    sessionVariables = {
-      LESS = "-iXFR";
-      BUILDKIT_PROGRESS = "plain";
-      TERM = "xterm-256color";
-    };
-
-    stateVersion = "26.05";
+  home.sessionVariables = {
+    BUILDKIT_PROGRESS = "plain";
+    TERM = "xterm-256color";
   };
 
   module = {
@@ -126,15 +94,6 @@ in
       };
     };
 
-    git = {
-      enable = true;
-      ghq = {
-        enable = true;
-        options.root = "~/repos";
-      };
-    };
-
-    gpg-agent.enable = true;
     kitty = {
       enable = true;
       keybindings = {
@@ -144,11 +103,6 @@ in
     };
 
     neovim.enable = false;
-
-    nixvim = {
-      enable = true;
-      wrapColumn = 120;
-    };
 
     opencode = {
       enable = true;
@@ -174,8 +128,5 @@ in
         KexAlgorithms = "sntrup761x25519-sha512@openssh.com,curve25519-sha256";
       };
     };
-
-    tmux.enable = true;
-    zsh.enable = true;
   };
 }
