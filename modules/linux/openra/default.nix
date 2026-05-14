@@ -4,9 +4,17 @@
   lib,
   ...
 }:
-with lib;
-
 let
+  inherit (lib)
+    concatLists
+    filterAttrs
+    mapAttrsToList
+    mkEnableOption
+    mkIf
+    mkOption
+    types
+    ;
+
   cfg = config.module.openra;
 
   variants = {
@@ -30,7 +38,7 @@ let
   enabledVariants = filterAttrs (name: _: cfg.variants.${name}.enable or false) variants;
 
   mkDesktopPackage =
-    variant: variantCfg:
+    variant: variantCfg: pkg:
     let
       desktop = pkgs.callPackage ./desktop.nix {
         inherit
@@ -40,6 +48,7 @@ let
           variantCfg
           cfg
           ;
+        package = pkg;
       };
     in
     pkgs.runCommand "openra-${variant}-desktop"
@@ -53,18 +62,22 @@ let
         copyDesktopItems
       '';
 
-  mkVariant = variant: variantCfg: [
-    (pkgs.callPackage ./package.nix {
-      inherit
-        lib
-        pkgs
-        variant
-        variantCfg
-        cfg
-        ;
-    })
-    (mkDesktopPackage variant variantCfg)
-  ];
+  mkVariant = variant: variantCfg:
+    let
+      pkg = pkgs.callPackage ./package.nix {
+        inherit
+          lib
+          pkgs
+          variant
+          variantCfg
+          cfg
+          ;
+      };
+    in
+    [
+      pkg
+      (mkDesktopPackage variant variantCfg pkg)
+    ];
 
 in
 {
@@ -81,7 +94,7 @@ in
       type = types.attrsOf (
         types.submodule {
           options = {
-            enable = mkEnableOption "Enable this OpenRA variant";
+            enable = mkEnableOption "this OpenRA variant";
             appimageSha256 = mkOption {
               type = types.str;
               description = "SHA256 hash of the OpenRA AppImage for this variant";

@@ -4,6 +4,8 @@
   variant,
   variantCfg,
   cfg,
+  # Pre-built openra package; avoids calling package.nix a second time here.
+  package,
 }:
 
 let
@@ -15,17 +17,7 @@ in
 {
   desktopItem = pkgs.makeDesktopItem {
     name = "openra-${variant}";
-    exec = "${
-      pkgs.callPackage ./package.nix {
-        inherit
-          lib
-          pkgs
-          variant
-          variantCfg
-          cfg
-          ;
-      }
-    }/bin/openra-${variant}";
+    exec = "${package}/bin/openra-${variant}";
     icon = "openra-${variant}";
     comment = "Open Source reimplementation of ${variantCfg.name}";
     desktopName = "OpenRA ${variantCfg.name}";
