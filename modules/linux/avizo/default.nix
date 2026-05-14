@@ -41,7 +41,7 @@ in
   config = lib.mkIf cfg.enable {
     services.avizo = {
       enable = true;
-      inherit (cfg) settings;
+      inherit (cfg) package settings;
     };
   };
 }

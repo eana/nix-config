@@ -230,7 +230,6 @@ in
 
       programs.delta = {
         enable = mkDefault false;
-        enableGitIntegration = true;
         options = { };
       };
     }

@@ -14,7 +14,6 @@ let
   mimeAppsFile = ../../../assets/.config/mimeapps.list;
 
   defaultBackground = "~/.local/share/backgrounds/hannah-grace-dSqWwzrLJaQ-unsplash.jpg";
-  defaultModifier = "Mod4";
 
   # Helper function to generate swaylock config
   mkSwaylockConfig =
@@ -36,55 +35,55 @@ let
 
   # Base keybindings
   baseKeybindings = {
-    "${defaultModifier}+Shift+r" = "reload";
-    "${defaultModifier}+Return" = "exec ${pkgs.foot}/bin/foot";
-    "${defaultModifier}+q" = "kill";
-    "${defaultModifier}+d" =
+    "${cfg.modifier}+Shift+r" = "reload";
+    "${cfg.modifier}+Return" = "exec ${pkgs.foot}/bin/foot";
+    "${cfg.modifier}+q" = "kill";
+    "${cfg.modifier}+d" =
       "exec ${pkgs.fuzzel}/bin/fuzzel --width 60 | xargs ${pkgs.sway}/bin/swaymsg exec --";
-    "${defaultModifier}+n" = "exec ${pkgs.foot}/bin/foot -e nmtui-connect";
-    "${defaultModifier}+w" = "exec ${pkgs.google-chrome}/bin/google-chrome";
-    "${defaultModifier}+e" = "exec ${pkgs.nautilus}/bin/nautilus";
-    "${defaultModifier}+h" = "exec ${pkgs.copyq}/bin/copyq show";
-    "${defaultModifier}+p" =
+    "${cfg.modifier}+n" = "exec ${pkgs.foot}/bin/foot -e nmtui-connect";
+    "${cfg.modifier}+w" = "exec ${pkgs.google-chrome}/bin/google-chrome";
+    "${cfg.modifier}+e" = "exec ${pkgs.nautilus}/bin/nautilus";
+    "${cfg.modifier}+h" = "exec ${pkgs.copyq}/bin/copyq show";
+    "${cfg.modifier}+p" =
       "exec ${pkgs.grim}/bin/grim -g \"$(${pkgs.slurp}/bin/slurp -p)\" -t ppm - | ${pkgs.imagemagick}/bin/magick convert - -format '%[pixel:p{0,0}]' txt:- | ${pkgs.wl-clipboard}/bin/wl-copy && ${pkgs.libnotify}/bin/notify-send --expire-time 15000 \"Color picked and saved to clipboard\"";
     "Print" =
       "exec ${pkgs.grim}/bin/grim - | ${pkgs.wl-clipboard}/bin/wl-copy && ${pkgs.libnotify}/bin/notify-send --expire-time 15000 \"Screenshot of whole screen saved to clipboard\"";
-    "${defaultModifier}+Print" =
+    "${cfg.modifier}+Print" =
       "exec ${pkgs.grim}/bin/grim -g \"$(${pkgs.slurp}/bin/slurp)\" - | ${pkgs.wl-clipboard}/bin/wl-copy && ${pkgs.libnotify}/bin/notify-send --expire-time 15000 \"Screenshot of selected region saved to clipboard\"";
-    "${defaultModifier}+t" =
+    "${cfg.modifier}+t" =
       "exec ${pkgs.grim}/bin/grim -g \"$(${pkgs.slurp}/bin/slurp)\" -t png - | ${pkgs.tesseract}/bin/tesseract - - | ${pkgs.wl-clipboard}/bin/wl-copy && ${pkgs.libnotify}/bin/notify-send --expire-time 15000 \"Screenshot of selected region and saved the ocr-ed text to clipboard\"";
-    "${defaultModifier}+Shift+Print" =
+    "${cfg.modifier}+Shift+Print" =
       "exec ${pkgs.grim}/bin/grim -g \"$(${pkgs.sway}/bin/swaymsg -t get_tree | ${pkgs.jq}/bin/jq -r '.. | select(.focused?) | .rect | \"(.x),(.y) (.width)x(.height)\"')\" - | ${pkgs.wl-clipboard}/bin/wl-copy && ${pkgs.libnotify}/bin/notify-send --expire-time 15000 \"Screenshot of active window saved to clipboard\"";
     "Ctrl+Print" =
       "exec ${pkgs.grim}/bin/grim ~/Pictures/screenshots/screenshot-\"$(date +%s)\".png && ${pkgs.libnotify}/bin/notify-send --expire-time 15000 \"Screenshot of whole screen saved to folder\"";
-    "${defaultModifier}+Ctrl+Print" =
+    "${cfg.modifier}+Ctrl+Print" =
       "exec ${pkgs.grim}/bin/grim -g \"$(${pkgs.slurp}/bin/slurp)\" ~/Pictures/screenshots/screenshot-\"$(date +%s)\".png && ${pkgs.libnotify}/bin/notify-send --expire-time 15000 \"Screenshot of selected region saved to folder\"";
-    "${defaultModifier}+Ctrl+Shift+Print" =
+    "${cfg.modifier}+Ctrl+Shift+Print" =
       "exec ${pkgs.grim}/bin/grim -g \"$(${pkgs.sway}/bin/swaymsg -t get_tree | ${pkgs.jq}/bin/jq -r '.. | select(.focused?) | .rect | \"(.x),(.y) (.width)x(.height)\"')\" ~/Pictures/screenshot-\"$(date +%s)\".png && ${pkgs.libnotify}/bin/notify-send -t 30000 \"Screenshot of active window saved to folder\"";
-    "${defaultModifier}+Left" = "focus left";
-    "${defaultModifier}+Down" = "focus down";
-    "${defaultModifier}+Up" = "focus up";
-    "${defaultModifier}+Right" = "focus right";
-    "${defaultModifier}+Shift+Left" = "move left";
-    "${defaultModifier}+Shift+Down" = "move down";
-    "${defaultModifier}+Shift+Up" = "move up";
-    "${defaultModifier}+Shift+Right" = "move right";
-    "${defaultModifier}+1" = "workspace 1";
-    "${defaultModifier}+2" = "workspace 2";
-    "${defaultModifier}+3" = "workspace 3";
-    "${defaultModifier}+4" = "workspace 4";
-    "${defaultModifier}+5" = "workspace 5";
-    "${defaultModifier}+6" = "workspace 6";
-    "${defaultModifier}+7" = "workspace 7";
-    "${defaultModifier}+Shift+1" = "move container to workspace 1";
-    "${defaultModifier}+Shift+2" = "move container to workspace 2";
-    "${defaultModifier}+Shift+3" = "move container to workspace 3";
-    "${defaultModifier}+Shift+4" = "move container to workspace 4";
-    "${defaultModifier}+Shift+5" = "move container to workspace 5";
-    "${defaultModifier}+Shift+6" = "move container to workspace 6";
-    "${defaultModifier}+Shift+7" = "move container to workspace 7";
-    "${defaultModifier}+Ctrl+Right" = "workspace next";
-    "${defaultModifier}+Ctrl+Left" = "workspace prev";
+    "${cfg.modifier}+Left" = "focus left";
+    "${cfg.modifier}+Down" = "focus down";
+    "${cfg.modifier}+Up" = "focus up";
+    "${cfg.modifier}+Right" = "focus right";
+    "${cfg.modifier}+Shift+Left" = "move left";
+    "${cfg.modifier}+Shift+Down" = "move down";
+    "${cfg.modifier}+Shift+Up" = "move up";
+    "${cfg.modifier}+Shift+Right" = "move right";
+    "${cfg.modifier}+1" = "workspace 1";
+    "${cfg.modifier}+2" = "workspace 2";
+    "${cfg.modifier}+3" = "workspace 3";
+    "${cfg.modifier}+4" = "workspace 4";
+    "${cfg.modifier}+5" = "workspace 5";
+    "${cfg.modifier}+6" = "workspace 6";
+    "${cfg.modifier}+7" = "workspace 7";
+    "${cfg.modifier}+Shift+1" = "move container to workspace 1";
+    "${cfg.modifier}+Shift+2" = "move container to workspace 2";
+    "${cfg.modifier}+Shift+3" = "move container to workspace 3";
+    "${cfg.modifier}+Shift+4" = "move container to workspace 4";
+    "${cfg.modifier}+Shift+5" = "move container to workspace 5";
+    "${cfg.modifier}+Shift+6" = "move container to workspace 6";
+    "${cfg.modifier}+Shift+7" = "move container to workspace 7";
+    "${cfg.modifier}+Ctrl+Right" = "workspace next";
+    "${cfg.modifier}+Ctrl+Left" = "workspace prev";
     "XF86AudioRaiseVolume" = "exec volumectl -u up";
     "XF86AudioLowerVolume" = "exec volumectl -u down";
     "XF86AudioMute" = "exec volumectl toggle-mute";
@@ -98,27 +97,27 @@ let
     "XF86AudioPlay" = "exec ${pkgs.playerctl}/bin/playerctl play-pause";
     "XF86AudioNext" = "exec ${pkgs.playerctl}/bin/playerctl next";
     "XF86AudioPrev" = "exec ${pkgs.playerctl}/bin/playerctl previous";
-    "${defaultModifier}+c" = "splith; exec ${pkgs.libnotify}/bin/notify-send 'Split horizontaly'";
-    "${defaultModifier}+v" = "splitv; exec ${pkgs.libnotify}/bin/notify-send 'Split verticaly'";
-    "${defaultModifier}+F3" = "layout stacking";
-    "${defaultModifier}+F2" = "layout tabbed";
-    "${defaultModifier}+F1" = "layout toggle split";
-    "${defaultModifier}+f" = "fullscreen";
-    "${defaultModifier}+space" = "floating toggle";
-    "${defaultModifier}+Shift+space" = "focus mode_toggle";
-    "${defaultModifier}+m" = "focus parent";
-    "${defaultModifier}+minus" = "move scratchpad";
-    "${defaultModifier}+Shift+minus" = "scratchpad show";
-    "${defaultModifier}+Ctrl+d" = "exec ${pkgs.sway}/bin/swaymsg output eDP-1 disable";
-    "${defaultModifier}+Ctrl+e" = "exec ${pkgs.sway}/bin/swaymsg output eDP-1 enable";
-    "${defaultModifier}+b" =
+    "${cfg.modifier}+c" = "splith; exec ${pkgs.libnotify}/bin/notify-send 'Split horizontaly'";
+    "${cfg.modifier}+v" = "splitv; exec ${pkgs.libnotify}/bin/notify-send 'Split verticaly'";
+    "${cfg.modifier}+F3" = "layout stacking";
+    "${cfg.modifier}+F2" = "layout tabbed";
+    "${cfg.modifier}+F1" = "layout toggle split";
+    "${cfg.modifier}+f" = "fullscreen";
+    "${cfg.modifier}+space" = "floating toggle";
+    "${cfg.modifier}+Shift+space" = "focus mode_toggle";
+    "${cfg.modifier}+m" = "focus parent";
+    "${cfg.modifier}+minus" = "move scratchpad";
+    "${cfg.modifier}+Shift+minus" = "scratchpad show";
+    "${cfg.modifier}+Ctrl+d" = "exec ${pkgs.sway}/bin/swaymsg output eDP-1 disable";
+    "${cfg.modifier}+Ctrl+e" = "exec ${pkgs.sway}/bin/swaymsg output eDP-1 enable";
+    "${cfg.modifier}+b" =
       "exec ${pkgs.rofi-rbw-wayland}/bin/rofi-rbw --selector rofi --selector-args=-normal-window --clipboarder wl-copy --typer ydotool";
   };
 
   # Final keybindings with swaylock commands
   keybindings = baseKeybindings // {
-    "${defaultModifier}+0" = "exec ${pkgs.swaylock}/bin/swaylock";
-    "${defaultModifier}+l" = "exec ${pkgs.swaylock}/bin/swaylock";
+    "${cfg.modifier}+0" = "exec ${pkgs.swaylock}/bin/swaylock";
+    "${cfg.modifier}+l" = "exec ${pkgs.swaylock}/bin/swaylock";
   };
 
   defaultStartupCommands = [
@@ -144,7 +143,7 @@ let
     smart_gaps on
     gaps inner 2
 
-    floating_modifier ${defaultModifier} normal
+    floating_modifier ${cfg.modifier} normal
 
     ### Window rules ###
     for_window [window_role="pop-up"] floating enable
@@ -190,10 +189,10 @@ let
       bindsym --to-code Escape mode "default"
     }
 
-    bindsym --to-code ${defaultModifier}+r mode "resize"
-    bindsym --to-code ${defaultModifier}+Shift+s sticky toggle
+    bindsym --to-code ${cfg.modifier}+r mode "resize"
+    bindsym --to-code ${cfg.modifier}+Shift+s sticky toggle
 
-    bindsym --to-code ${defaultModifier}+Delete exec ${pkgs.sway}/bin/swaynag \
+    bindsym --to-code ${cfg.modifier}+Delete exec ${pkgs.sway}/bin/swaynag \
       --background #1b1414 \
       --border #285577 \
       --button-background #31363b \
@@ -216,7 +215,7 @@ let
       bindsym Escape mode "default"
     }
 
-    bindsym ${defaultModifier}+Shift+e mode "$mode_system"
+    bindsym ${cfg.modifier}+Shift+e mode "$mode_system"
 
     ### Disable laptop's screen when the lid is closed
     bindswitch lid:on output eDP-1 disable
@@ -266,7 +265,7 @@ in
 
     modifier = mkOption {
       type = types.str;
-      default = defaultModifier;
+      default = "Mod4";
       description = "Modifier key for keybindings";
     };
 
