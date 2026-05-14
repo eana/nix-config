@@ -54,9 +54,21 @@
   };
 
   module = {
-    git.enable = true;
+    git = {
+      enable = true;
+      ghq = {
+        enable = true;
+        options.root = "~/repos";
+      };
+    };
+
     gpg-agent.enable = true;
-    nixvim.enable = true;
+
+    nixvim = {
+      enable = true;
+      wrapColumn = 120;
+    };
+
     tmux.enable = true;
     zsh.enable = true;
   };
