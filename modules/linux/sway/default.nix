@@ -276,19 +276,21 @@ in
     };
 
     startup = mkOption {
-      type = types.listOf (types.submodule {
-        options = {
-          command = mkOption {
-            type = types.str;
-            description = "Command to run at startup.";
+      type = types.listOf (
+        types.submodule {
+          options = {
+            command = mkOption {
+              type = types.str;
+              description = "Command to run at startup.";
+            };
+            always = mkOption {
+              type = types.bool;
+              default = false;
+              description = "Whether to re-run the command on every reload.";
+            };
           };
-          always = mkOption {
-            type = types.bool;
-            default = false;
-            description = "Whether to re-run the command on every reload.";
-          };
-        };
-      });
+        }
+      );
       default = defaultStartupCommands;
       description = "Startup commands for Sway";
     };

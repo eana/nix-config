@@ -1,17 +1,21 @@
-{ ... }:
+{ pkgs, ... }:
 
 {
   imports = [ ../../../modules/common/nix-cache.nix ];
 
-  nix.settings = {
-    trusted-users = [
-      "root"
-    ];
+  nix = {
+    # home-manager on non-NixOS requires an explicit nix.package.
+    package = pkgs.nix;
+    settings = {
+      trusted-users = [
+        "root"
+      ];
 
-    experimental-features = [
-      "nix-command"
-      "flakes"
-    ];
+      experimental-features = [
+        "nix-command"
+        "flakes"
+      ];
+    };
   };
 
   nixpkgs.config = {

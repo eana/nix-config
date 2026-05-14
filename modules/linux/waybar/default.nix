@@ -478,7 +478,7 @@ in
       inherit (cfg) style;
       systemd = lib.mkIf cfg.systemdIntegration.enable {
         enable = true;
-        targets = cfg.systemdIntegration.targets;
+        inherit (cfg.systemdIntegration) targets;
       };
     };
   };

@@ -15,7 +15,6 @@
         ../../../modules/common/default.nix
         # keep-sorted end
       ];
-      home.packages = [ ];
       home.stateVersion = "26.05";
     };
 
