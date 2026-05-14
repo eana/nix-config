@@ -8,6 +8,15 @@ let
   cfg = config.module.nixvim;
 in
 {
+  imports = [
+    # keep-sorted start
+    ./autocmds.nix
+    ./colorscheme.nix
+    ./keymaps.nix
+    ./plugins
+    # keep-sorted end
+  ];
+
   options.module.nixvim = {
     enable = lib.mkEnableOption "nixvim";
 
@@ -23,15 +32,6 @@ in
       description = "Whether soft wrapping is enabled by default.";
     };
   };
-
-  imports = [
-    # keep-sorted start
-    ./autocmds.nix
-    ./colorscheme.nix
-    ./keymaps.nix
-    ./plugins
-    # keep-sorted end
-  ];
 
   config = lib.mkIf cfg.enable {
 
