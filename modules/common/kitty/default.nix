@@ -14,6 +14,9 @@ let
     ;
   cfg = config.module.kitty;
 
+  tokyoNight = import ../colors/tokyo-night.nix;
+  c = tokyoNight.withHash;
+
   defaultFontFamily = "MesloLGS NF";
   defaultFontSize = 11.0;
 
@@ -25,24 +28,23 @@ let
   };
 
   defaultColors = {
-    foreground = "#c0caf5";
-    background = "#1a1b26";
-    color0 = "#81807f";
-    color1 = "#f7768e";
-    color2 = "#9ece6a";
-    color3 = "#e0af68";
-    color4 = "#7aa2f7";
-    color5 = "#bb9af7";
-    color6 = "#7dcfff";
-    color7 = "#a9b1d6";
-    color8 = "#414868";
-    color9 = "#f7768e";
-    color10 = "#9ece6a";
-    color11 = "#e0af68";
-    color12 = "#7aa2f7";
-    color13 = "#bb9af7";
-    color14 = "#7dcfff";
-    color15 = "#c0caf5";
+    inherit (c) foreground background;
+    color0 = c.black;
+    color1 = c.red;
+    color2 = c.green;
+    color3 = c.yellow;
+    color4 = c.blue;
+    color5 = c.magenta;
+    color6 = c.cyan;
+    color7 = c.white;
+    color8 = c.brightBlack;
+    color9 = c.brightRed;
+    color10 = c.brightGreen;
+    color11 = c.brightYellow;
+    color12 = c.brightBlue;
+    color13 = c.brightMagenta;
+    color14 = c.brightCyan;
+    color15 = c.brightWhite;
   };
 
 in
