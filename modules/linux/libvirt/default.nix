@@ -27,7 +27,6 @@ in
 
     user = mkOption {
       type = types.str;
-      default = "jonas";
       description = "The primary user to be added to the libvirtd group.";
     };
 
