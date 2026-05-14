@@ -62,7 +62,8 @@ let
         copyDesktopItems
       '';
 
-  mkVariant = variant: variantCfg:
+  mkVariant =
+    variant: variantCfg:
     let
       pkg = pkgs.callPackage ./package.nix {
         inherit
