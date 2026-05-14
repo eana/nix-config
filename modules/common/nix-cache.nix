@@ -1,7 +1,6 @@
 # Shared Nix binary cache configuration used by all hosts.
 # Import this module from each host's nix/default.nix.
-{ ... }:
-{
+_: {
   nix.settings = {
     substituters = [
       # keep-sorted start

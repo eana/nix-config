@@ -199,7 +199,10 @@ in
     };
 
     keyMode = mkOption {
-      type = types.enum [ "vi" "emacs" ];
+      type = types.enum [
+        "vi"
+        "emacs"
+      ];
       default = "vi";
       description = "Key binding mode (vi or emacs)";
     };
