@@ -47,6 +47,7 @@
 
   module.libvirt = {
     enable = true;
+    user = "jonas";
     gui.enable = true;
     platformCpu = "intel";
   };
