@@ -76,11 +76,13 @@ in
     vimAlias = mkOption {
       type = types.bool;
       default = true;
+      description = "Whether to create a vim alias for neovim.";
     };
 
     defaultEditor = mkOption {
       type = types.bool;
       default = true;
+      description = "Whether to set neovim as the default editor via EDITOR and VISUAL.";
     };
   };
 

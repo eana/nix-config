@@ -11,6 +11,7 @@ let
     mkOption
     mkIf
     types
+    literalExpression
     ;
   cfg = config.module.tmux;
 
@@ -157,6 +158,7 @@ in
     package = mkOption {
       type = types.package;
       default = pkgs.tmux;
+      defaultText = literalExpression "pkgs.tmux";
       description = "Terminal multiplexer";
     };
 
@@ -197,7 +199,7 @@ in
     };
 
     keyMode = mkOption {
-      type = types.str;
+      type = types.enum [ "vi" "emacs" ];
       default = "vi";
       description = "Key binding mode (vi or emacs)";
     };
