@@ -7,12 +7,8 @@
 let
   cfg = config.module.nixvim;
 
-  nu-scm = pkgs.fetchFromGitHub {
-    owner = "blindFS";
-    repo = "topiary-nushell";
-    rev = "6e2f9b339a664a46e4015fa5d79e537807fefa39";
-    hash = "sha256-fTfxSnVI7TY6vQhD+GimPBRJ4K0SyyVtoLcLGH3xIPc=";
-  };
+  # Shared pin — see modules/common/topiary-nushell.nix
+  nu-scm = pkgs.callPackage ../../topiary-nushell.nix { };
 in
 {
   config = lib.mkIf cfg.enable {
