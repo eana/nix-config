@@ -7,10 +7,11 @@
 
 let
   inherit (lib)
+    literalExpression
     mkEnableOption
+    mkIf
     mkOption
     types
-    mkIf
     ;
 
   cfg = config.module.gpg-agent;
@@ -29,6 +30,7 @@ in
     package = mkOption {
       type = types.package;
       default = pkgs.gnupg;
+      defaultText = literalExpression "pkgs.gnupg";
       description = "Modern release of the GNU Privacy Guard, a GPL OpenPGP implementation";
     };
 

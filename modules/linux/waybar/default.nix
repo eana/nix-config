@@ -37,7 +37,7 @@ in
         description = "Whether to enable systemd integration for Waybar through Home Manager";
       };
 
-      target = mkOption {
+      targets = mkOption {
         type = types.listOf types.str;
         default = [ "sway-session.target" ];
         description = ''
@@ -478,7 +478,7 @@ in
       inherit (cfg) style;
       systemd = lib.mkIf cfg.systemdIntegration.enable {
         enable = true;
-        targets = cfg.systemdIntegration.target;
+        targets = cfg.systemdIntegration.targets;
       };
     };
   };
