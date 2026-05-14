@@ -64,7 +64,7 @@ in
       description = "The Atuin package to use for the client";
     };
     sync = {
-      enable = mkEnableOption "Enable sync with atuin server";
+      enable = mkEnableOption "sync with atuin server";
       address = mkOption {
         type = types.str;
         default = "";
