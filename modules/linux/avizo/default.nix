@@ -43,7 +43,5 @@ in
       enable = true;
       inherit (cfg) settings;
     };
-
-    home.packages = [ cfg.package ];
   };
 }
