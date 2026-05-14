@@ -104,7 +104,7 @@
             agenix = inputs.agenix.packages.${system}.default;
             pre-commit = config.pre-commit.settings.package;
             pre-commit-install = pkgs.writeShellScriptBin "pre-commit-install" ''
-              #!${pkgs.stdenv.shell}
+              #!${pkgs.runtimeShell}
               ${pkgs.pre-commit}/bin/pre-commit install
             '';
           };
