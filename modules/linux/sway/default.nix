@@ -335,8 +335,6 @@ in
         swaylock
         swayidle
         swaybg
-        foot
-        fuzzel
         grim
         slurp
         wl-clipboard
