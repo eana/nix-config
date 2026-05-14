@@ -58,6 +58,9 @@
   outputs =
     inputs@{ flake-parts, ... }:
     let
+      # Only cross-platform (common/) modules are exported as homeModules.
+      # Linux-specific modules (modules/linux/) are consumed directly by host
+      # configurations and are not suitable for standalone home-manager use.
       moduleList = [
         # keep-sorted start
         "git"
@@ -110,11 +113,11 @@
           };
 
           devshells.default = {
-            packages = with pkgs; [
-              cachix
-              deadnix
-              nixfmt
-              statix
+            packages = [
+              pkgs.cachix
+              pkgs.deadnix
+              pkgs.nixfmt
+              pkgs.statix
             ];
           };
         };
