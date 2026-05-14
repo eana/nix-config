@@ -116,12 +116,14 @@ in
         source ${pkgs.zsh-powerlevel10k}/share/zsh-powerlevel10k/powerlevel10k.zsh-theme
         [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
 
-        # find-src: navigate to a ghq-managed repository
-        find-src() {
-          cd "$(ghq root)/$1"
-        }
-        _find_src() { compadd $(ghq list) }
-        compdef _find_src find-src
+        ${lib.optionalString config.module.git.ghq.enable ''
+          # find-src: navigate to a ghq-managed repository
+          find-src() {
+            cd "$(ghq root)/$1"
+          }
+          _find_src() { compadd $(ghq list) }
+          compdef _find_src find-src
+        ''}
 
         # zprof
       '';
@@ -135,7 +137,7 @@ in
       '';
 
       shellAliases = {
-        f = "find-src";
+        f = lib.mkIf config.module.git.ghq.enable "find-src";
         gapp = "gcloud auth application-default login";
         gauth = "gcloud auth login";
         ide = "idea-community . > /dev/null 2>&1";
