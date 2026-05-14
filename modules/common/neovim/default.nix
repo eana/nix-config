@@ -90,6 +90,13 @@ in
   };
 
   config = mkIf cfg.enable {
+    assertions = [
+      {
+        assertion = !config.module.nixvim.enable;
+        message = "module.neovim and module.nixvim are mutually exclusive — enable only one.";
+      }
+    ];
+
     home.sessionVariables = {
       AIDER_MODEL = lib.mkDefault "openrouter/deepseek/deepseek-r1:free";
 
