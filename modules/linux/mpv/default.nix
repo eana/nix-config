@@ -81,6 +81,23 @@ in
         default = configDir + "/mpv.conf";
         description = "Path to mpv.conf file";
       };
+
+      dlnaTimeout = mkOption {
+        type = types.int;
+        default = 5;
+        description = "Seconds to spend scanning for DLNA servers via SSDP. Increase if the server is not found reliably.";
+      };
+
+      dlnaServers = mkOption {
+        type = types.nullOr (types.attrsOf types.str);
+        default = null;
+        description = ''
+          Attrset mapping DLNA server friendly name to its DeviceDescription.xml URL.
+          When set, bypasses SSDP discovery and connects directly to the listed servers.
+          Example:
+            { "Plex Media Server: My-NAS" = "http://192.168.0.145:32469/DeviceDescription.xml"; }
+        '';
+      };
     };
   };
 
@@ -91,6 +108,16 @@ in
       "mpv/input.conf".source = cfg.config.inputConf;
       "mpv/mpv.conf".source = cfg.config.mpvConf;
       "mpv/scripts/mpvDLNA".source = mpvDLNA;
+      "mpv/script-settings/mpvDLNA.conf".text =
+        "timeout=${toString cfg.config.dlnaTimeout}\n"
+        + lib.optionalString (cfg.config.dlnaServers != null) (
+          "server_names="
+          + lib.concatMapStringsSep "+" (n: "{${n}}") (lib.attrNames cfg.config.dlnaServers)
+          + "\n"
+          + "server_addrs="
+          + lib.concatMapStringsSep "+" (a: "{${a}}") (lib.attrValues cfg.config.dlnaServers)
+          + "\n"
+        );
     };
   };
 }
