@@ -173,17 +173,26 @@ in
         customHosts // globalBlock;
     };
 
+    # Linux — path unit re-fires the service whenever agenix rewrites the secret
+    systemd.user.paths.ssh-secret-provision = mkIf (pkgs.stdenv.isLinux && cfg.secretsFile != null) {
+      Unit.Description = "Watch for SSH secret changes";
+      Path = {
+        # PathChanged fires on inode replacement, which is how agenix writes atomically.
+        PathChanged = cfg.secretsFile;
+        Unit = "ssh-secret-provision.service";
+      };
+      Install.WantedBy = [ "default.target" ];
+    };
+
     # Linux
     systemd.user.services.ssh-secret-provision = mkIf (pkgs.stdenv.isLinux && cfg.secretsFile != null) {
       Unit = {
         Description = "Provision SSH secret configuration";
         After = [ "default.target" ];
-        ConditionPathExists = cfg.secretsFile;
       };
 
       Service = {
         Type = "oneshot";
-        RemainAfterExit = true;
         ExecStart = "${sshProvisionScript}";
       };
 
