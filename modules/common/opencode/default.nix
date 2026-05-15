@@ -264,16 +264,31 @@ in
         share = "disabled";
 
         permission.bash = {
-          # Don't want it to see my secrets
+          # age: deny direct invocations to prevent secret exposure; ask on
+          # incidental matches where "age" appears as a substring
           "age *" = "deny";
-          # In case the command has the "sops" or "age" string by chance
           "*age *" = "ask";
 
-          # Don't like it committing without my permission
+          # git: ask before committing; deny push entirely to avoid
+          # unintended remote writes
           "git commit *" = "ask";
           "git push *" = "deny";
 
-          # Scary
+          # SSH: allow local key management tools (no remote access involved)
+          "ssh-keygen *" = "allow";
+          "ssh-add *" = "allow";
+          "ssh-agent *" = "allow";
+
+          # SSH: ask before any remote access or file transfer over SSH
+          "ssh *" = "ask";
+          "scp *" = "ask";
+          "sftp *" = "ask";
+          # Only gate remote rsync (contains user@host: or host: syntax)
+          "rsync *@*:*" = "ask";
+          "rsync * *:*" = "ask";
+
+          # IaC: deny destroy operations; ask for all other state-mutating
+          # commands across terraform, tofu, and tf wrappers
           "*terraform destroy*" = "deny";
           "*terraform *" = "ask";
           "*tofu destroy*" = "deny";
