@@ -52,6 +52,7 @@
         enable = true;
         options.root = "~/repos";
       };
+      glab.enable = true;
     };
 
     gpg-agent.enable = true;
