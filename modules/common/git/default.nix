@@ -123,7 +123,9 @@ in
     };
 
     ghq = {
-      enable = mkEnableOption "ghq remote repository management";
+      enable = mkEnableOption "ghq remote repository management" // {
+        default = true;
+      };
 
       package = mkPackageOption pkgs "ghq" { };
 
@@ -144,7 +146,9 @@ in
     };
 
     glab = {
-      enable = mkEnableOption "glab GitLab command-line tool";
+      enable = mkEnableOption "glab GitLab command-line tool" // {
+        default = true;
+      };
 
       package = mkPackageOption pkgs "glab" { };
     };

@@ -48,11 +48,7 @@
   module = {
     git = {
       enable = true;
-      ghq = {
-        enable = true;
-        options.root = "~/repos";
-      };
-      glab.enable = true;
+      ghq.options.root = "~/repos";
     };
 
     gpg-agent.enable = true;
