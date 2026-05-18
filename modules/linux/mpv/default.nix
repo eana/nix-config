@@ -11,24 +11,27 @@ let
 
   pythonPkgs = pkgs.python3Packages;
 
-  upnpclient = pythonPkgs.buildPythonPackage rec {
+  upnpclient = pythonPkgs.buildPythonPackage {
     pname = "upnpclient";
-    version = "1.0.3";
+    version = "2.0.3";
     src = pkgs.fetchPypi {
-      inherit pname version;
-      sha256 = "sha256-ZB8F+kuOXFtcxFYdq0n+XEd00m5RN4Zx761AIySeabg=";
+      pname = "upnpclient";
+      version = "2.0.3";
+      sha256 = "sha256-rPZngaGU8mhTn7ylLr+hsQ3hIXTHFQkCBT2f0KKgLFw=";
     };
-    format = "setuptools";
+    format = "pyproject";
+    nativeBuildInputs = with pythonPkgs; [ hatchling ];
     propagatedBuildInputs = with pythonPkgs; [
       python-dateutil
       ifaddr
+      lxml
       requests
     ];
     doCheck = false;
 
     meta = {
       description = "Python UPnP client library used by mpvDLNA";
-      homepage = "https://github.com/StevenLooman/upnpclient";
+      homepage = "https://github.com/flyte/upnpclient";
       license = lib.licenses.mit;
     };
   };
