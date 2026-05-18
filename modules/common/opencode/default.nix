@@ -78,6 +78,8 @@ let
     # keep-sorted start
     ghq-lookup = ../../../assets/.config/opencode/skills/ghq-lookup;
     git-commit = ../../../assets/.config/opencode/skills/git-commit;
+    gitlab-cli-tool = ../../../assets/.config/opencode/skills/gitlab-cli-tool;
+    skill-creator = ../../../assets/.config/opencode/skills/skill-creator;
     style = ../../../assets/.config/opencode/skills/style;
     superpowers-brainstorming = "${superpowersSrc}/skills/brainstorming";
     superpowers-dispatching-parallel-agents = "${superpowersSrc}/skills/dispatching-parallel-agents";
