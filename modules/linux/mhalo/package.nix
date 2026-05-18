@@ -15,7 +15,7 @@
   tllist,
 }:
 
-stdenv.mkDerivation rec {
+stdenv.mkDerivation {
   pname = "mhalo";
   version = "git-3088f51";
 
