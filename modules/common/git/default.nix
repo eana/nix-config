@@ -142,6 +142,12 @@ in
         description = "Options to configure ghq via the [ghq] git config section.";
       };
     };
+
+    glab = {
+      enable = mkEnableOption "glab GitLab command-line tool";
+
+      package = mkPackageOption pkgs "glab" { };
+    };
   };
 
   config = mkIf cfg.enable (mkMerge [
@@ -237,6 +243,10 @@ in
     (mkIf cfg.ghq.enable {
       home.packages = [ cfg.ghq.package ];
       programs.git.settings.ghq = cfg.ghq.options;
+    })
+
+    (mkIf cfg.glab.enable {
+      home.packages = [ cfg.glab.package ];
     })
   ]);
 }
