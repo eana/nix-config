@@ -42,7 +42,6 @@ let
     let
       desktop = pkgs.callPackage ./desktop.nix {
         inherit
-          lib
           pkgs
           variant
           variantCfg
