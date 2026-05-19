@@ -158,7 +158,16 @@ in
     };
     mpv.enable = true;
     ollama.enable = true;
-    openra.enable = false;
+    openra = {
+      enable = true;
+      variants.red-alert = {
+        enable = true;
+        # nix-prefetch-url --type sha256 https://github.com/OpenRA/OpenRA/releases/download/release-20250330/OpenRA-Red-Alert-x86_64.AppImage 2>/dev/null | xargs -I{} nix hash convert --hash-algo sha256 --to sri {}
+        appimageSha256 = "sha256-PLccdCgYjIUm3YkWmT/Bb6F7pfKKNZaKgmfz258hhv4=";
+        # nix-prefetch-url --type sha256 https://raw.githubusercontent.com/OpenRA/OpenRA/refs/tags/release-20250330/mods/ra/icon.png 2>/dev/null | xargs -I{} nix hash convert --hash-algo sha256 --to sri {}
+        iconSha256 = "sha256-6IadsH5NGKXZ3gye3JYVTCDC/uPwy3BRXhuAp5+10qA=";
+      };
+    };
     sway = {
       enable = true;
       background = "~/.local/share/backgrounds/hannah-grace-dSqWwzrLJaQ-unsplash.jpg";
