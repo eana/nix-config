@@ -2,12 +2,24 @@
 name: git-commit
 description: Write clear, conventional Git commit messages following a consistent structure and ruleset
 compatibility: opencode
+triggers: ["commit", "git commit", "write commit message"]
 ---
 
 ## What I do
 
 Help write well-structured Git commit messages following the Conventional
 Commits specification.
+
+## Branching rules
+
+- **Check current branch:** Always determine the current branch (e.g.,
+  `git branch --show-current`) before writing or executing a commit.
+- **Protect main/master:** If the current branch is `main` or `master`,
+  **halt and explicitly ask the user for permission** before proceeding with
+  the commit.
+- **Prefer feature branches:** When asked to commit on `main` or `master`,
+  actively suggest creating a new feature branch (e.g.,
+  `git checkout -b <type>/<brief-description>`) as the preferred alternative.
 
 ## Commit message structure
 
@@ -24,9 +36,9 @@ Commits specification.
 Use exactly one of: `build`, `chore`, `ci`, `docs`, `feat`, `fix`, `perf`,
 `refactor`, `style`, `test`
 
-- `feat` — adds a new feature
-- `fix` — fixes a bug
-- All other types — use the one that best describes the change
+- `feat` - adds a new feature
+- `fix` - fixes a bug
+- All other types - use the one that best describes the change
 
 ## Subject line rules
 
