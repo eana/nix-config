@@ -151,12 +151,6 @@ in
             command = [ "${opentofu-mcp-server}/bin/opentofu-mcp-server" ];
           };
 
-          terraform = {
-            type = "local";
-            enabled = false;
-            command = [ "${pkgs.terraform-mcp-server}/bin/terraform-mcp-server" ];
-          };
-
           context7 = {
             type = "local";
             enabled = false;
