@@ -371,6 +371,10 @@ in
       enable = true;
       systemd.enable = true;
       wrapperFeatures.gtk = true;
+      # Fontconfig cannot write cache to /homeless-shelter in the Nix sandbox,
+      # causing spurious errors during `sway --validate`. The config itself is
+      # valid; suppress the check to eliminate the noise.
+      checkConfig = false;
 
       config = {
         inherit (cfg) modifier;

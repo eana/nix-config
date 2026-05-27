@@ -138,37 +138,27 @@ in
         "config.d/ssh-hosts"
       ];
 
-      matchBlocks =
+      settings =
         let
-          customHosts = lib.mapAttrs (_: host: {
-            inherit (host)
-              hostname
-              user
-              port
-              identityFile
-              ;
-            extraOptions =
+          customHosts = lib.mapAttrs' (
+            name: host:
+            lib.nameValuePair "Host ${name}" (
               lib.filterAttrs (_: v: v != null) {
-                inherit (host)
-                  hostKeyAlgorithms
-                  pubkeyAcceptedKeyTypes
-                  kexAlgorithms
-                  preferredAuthentications
-                  pubkeyAuthentication
-                  ;
+                Hostname = host.hostname;
+                User = host.user;
+                Port = host.port;
+                IdentityFile = host.identityFile;
+                HostKeyAlgorithms = host.hostKeyAlgorithms;
+                PubkeyAcceptedKeyTypes = host.pubkeyAcceptedKeyTypes;
+                KexAlgorithms = host.kexAlgorithms;
+                PreferredAuthentications = host.preferredAuthentications;
+                PubkeyAuthentication = host.pubkeyAuthentication;
               }
-              // host.extraConfig;
-          }) cfg.hosts;
+              // host.extraConfig
+            )
+          ) cfg.hosts;
 
-          globalBlock =
-            if cfg.globalOptions != { } then
-              {
-                "*" = {
-                  extraOptions = cfg.globalOptions;
-                };
-              }
-            else
-              { };
+          globalBlock = if cfg.globalOptions != { } then { "Host *" = cfg.globalOptions; } else { };
         in
         customHosts // globalBlock;
     };
