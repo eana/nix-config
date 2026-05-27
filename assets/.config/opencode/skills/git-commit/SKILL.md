@@ -87,12 +87,11 @@ Use exactly one of: `build`, `chore`, `ci`, `docs`, `feat`, `fix`, `perf`,
 
 Before writing the commit message:
 
-1. Run `git status` to see all modified files
-2. Stage only files that were explicitly changed during the session; never
+1. Stage only files that were explicitly changed during the session; never
    stage unrelated pre-existing modifications
-3. Avoid `git add .` or `git add -A` unless every change in the working tree
+2. Avoid `git add .` or `git add -A` unless every change in the working tree
    is intentional and part of this commit
-4. Run `git diff --staged` and confirm the staged diff matches the intended
+3. Run `git diff --staged` and confirm the staged diff matches the intended
    change before proceeding
 
 ## Rebase rules
