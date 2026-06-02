@@ -152,6 +152,14 @@ in
 
       package = mkPackageOption pkgs "glab" { };
     };
+
+    gh = {
+      enable = mkEnableOption "gh GitHub command-line tool" // {
+        default = true;
+      };
+
+      package = mkPackageOption pkgs "gh" { };
+    };
   };
 
   config = mkIf cfg.enable (mkMerge [
@@ -251,6 +259,10 @@ in
 
     (mkIf cfg.glab.enable {
       home.packages = [ cfg.glab.package ];
+    })
+
+    (mkIf cfg.gh.enable {
+      home.packages = [ cfg.gh.package ];
     })
   ]);
 }
