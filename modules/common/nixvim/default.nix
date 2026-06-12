@@ -38,6 +38,8 @@ in
     programs.nixvim = {
       enable = true;
 
+      enableMan = false;
+
       globals = {
         nixvim_wrap_column = cfg.wrapColumn;
       };
