@@ -19,7 +19,12 @@
 #    is not needed for the mcp-nixos functionality.
 #    TODO: remove once fastmcp tests are fast enough to be acceptable.
 #
-# 4. mcp-nixos TestStoreReadTextFile::test_read_text_file picks the first
+# 4. cyclopts zsh completion tests fail in the nix build sandbox on macOS
+#    because zsh tab-completion behavior differs in isolated environments.
+#    cyclopts is a dependency of fastmcp and is not directly used.
+#    TODO: remove once cyclopts test suite is sandbox-compatible.
+#
+# 5. mcp-nixos TestStoreReadTextFile::test_read_text_file picks the first
 #    text file from /nix/store and asserts "Error" not in the content. This
 #    is environment-dependent and fails when the first file (e.g.
 #    highlight.pack.js) legitimately contains the word "Error" in its source.
@@ -32,6 +37,9 @@
   python3Packages = pkgs.python3Packages.overrideScope (
     _final: prev: {
       aioboto3 = prev.aioboto3.overridePythonAttrs (_old: {
+        doCheck = false;
+      });
+      cyclopts = prev.cyclopts.overridePythonAttrs (_: {
         doCheck = false;
       });
       fastmcp = prev.fastmcp.overridePythonAttrs (_: {
