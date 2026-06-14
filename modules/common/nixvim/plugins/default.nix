@@ -23,7 +23,6 @@
   programs.nixvim = {
     plugins = {
       # --- UI/UX Enhancements ---
-      better-comments.enable = true;
       indent-blankline = {
         enable = true;
 
