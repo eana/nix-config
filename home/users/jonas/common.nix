@@ -26,6 +26,7 @@ let
         outputHash = "sha256-r0UCWhxIB4q4Te+LpXNcfexjfmI4Th2swfWOL3cUp3g=";
       });
       meta = old.meta // {
+        platforms = (old.meta.platforms or [ ]) ++ [ "x86_64-darwin" ];
         badPlatforms = lib.remove "x86_64-darwin" (old.meta.badPlatforms or [ ]);
       };
     });
