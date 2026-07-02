@@ -1,5 +1,6 @@
-{
-  permission.bash = {
+let
+  inherit (builtins) attrNames listToAttrs map;
+  baseRules = {
     # age: deny direct invocations to prevent secret exposure; ask on
     # incidental matches where "age" appears as a substring
     "age *" = "deny";
@@ -46,11 +47,14 @@
     "*tf destroy*" = "deny";
     "*tf *" = "ask";
 
-    # Nix rebuild and mutable installs: deny all commands that apply
-    # system configurations or side-step the declarative flake
-    "*darwin-rebuild*" = "deny";
-    "*nixos-rebuild*" = "deny";
-    "nh *" = "deny";
+    # Nix rebuild and system apply: ask before applying configuration
+    # changes via any supported tool
+    "*darwin-rebuild*" = "ask";
+    "*nixos-rebuild*" = "ask";
+    "nh *" = "ask";
+    "home-manager *" = "ask";
+
+    # Mutable installs: deny commands that side-step the declarative flake
     "nix profile *" = "deny";
     "nix-env *" = "deny";
 
@@ -70,4 +74,14 @@
     "*pip install*" = "ask";
     "*npm install -g*" = "ask";
   };
+in
+{
+  permission.bash =
+    baseRules
+    // listToAttrs (
+      map (name: {
+        name = "snip ${name}";
+        value = baseRules.${name};
+      }) (attrNames baseRules)
+    );
 }
