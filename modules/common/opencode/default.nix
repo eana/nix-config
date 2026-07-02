@@ -9,7 +9,6 @@ let
     literalExpression
     mkEnableOption
     mkIf
-    mkMerge
     mkOption
     types
     ;
@@ -83,38 +82,40 @@ in
     };
   };
 
-  config = mkIf cfg.enable (mkMerge [
-    (import ./snip-rtk.nix { inherit lib pkgs; })
-    {
-      programs.opencode = {
-        enable = true;
-        inherit (cfg) package;
+  config = mkIf cfg.enable {
+    home.packages = [ pkgs.snip ];
 
-        settings = {
-          autoshare = false;
-          autoupdate = false;
-          experimental.disable_paste_summary = true;
-          share = "disabled";
-        }
-        // import ./permissions.nix
-        // import ./mcp.nix { inherit pkgs; };
+    xdg.configFile."snip/config.toml".source = ../../../assets/.config/snip/config.toml;
 
-        tui = {
-          theme = "gruvbox";
-          keybinds = {
-            session_export = "none";
-            session_share = "none";
-            session_unshare = "none";
-            terminal_suspend = "none";
-            messages_first = "ctrl+home";
-            messages_last = "ctrl+end";
-          };
+    programs.opencode = {
+      enable = true;
+      inherit (cfg) package;
+
+      settings = {
+        autoshare = false;
+        autoupdate = false;
+        experimental.disable_paste_summary = true;
+        share = "disabled";
+      }
+      // import ./permissions.nix
+      // import ./mcp.nix { inherit pkgs; }
+      // import ./plugins.nix { inherit pkgs; };
+
+      tui = {
+        theme = "gruvbox";
+        keybinds = {
+          session_export = "none";
+          session_share = "none";
+          session_unshare = "none";
+          terminal_suspend = "none";
+          messages_first = "ctrl+home";
+          messages_last = "ctrl+end";
         };
-
-        context = baseContext + cfg.extraContext;
-
-        skills = defaultSkills // cfg.extraSkills;
       };
-    }
-  ]);
+
+      context = baseContext + cfg.extraContext;
+
+      skills = defaultSkills // cfg.extraSkills;
+    };
+  };
 }
