@@ -11,32 +11,32 @@ let
     "sops *" = "deny";
     "*sops *" = "ask";
 
-    # agenix / ragenix: deny direct invocations to prevent
+    # agenix / ragenix: deny invocations to prevent
     # accidental secret editing or rekeying
-    "agenix *" = "deny";
-    "ragenix *" = "deny";
+    "*agenix *" = "deny";
+    "*ragenix *" = "deny";
 
     # Privilege escalation: no legitimate AI use case
-    "sudo *" = "deny";
-    "doas *" = "deny";
+    "*sudo *" = "deny";
+    "*doas *" = "deny";
 
     # git: ask before committing; deny push entirely to avoid
     # unintended remote writes
-    "git commit *" = "ask";
-    "git push *" = "deny";
+    "*git commit *" = "ask";
+    "*git push *" = "deny";
 
     # SSH: allow local key management tools (no remote access involved)
-    "ssh-keygen *" = "allow";
-    "ssh-add *" = "allow";
-    "ssh-agent *" = "allow";
+    "*ssh-keygen *" = "allow";
+    "*ssh-add *" = "allow";
+    "*ssh-agent *" = "allow";
 
     # SSH: ask before any remote access or file transfer over SSH
-    "ssh *" = "ask";
-    "scp *" = "ask";
-    "sftp *" = "ask";
+    "*ssh *" = "ask";
+    "*scp *" = "ask";
+    "*sftp *" = "ask";
     # Only gate remote rsync (contains user@host: or host: syntax)
-    "rsync *@*:*" = "ask";
-    "rsync * *:*" = "ask";
+    "*rsync *@*:*" = "ask";
+    "*rsync * *:*" = "ask";
 
     # IaC: deny destroy operations; ask for all other state-mutating
     # commands across terraform, tofu, and tf wrappers
@@ -51,26 +51,26 @@ let
     # changes via any supported tool
     "*darwin-rebuild*" = "ask";
     "*nixos-rebuild*" = "ask";
-    "nh *" = "ask";
-    "home-manager *" = "ask";
+    "*nh *" = "ask";
+    "*home-manager *" = "ask";
 
     # Mutable installs: deny commands that side-step the declarative flake
-    "nix profile *" = "deny";
-    "nix-env *" = "deny";
+    "*nix profile *" = "deny";
+    "*nix-env *" = "deny";
 
     # Service management: deny direct daemon/service manipulation
-    "launchctl *" = "deny";
-    "systemctl *" = "deny";
+    "*launchctl *" = "deny";
+    "*systemctl *" = "deny";
 
     # Containers: ask before running arbitrary containers
-    "docker *" = "ask";
-    "podman *" = "ask";
+    "*docker *" = "ask";
+    "*podman *" = "ask";
 
     # Kubernetes: ask before mutating cluster state
-    "kubectl *" = "ask";
+    "*kubectl *" = "ask";
 
     # Out-of-band package managers: ask before installing outside Nix
-    "brew *" = "ask";
+    "*brew *" = "ask";
     "*pip install*" = "ask";
     "*npm install -g*" = "ask";
   };
