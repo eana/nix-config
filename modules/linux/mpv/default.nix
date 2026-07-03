@@ -9,33 +9,6 @@ let
   cfg = config.module.mpv;
   inherit (lib) mkEnableOption mkOption types;
 
-  pythonPkgs = pkgs.python3Packages;
-
-  upnpclient = pythonPkgs.buildPythonPackage {
-    pname = "upnpclient";
-    version = "2.0.3";
-    src = pkgs.fetchPypi {
-      pname = "upnpclient";
-      version = "2.0.3";
-      sha256 = "sha256-rPZngaGU8mhTn7ylLr+hsQ3hIXTHFQkCBT2f0KKgLFw=";
-    };
-    format = "pyproject";
-    nativeBuildInputs = with pythonPkgs; [ hatchling ];
-    propagatedBuildInputs = with pythonPkgs; [
-      python-dateutil
-      ifaddr
-      lxml
-      requests
-    ];
-    doCheck = false;
-
-    meta = {
-      description = "Python UPnP client library used by mpvDLNA";
-      homepage = "https://github.com/flyte/upnpclient";
-      license = lib.licenses.mit;
-    };
-  };
-
   pythonWithDeps = pkgs.python3.withPackages (
     ps: with ps; [
       python-dateutil

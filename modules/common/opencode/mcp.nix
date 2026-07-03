@@ -3,7 +3,6 @@ let
   inherit (pkgs) callPackage;
   mcp-nixos = callPackage ./packages/mcp-nixos.nix { };
   context-mode = callPackage ./packages/context-mode.nix { };
-  opentofu-mcp-server = callPackage ./packages/opentofu-mcp-server.nix { };
 in
 {
   mcp = {
@@ -21,7 +20,7 @@ in
     opentofu = {
       type = "local";
       enabled = false;
-      command = [ "${opentofu-mcp-server}/bin/opentofu-mcp-server" ];
+      command = [ "${pkgs.opentofu-mcp-server}/bin/opentofu-mcp-server" ];
     };
 
     context7 = {
