@@ -2,6 +2,7 @@
   config,
   lib,
   pkgs,
+  inputs,
   ...
 }:
 let
@@ -129,6 +130,8 @@ in
         };
         register = "unnamedplus";
       };
+
+      nixpkgs.source = lib.mkDefault inputs.nixpkgs;
 
       defaultEditor = true;
       viAlias = true;
