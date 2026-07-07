@@ -1,12 +1,7 @@
 { config, pkgs, ... }:
 
 {
-  environment = {
-    pathsToLink = [ "/Applications" ];
-    variables = {
-      EDITOR = "nvim";
-    };
-  };
+  environment.pathsToLink = [ "/Applications" ];
 
   system.activationScripts.applications.text =
     let
