@@ -1,11 +1,17 @@
-{ pkgs, lib, ... }: {
+{
+  config,
+  pkgs,
+  lib,
+  ...
+}:
+{
   imports = [ ../../../modules/common/nix-cache.nix ];
 
   nix = {
     settings = {
       trusted-users = [
         "root"
-        "jonas"
+        config.module.variables.userName
       ]
       ++ lib.optionals pkgs.stdenv.hostPlatform.isLinux [ "@wheel" ];
       experimental-features = [

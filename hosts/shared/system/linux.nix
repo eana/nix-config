@@ -1,12 +1,12 @@
-_: {
+{ config, ... }: {
   networking.networkmanager = {
     enable = true;
-    insertNameservers = [ "192.168.0.145" ];
+    insertNameservers = config.module.variables.dnsServers;
   };
 
   security.sudo.extraRules = [
     {
-      users = [ "jonas" ];
+      users = [ config.module.variables.userName ];
       commands = [
         {
           command = "/run/current-system/sw/bin/nixos-rebuild";
