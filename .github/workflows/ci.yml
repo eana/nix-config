@@ -40,7 +40,9 @@ jobs:
               - flake.lock
               - 'home/users/jonas/common.nix'
               - 'home/users/jonas/linux.nix'
+              - 'home/users/shared.nix'
               - 'hosts/nixbox/**'
+              - 'hosts/shared/**'
               - 'modules/common/**'
               - 'modules/linux/**'
             nasbox:
@@ -48,6 +50,7 @@ jobs:
               - flake.lock
               - 'home/users/root/common.nix'
               - 'home/users/root/ds920p.nix'
+              - 'home/users/shared.nix'
               - 'hosts/nasbox/**'
               - 'modules/common/**'
               - 'modules/linux/**'
@@ -56,7 +59,9 @@ jobs:
               - flake.lock
               - 'home/users/jonas/common.nix'
               - 'home/users/jonas/darwin.nix'
+              - 'home/users/shared.nix'
               - 'hosts/macbox/**'
+              - 'hosts/shared/**'
               - 'modules/common/**'
               - 'modules/darwin/**'
 
