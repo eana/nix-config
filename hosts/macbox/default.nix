@@ -5,6 +5,7 @@
     # keep-sorted start
     ../shared/default.nix
     ../shared/system/darwin.nix
+    ./home-manager/default.nix
     ./nix/default.nix
     ./system/defaults.nix
     ./system/environment.nix
