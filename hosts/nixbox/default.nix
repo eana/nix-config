@@ -1,6 +1,8 @@
 {
   imports = [
     # keep-sorted start
+    ../shared/default.nix
+    ../shared/system/linux.nix
     ./disko.nix
     ./gdm.nix
     ./hardware-configuration.nix
@@ -21,24 +23,8 @@
     ../../modules/linux/libvirt/default.nix
   ];
 
-  age.secrets = {
-    ssh-hosts = {
-      file = ../../secrets/ssh-hosts.age;
-      mode = "0400";
-      owner = "jonas";
-      group = "users";
-    };
-    atuin = {
-      file = ../../secrets/atuin.age;
-      mode = "0400";
-      owner = "jonas";
-      group = "users";
-    };
-  };
-
   hardware.nvidiaPrime.enable = true;
 
-  time.timeZone = "Europe/Stockholm";
   console.keyMap = "us";
   i18n = {
     defaultLocale = "en_US.UTF-8";

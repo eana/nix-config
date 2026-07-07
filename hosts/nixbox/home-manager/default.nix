@@ -6,9 +6,6 @@
 }:
 {
   home-manager = {
-    backupFileExtension = "backup";
-    useGlobalPkgs = true;
-    useUserPackages = true;
     users.jonas = {
       _module.args = {
         sshSecretsPath = config.age.secrets.ssh-hosts.path;

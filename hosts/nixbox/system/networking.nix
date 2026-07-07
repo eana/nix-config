@@ -11,7 +11,6 @@
     enableIPv6 = false;
     networkmanager = {
       enable = true;
-      insertNameservers = [ "192.168.0.145" ];
       dispatcherScripts = [
         {
           type = "basic";
