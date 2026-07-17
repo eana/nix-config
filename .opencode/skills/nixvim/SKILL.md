@@ -1,10 +1,10 @@
 ---
 name: nixvim
-description: Conventions for editing the declarative nixvim Neovim configuration in this repo
+description: Use when editing nixvim Neovim configuration - adding plugins, LSP servers, keymaps, or changing any nixvim option in this repo
 compatibility: opencode
 ---
 
-## Two Neovim configs — do not confuse them
+## Two Neovim configs - do not confuse them
 
 | Path | Purpose | Active by default |
 | --- | --- | --- |
@@ -22,7 +22,7 @@ Always edit `modules/common/nixvim/` unless explicitly working on the LazyVim co
 
 ## Embedding Lua in nixvim Nix files
 
-Use these patterns — do not create standalone `.lua` files inside `modules/`:
+Use these patterns - do not create standalone `.lua` files inside `modules/`:
 
 ```nix
 # Keymap action with raw Lua function
@@ -52,7 +52,7 @@ When adding a new language server:
 
 - Add it to the same attrset as existing servers
 - Keep sorted grouping (by language family)
-- Formatting is disabled on LSP attach — do not re-enable unless intentional
+- Formatting is disabled on LSP attach - do not re-enable unless intentional
 
 ## Plugin enable/disable
 

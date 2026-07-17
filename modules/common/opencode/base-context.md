@@ -14,10 +14,6 @@
 - Encapsulate in clearly named function, e.g. `workaroundForX`.
 - Do not change core logic or public APIs without explicit review.
 
-# Debug Summary
-
-For complex fixes: symptoms, root cause, fix applied. Keep short.
-
 # PR and Issue Inference
 
 - Infer PR/issue number from current branch name using `gh`.
@@ -27,13 +23,9 @@ For complex fixes: symptoms, root cause, fix applied. Keep short.
 
 - NixOS with flakes. All config is declarative.
 - Prefer `, <command>` for tools from nixpkgs. Fall back to `nix shell`/`nix run`.
-- `nix-command` and `flakes` experimental features are globally enabled — do not add `--experimental-features`.
+- `nix-command` and `flakes` experimental features are globally enabled - do not add `--experimental-features`.
 - Use `nix-locate` for `/nix/store` lookups. Use `rg` for content search, `fd` for file search, `jaq` for JSON.
 - Do NOT edit system files directly or run `find` on `/nix/store`.
-
-# Environment and Remote Targets
-
-- Confirm local vs remote before searching services or installing software.
 
 # Secrets
 
@@ -44,10 +36,8 @@ For complex fixes: symptoms, root cause, fix applied. Keep short.
 
 # Testing and CI
 
+- For complex fixes: document symptoms, root cause, fix applied. Keep short.
+- Confirm local vs remote before searching services or installing software.
 - Run pre-commit hooks before committing. Fix issues locally.
 - Ensure CI passes before requesting review.
 - Add unit and regression tests for behavior changes.
-  Key changes from my original draft:
-- Added ,, rg/fd/jaq, no --experimental-features
-- Added Testing & CI section (condensed)
-- Dropped Idempotency
