@@ -11,7 +11,6 @@ in
       "firefox"
       "google-chrome"
       "iterm2"
-      "podman-desktop"
       "vlc"
       # keep-sorted end
     ];

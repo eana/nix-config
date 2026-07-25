@@ -141,8 +141,6 @@ in
 
     sessionVariables = {
       LIBGL_ALWAYS_INDIRECT = 1;
-      DOCKER_HOST = "unix://$XDG_RUNTIME_DIR/podman/podman.sock";
-      KPT_FN_RUNTIME = "podman";
     };
   };
 

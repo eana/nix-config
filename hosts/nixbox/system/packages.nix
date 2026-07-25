@@ -18,10 +18,7 @@
       # keep-sorted start
       blueman
       curl
-      dive
-      docker-compose
       gparted
-      podman-tui
       zsh-powerlevel10k
       # keep-sorted end
     ];

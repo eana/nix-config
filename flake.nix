@@ -66,6 +66,7 @@
         "nixvim"
         "ollama"
         "opencode"
+        "podman"
         "tmux"
         "zsh"
         # keep-sorted end

@@ -110,6 +110,10 @@ in
       package = if pkgs.stdenv.isDarwin then opencodeForDarwin else pkgs.opencode;
     };
 
+    podman = {
+      enable = true;
+    };
+
     ssh-client = {
       enable = true;
 
