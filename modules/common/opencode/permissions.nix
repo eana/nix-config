@@ -1,3 +1,6 @@
+{
+  enableSnip ? false,
+}:
 let
   inherit (builtins) attrNames listToAttrs map;
   baseRules = {
@@ -74,14 +77,18 @@ let
     "*pip install*" = "ask";
     "*npm install -g*" = "ask";
   };
+
+  snipRules =
+    if enableSnip then
+      listToAttrs (
+        map (name: {
+          name = "snip ${name}";
+          value = baseRules.${name};
+        }) (attrNames baseRules)
+      )
+    else
+      { };
 in
 {
-  permission.bash =
-    baseRules
-    // listToAttrs (
-      map (name: {
-        name = "snip ${name}";
-        value = baseRules.${name};
-      }) (attrNames baseRules)
-    );
+  permission.bash = baseRules // snipRules;
 }

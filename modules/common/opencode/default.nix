@@ -75,6 +75,10 @@ in
       description = "Skills merged on top of the default set.";
     };
 
+    snip = {
+      enable = mkEnableOption "snip shell-command recording plugin for opencode";
+    };
+
     extraContext = mkOption {
       type = types.lines;
       default = "";
@@ -83,9 +87,11 @@ in
   };
 
   config = mkIf cfg.enable {
-    home.packages = [ pkgs.snip ];
+    home.packages = lib.optionals cfg.snip.enable [ pkgs.snip ];
 
-    xdg.configFile."snip/config.toml".source = ../../../assets/.config/snip/config.toml;
+    xdg.configFile."snip/config.toml" = mkIf cfg.snip.enable {
+      source = ../../../assets/.config/snip/config.toml;
+    };
 
     programs.opencode = {
       enable = true;
@@ -97,9 +103,12 @@ in
         experimental.disable_paste_summary = true;
         share = "disabled";
       }
-      // import ./permissions.nix
+      // import ./permissions.nix { enableSnip = cfg.snip.enable; }
       // import ./mcp.nix { inherit pkgs; }
-      // import ./plugins.nix { inherit pkgs; };
+      // import ./plugins.nix {
+        inherit lib pkgs;
+        enableSnip = cfg.snip.enable;
+      };
 
       tui = {
         theme = "gruvbox";
