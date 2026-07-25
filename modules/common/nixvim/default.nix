@@ -181,9 +181,11 @@ in
         shellcheck
 
         # --- Formatters (Code cleanup) ---
+        d2
         go
         gotools
         nixfmt
+        opentofu
         prettierd
         shfmt
         stylua

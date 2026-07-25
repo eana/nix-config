@@ -56,6 +56,8 @@ in
           formatters = {
             injected.options.ignore_errors = true;
 
+            terraform_fmt.command = lib.getExe pkgs.opentofu;
+
             shfmt.prepend_args = [
               "-i"
               "2"
