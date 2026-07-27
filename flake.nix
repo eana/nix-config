@@ -110,33 +110,32 @@
           system,
           ...
         }:
-        let
-          # Use nixpkgs-darwin (26.05) for darwin — main nixpkgs (26.11)
-          # dropped x86_64-darwin support.
-          pkgs' =
-            if system == "x86_64-darwin" then
-              import inputs.nixpkgs-darwin {
-                system = "x86_64-darwin";
-                config.allowUnfree = true;
-              }
-            else
-              pkgs;
-        in
         {
-          treefmt = import ./dev/treefmt.nix { pkgs = pkgs'; };
-          pre-commit = import ./dev/pre-commit.nix { pkgs = pkgs'; };
+          # Must use _module.args.pkgs (not a let binding) so submodules
+          # like dev-flake's devshell resolve pkgs through the module
+          # system. No reference to the parameter pkgs — import fresh
+          # for both branches to avoid circularity.
+          _module.args.pkgs =
+            import (if system == "x86_64-darwin" then inputs.nixpkgs-darwin else inputs.nixpkgs)
+              {
+                inherit system;
+                config.allowUnfree = true;
+              };
+
+          treefmt = import ./dev/treefmt.nix { inherit pkgs; };
+          pre-commit = import ./dev/pre-commit.nix { inherit pkgs; };
 
           packages = {
             agenix = inputs.agenix.packages.${system}.default;
             pre-commit = config.pre-commit.settings.package;
-            pre-commit-install = pkgs'.writeShellScriptBin "pre-commit-install" ''
-              #!${pkgs'.runtimeShell}
-              ${pkgs'.pre-commit}/bin/pre-commit install
+            pre-commit-install = pkgs.writeShellScriptBin "pre-commit-install" ''
+              #!${pkgs.runtimeShell}
+              ${pkgs.pre-commit}/bin/pre-commit install
             '';
           };
 
           devshells.default = {
-            packages = with pkgs'; [
+            packages = with pkgs; [
               cachix
               deadnix
               nixfmt
