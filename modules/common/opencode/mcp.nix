@@ -1,15 +1,15 @@
 { lib, pkgs }:
 let
+  inherit (lib) filterAttrs optionalAttrs;
   inherit (pkgs) callPackage;
   mcp-nixos = callPackage ./packages/mcp-nixos.nix { };
   context-mode = callPackage ./packages/context-mode.nix { };
-in
-{
-  mcp = {
-    k8s = {
+
+  servers = filterAttrs (_n: v: v != { }) {
+    k8s = optionalAttrs (pkgs ? mcp-k8s-go) {
       type = "local";
       enabled = false;
-      command = lib.optionals (pkgs ? mcp-k8s-go) [ "${pkgs.mcp-k8s-go}/bin/mcp-k8s-go" ];
+      command = [ "${pkgs.mcp-k8s-go}/bin/mcp-k8s-go" ];
     };
 
     nix = {
@@ -17,26 +17,22 @@ in
       command = [ "${mcp-nixos}/bin/mcp-nixos" ];
     };
 
-    opentofu = {
+    opentofu = optionalAttrs (pkgs ? opentofu-mcp-server) {
       type = "local";
       enabled = false;
-      command = lib.optionals (pkgs ? opentofu-mcp-server) [
-        "${pkgs.opentofu-mcp-server}/bin/opentofu-mcp-server"
-      ];
+      command = [ "${pkgs.opentofu-mcp-server}/bin/opentofu-mcp-server" ];
     };
 
-    context7 = {
+    context7 = optionalAttrs (pkgs ? context7-mcp) {
       type = "local";
       enabled = false;
-      command = lib.optionals (pkgs ? context7-mcp) [ "${pkgs.context7-mcp}/bin/context7-mcp" ];
+      command = [ "${pkgs.context7-mcp}/bin/context7-mcp" ];
     };
 
-    sequential-thinking = {
+    sequential-thinking = optionalAttrs (pkgs ? mcp-server-sequential-thinking) {
       type = "local";
       enabled = false;
-      command = lib.optionals (pkgs ? mcp-server-sequential-thinking) [
-        "${pkgs.mcp-server-sequential-thinking}/bin/mcp-server-sequential-thinking"
-      ];
+      command = [ "${pkgs.mcp-server-sequential-thinking}/bin/mcp-server-sequential-thinking" ];
     };
 
     "context-mode" = {
@@ -44,4 +40,7 @@ in
       command = [ "${context-mode}/bin/context-mode" ];
     };
   };
+in
+{
+  mcp = servers;
 }

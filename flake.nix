@@ -4,6 +4,8 @@
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
 
+    # 26.05 is the last nixpkgs release supporting x86_64-darwin.
+    # macbox is x86_64-darwin, so this pin is required.
     nixpkgs-darwin.url = "github:NixOS/nixpkgs/nixos-26.05";
 
     dev-flake = {
@@ -29,8 +31,12 @@
     nixvim-darwin = {
       url = "github:nix-community/nixvim/nixos-26.05";
       inputs.nixpkgs.follows = "nixpkgs-darwin";
+      inputs.flake-parts.follows = "flake-parts";
     };
 
+    # Intentionally tracking unstable for nixbox (linux). macbox overrides
+    # its pkgs via home-manager.useGlobalPkgs + extra arguments, so HM
+    # version is decoupled from the nixpkgs used for packages.
     home-manager = {
       url = "github:nix-community/home-manager";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -86,7 +92,10 @@
       );
     in
     flake-parts.lib.mkFlake { inherit inputs; } {
-      systems = [ "x86_64-linux" ];
+      systems = [
+        "x86_64-linux"
+        "x86_64-darwin"
+      ];
 
       imports = [ inputs.dev-flake.flakeModule ];
 
@@ -101,25 +110,37 @@
           system,
           ...
         }:
+        let
+          # Use nixpkgs-darwin (26.05) for darwin — main nixpkgs (26.11)
+          # dropped x86_64-darwin support.
+          pkgs' =
+            if system == "x86_64-darwin" then
+              import inputs.nixpkgs-darwin {
+                system = "x86_64-darwin";
+                config.allowUnfree = true;
+              }
+            else
+              pkgs;
+        in
         {
-          treefmt = import ./dev/treefmt.nix { inherit pkgs; };
-          pre-commit = import ./dev/pre-commit.nix { inherit pkgs; };
+          treefmt = import ./dev/treefmt.nix { pkgs = pkgs'; };
+          pre-commit = import ./dev/pre-commit.nix { pkgs = pkgs'; };
 
           packages = {
             agenix = inputs.agenix.packages.${system}.default;
             pre-commit = config.pre-commit.settings.package;
-            pre-commit-install = pkgs.writeShellScriptBin "pre-commit-install" ''
-              #!${pkgs.runtimeShell}
-              ${pkgs.pre-commit}/bin/pre-commit install
+            pre-commit-install = pkgs'.writeShellScriptBin "pre-commit-install" ''
+              #!${pkgs'.runtimeShell}
+              ${pkgs'.pre-commit}/bin/pre-commit install
             '';
           };
 
           devshells.default = {
-            packages = [
-              pkgs.cachix
-              pkgs.deadnix
-              pkgs.nixfmt
-              pkgs.statix
+            packages = with pkgs'; [
+              cachix
+              deadnix
+              nixfmt
+              statix
             ];
           };
         };

@@ -1,7 +1,6 @@
 {
   config,
   inputs,
-  lib,
   ...
 }:
 {
@@ -19,8 +18,6 @@
       ];
       home.stateVersion = "26.05";
       home.enableNixpkgsReleaseCheck = false;
-
-      programs.nixvim.nixpkgs.source = lib.mkForce inputs.nixpkgs-darwin;
     };
 
     extraSpecialArgs = {
