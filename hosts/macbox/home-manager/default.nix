@@ -1,4 +1,10 @@
-{ config, inputs, ... }: {
+{
+  config,
+  inputs,
+  lib,
+  ...
+}:
+{
   home-manager = {
     users.jonas = {
       _module.args = {
@@ -12,6 +18,9 @@
         # keep-sorted end
       ];
       home.stateVersion = "26.05";
+      home.enableNixpkgsReleaseCheck = false;
+
+      programs.nixvim.nixpkgs.source = lib.mkForce inputs.nixpkgs-darwin;
     };
 
     extraSpecialArgs = { inherit inputs; };

@@ -104,7 +104,7 @@ in
         share = "disabled";
       }
       // import ./permissions.nix { enableSnip = cfg.snip.enable; }
-      // import ./mcp.nix { inherit pkgs; }
+      // import ./mcp.nix { inherit lib pkgs; }
       // import ./plugins.nix {
         inherit lib pkgs;
         enableSnip = cfg.snip.enable;

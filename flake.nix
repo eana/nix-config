@@ -4,6 +4,8 @@
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
 
+    nixpkgs-darwin.url = "github:NixOS/nixpkgs/nixos-26.05";
+
     dev-flake = {
       url = "github:terlar/dev-flake";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -40,8 +42,8 @@
     };
 
     nix-darwin = {
-      url = "github:nix-darwin/nix-darwin/master";
-      inputs.nixpkgs.follows = "nixpkgs";
+      url = "github:nix-darwin/nix-darwin/nix-darwin-26.05";
+      inputs.nixpkgs.follows = "nixpkgs-darwin";
     };
 
     nix-homebrew.url = "github:zhaofengli/nix-homebrew";
@@ -62,7 +64,7 @@
         # keep-sorted start
         "git"
         "gpg-agent"
-        "neovim"
+        # "neovim"
         "nixvim"
         "ollama"
         "opencode"
@@ -79,10 +81,7 @@
       );
     in
     flake-parts.lib.mkFlake { inherit inputs; } {
-      systems = [
-        "x86_64-linux"
-        "x86_64-darwin"
-      ];
+      systems = [ "x86_64-linux" ];
 
       imports = [ inputs.dev-flake.flakeModule ];
 
@@ -136,12 +135,16 @@
         };
 
         darwinConfigurations."macbox" = inputs.nix-darwin.lib.darwinSystem {
+          pkgs = import inputs.nixpkgs-darwin {
+            system = "x86_64-darwin";
+            config.allowUnfree = true;
+          };
+
           modules = [
             ./hosts/macbox/default.nix
             inputs.agenix.nixosModules.default
             inputs.home-manager.darwinModules.home-manager
             inputs.nix-homebrew.darwinModules.nix-homebrew
-            inputs.nix-index-database.darwinModules.nix-index
             {
               users.users.jonas = {
                 name = "jonas";
