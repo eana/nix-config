@@ -26,6 +26,11 @@
 
     nixvim.url = "github:nix-community/nixvim";
 
+    nixvim-darwin = {
+      url = "github:nix-community/nixvim/nixos-26.05";
+      inputs.nixpkgs.follows = "nixpkgs-darwin";
+    };
+
     home-manager = {
       url = "github:nix-community/home-manager";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -162,7 +167,10 @@
             ./hosts/nasbox/default.nix
           ];
 
-          extraSpecialArgs = { inherit inputs; };
+          extraSpecialArgs = {
+            inherit inputs;
+            nixvimInput = inputs.nixvim;
+          };
         };
       };
     };

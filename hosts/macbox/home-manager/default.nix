@@ -23,6 +23,9 @@
       programs.nixvim.nixpkgs.source = lib.mkForce inputs.nixpkgs-darwin;
     };
 
-    extraSpecialArgs = { inherit inputs; };
+    extraSpecialArgs = {
+      inherit inputs;
+      nixvimInput = inputs.nixvim-darwin;
+    };
   };
 }

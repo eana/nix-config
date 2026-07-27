@@ -20,7 +20,10 @@
       ];
     };
 
-    extraSpecialArgs = { inherit inputs; };
+    extraSpecialArgs = {
+      inherit inputs;
+      nixvimInput = inputs.nixvim;
+    };
   };
 
   users.users.jonas = {

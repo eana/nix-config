@@ -1,7 +1,11 @@
-{ inputs, ... }:
+{
+  inputs,
+  nixvimInput ? inputs.nixvim,
+  ...
+}:
 {
   imports = [
-    inputs.nixvim.homeModules.nixvim
+    nixvimInput.homeModules.nixvim
 
     # keep-sorted start
     ./atuin/default.nix
