@@ -4,7 +4,7 @@
   programs = {
     # keep-sorted start
     dms-shell.enable = false;
-    niri.enable = true;
+    niri.enable = false;
     nix-index-database.comma.enable = true;
     ssh.startAgent = true;
     sway.enable = true;
