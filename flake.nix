@@ -75,7 +75,6 @@
         # keep-sorted start
         "git"
         "gpg-agent"
-        # "neovim"
         "nixvim"
         "ollama"
         "opencode"

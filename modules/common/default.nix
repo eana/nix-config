@@ -12,7 +12,6 @@
     ./git/default.nix
     ./gpg-agent/default.nix
     ./kitty/default.nix
-    ./neovim/default.nix
     ./nixvim/default.nix
     ./ollama/default.nix
     ./opencode/default.nix

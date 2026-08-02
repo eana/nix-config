@@ -103,8 +103,6 @@ in
       };
     };
 
-    neovim.enable = false;
-
     opencode = {
       enable = true;
       package = if pkgs.stdenv.isDarwin then opencodeForDarwin else pkgs.opencode;
