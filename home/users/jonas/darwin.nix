@@ -13,6 +13,8 @@
       cmake # Build system
       mas # Mac App Store command-line interface
 
+      maccy # Lightweight clipboard manager
+
       # Networking
       iproute2mac # Utilities for controlling TCP/IP networking and traffic control in Linux
     ];
