@@ -170,7 +170,7 @@
                       owner = "ubuntu";
                       repo = "yaru";
                       rev = "50ea18cba78c652e9a5682ec375cbd609dc8aca6";
-                      hash = "sha256-wEKaHEg+L6P5r+0blnErLtLxv4A2DJxVvZq2J9Bgwe0=";
+                      hash = "sha256-zbXFHEW83u4WAgc5u94rRT0bLgvtii5V+503aOfF9HU=";
                     };
                     nativeBuildInputs = with final; [
                       glib
