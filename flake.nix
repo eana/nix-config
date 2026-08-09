@@ -153,6 +153,58 @@
             inputs.agenix.nixosModules.default
             inputs.home-manager.nixosModules.home-manager
             inputs.nix-index-database.nixosModules.nix-index
+            # HACK: yaru-theme was removed from nixpkgs unstable (Jul 2026, commit
+            # 3991532) because gtk-engine-murrine (GTK2) was removed from nixpkgs.
+            # Upstream ubuntu/yaru already dropped GTK2 in v26.10.1 — the removal
+            # was overly aggressive. Fix merged to nixpkgs master (PR #547796,
+            # Aug 2026) but not yet propagated to nixos-unstable.
+            # TODO: Remove this module once pkgs.yaru-theme is available in the
+            # tracked nixpkgs rev (check: nix eval nixpkgs#yaru-theme.version).
+            {
+              nixpkgs.overlays = [
+                (final: _: {
+                  yaru-theme = final.stdenv.mkDerivation {
+                    pname = "yaru";
+                    version = "26.10.1";
+                    src = final.fetchFromGitHub {
+                      owner = "ubuntu";
+                      repo = "yaru";
+                      rev = "50ea18cba78c652e9a5682ec375cbd609dc8aca6";
+                      hash = "sha256-wEKaHEg+L6P5r+0blnErLtLxv4A2DJxVvZq2J9Bgwe0=";
+                    };
+                    nativeBuildInputs = with final; [
+                      glib
+                      meson
+                      ninja
+                      pkg-config
+                      python3
+                      sassc
+                    ];
+                    buildInputs = with final; [
+                      gnome-themes-extra
+                      gtk3
+                    ];
+                    propagatedBuildInputs = with final; [
+                      hicolor-icon-theme
+                      humanity-icon-theme
+                    ];
+                    dontDropIconThemeCache = true;
+                    postPatch = "patchShebangs .";
+                    meta = with final.lib; {
+                      description = "Ubuntu community theme 'yaru' - default Ubuntu theme since 18.10";
+                      homepage = "https://github.com/ubuntu/yaru";
+                      license = with licenses; [
+                        cc-by-sa-40
+                        gpl3Plus
+                        lgpl21Only
+                        lgpl3Only
+                      ];
+                      platforms = platforms.linux;
+                    };
+                  };
+                })
+              ];
+            }
           ];
 
           specialArgs = { inherit inputs; };
@@ -162,6 +214,21 @@
           pkgs = import inputs.nixpkgs-darwin {
             system = "x86_64-darwin";
             config.allowUnfree = true;
+            # HACK: typst Haskell library 0.8.0.2 has 21 failing tests on
+            # x86_64-darwin in nixos-26.05. Tests pass on Linux but fail on
+            # macOS due to platform-specific rendering differences. No upstream
+            # fix available in nixos-26.05 branch as of 2026-08-08.
+            # TODO: Remove once nixos-26.05 ships a fixed typst Haskell package
+            # or when nixpkgs-darwin is updated to a rev where tests pass.
+            overlays = [
+              (_: prev: {
+                haskellPackages = prev.haskellPackages.override {
+                  overrides = _: hprev: {
+                    typst = prev.haskell.lib.dontCheck hprev.typst;
+                  };
+                };
+              })
+            ];
           };
 
           modules = [
@@ -181,9 +248,13 @@
         };
 
         homeConfigurations."nasbox" = inputs.home-manager.lib.homeManagerConfiguration {
-          pkgs = import inputs.nixpkgs { system = "x86_64-linux"; };
+          pkgs = import inputs.nixpkgs {
+            system = "x86_64-linux";
+            config.allowUnfree = true;
+          };
           modules = [
             ./hosts/nasbox/default.nix
+            { nixpkgs.config.allowUnfree = true; }
           ];
 
           extraSpecialArgs = {

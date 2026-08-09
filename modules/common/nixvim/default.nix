@@ -132,6 +132,7 @@ in
       };
 
       nixpkgs.source = lib.mkDefault inputs.nixpkgs;
+      nixpkgs.config.allowUnfree = true;
 
       defaultEditor = true;
       viAlias = true;
