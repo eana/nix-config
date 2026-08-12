@@ -21,6 +21,7 @@ _:
     plugins.copilot-chat = {
       enable = true;
       settings = {
+        model = "auto";
         mappings = {
           close = {
             insert = "<C-c>";
