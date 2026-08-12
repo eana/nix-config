@@ -11,6 +11,7 @@ in
       "firefox"
       "google-chrome"
       "iterm2"
+      "protonvpn"
       "vlc"
       # keep-sorted end
     ];
