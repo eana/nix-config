@@ -1,4 +1,4 @@
-# nixos
+# nix-config
 
 ## Things to do
 
@@ -19,7 +19,7 @@ sudo nixos-generate-config --no-filesystems --root /mnt --dir hosts/nixbox
 sudo nixos-install --flake .#nixbox
 ```
 
-### MacOS
+### macOS
 
 - Install `nix`
 
@@ -89,7 +89,7 @@ Steps:
 
    ```shell
    find-src github.com/eana/nix-config
-   agenix -r -i ~/.ssh/id_ed25519
+   nix run .#agenix -- -r -i ~/.ssh/id_ed25519
    ```
 
 1. Commit the updated `secrets.nix` and re-encrypted `.age` files, then run
@@ -116,4 +116,129 @@ A line reading `Secrets file not found` means the agent ran before agenix finish
 
 ```shell
 launchctl kickstart -k gui/$(id -u)/org.nix-community.ssh-secret-provision
+```
+
+### Synology NAS
+
+1. Prepare the filesystem for Nix store
+
+   Root volume doesn't have enough space. Need to put nix store on data volume and bind mount to `/nix`.
+
+   See https://stackoverflow.com/a/34966233
+
+   > On Linux, bind mounts can be used instead of symlink for this purpose (e.g., `mount -o bind /data/nix/store /nix/store`).
+
+   On the NAS
+
+   ```bash
+   mkdir -p /nix /volume1/nix
+   chmod 755 /nix /volume1/nix
+   mount -o bind /volume1/nix /nix
+   ```
+
+1. Build installer
+
+   On another Nix machine
+
+   ```bash
+   # Clone the installer repo
+   git clone https://github.com/sini/synology-nix-installer.git
+
+   # Build static binary
+   nix build .#packages.x86_64-linux.nix-installer-static -L
+
+   # Copy to NAS
+   rsync -e 'ssh -p 6646 -l jonas' ./result/bin/nix-installer 192.168.0.145:~/
+   ```
+
+1. Install Nix
+
+   On NAS again
+
+   ```bash
+   # Disable syscall filtering
+   NIX_INSTALLER_EXTRA_CONF='filter-syscalls = false' ./nix-installer install
+   ```
+
+1. Verify installation and start daemon
+
+   One of the patches applied to the Nix installer prevents the nix daemon from starting automatically. The DetSys installer supports systemd 220, but DSM7.2.7 uses systemd 219, which doesn't support the `--now` flag.
+
+   ```bash
+   systemctl start nix-daemon
+   source /nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh
+   nix run nixpkgs#hello
+   ```
+
+1. Configure startup scripts
+
+   System configuration in `/etc` resets on reboot, requiring startup tasks to be configured through the web interface. Create two user-defined scripts:
+
+   ```text
+   Control Panel -> Task Scheduler -> Create -> Triggered Task -> User-defined script
+   ```
+
+   - Make the `/nix` mount persistent
+
+     - Task: Bind mount nix
+     - User: root
+     - Event: Boot-up
+     - Pre-task: None
+     - Script:
+
+     ```bash
+     mount -o bind /volume1/nix /nix
+     ```
+
+   - Auto start nix-daemon service
+
+     - Task: Start nix daemon
+     - User: root
+     - Event: Boot-up
+     - Pre-task: Bind mount nix
+     - Script:
+
+     ```bash
+     systemctl start nix-daemon
+     ```
+
+#### Upgrade Nix on the system
+
+```shell
+nix config check
+nix upgrade-nix --dry-run --verbose
+nix upgrade-nix --verbose
+```
+
+The output should look like this:
+
+```shell
+$ nix config check
+[PASS] PATH contains only one nix version.
+[PASS] All profiles are gcroots.
+[PASS] Client protocol matches store protocol.
+[INFO] You are trusted by store uri: local://
+$ nix upgrade-nix --dry-run --verbose
+found Nix in "/root/.nix-profile/bin"
+found profile "/nix/var/nix/profiles/per-user/root/profile"
+upgrading Nix in profile "/nix/var/nix/profiles/per-user/root/profile"
+querying latest Nix version...
+warning: would upgrade to version 2.34.6
+$ nix upgrade-nix --verbose
+found Nix in "/root/.nix-profile/bin"
+found profile "/nix/var/nix/profiles/per-user/root/profile"
+upgrading Nix in profile "/nix/var/nix/profiles/per-user/root/profile"
+querying latest Nix version...
+downloading '/nix/store/q7f0d4m54yj98fcjmbkscw83j82fypnd-nix-2.34.6'......
+copying path '/nix/store/l34zf9300cgydgsimmnxvjl9ivjn2yjc-busybox-1.36.1' from 'https://cache.nixos.org'...
+...
+...
+...
+copying path '/nix/store/q7f0d4m54yj98fcjmbkscw83j82fypnd-nix-2.34.6' from 'https://cache.nixos.org'...
+verifying that '/nix/store/q7f0d4m54yj98fcjmbkscw83j82fypnd-nix-2.34.6' works......
+installing '/nix/store/q7f0d4m54yj98fcjmbkscw83j82fypnd-nix-2.34.6' into profile "/nix/var/nix/profiles/per-user/root/profile"......
+replacing old 'nix-2.31.1'
+installing 'nix-2.34.6'
+building '/nix/store/vls8vljgw13b9q7cmzw4z68zra9dsy9k-user-environment.drv'...
+upgrade to version 2.34.6 done
 ```
