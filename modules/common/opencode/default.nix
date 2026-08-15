@@ -79,6 +79,14 @@ in
       enable = mkEnableOption "snip shell-command recording plugin for opencode";
     };
 
+    copilotAutoModel = {
+      enable = mkOption {
+        type = types.bool;
+        default = true;
+        description = "Enable opencode-github-copilot-auto-model plugin (opt-out).";
+      };
+    };
+
     extraContext = mkOption {
       type = types.lines;
       default = "";
@@ -108,6 +116,7 @@ in
       // import ./plugins.nix {
         inherit lib pkgs;
         enableSnip = cfg.snip.enable;
+        enableCopilotAutoModel = cfg.copilotAutoModel.enable;
       };
 
       tui = {
