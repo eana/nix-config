@@ -14,11 +14,17 @@ let
     ;
   cfg = config.module.opencode;
 
+  pluginConfig = import ./plugins.nix {
+    inherit lib pkgs;
+    enableSnip = cfg.snip.enable;
+    enableCopilotAutoModel = cfg.copilotAutoModel.enable;
+  };
+
   superpowersSrc = pkgs.fetchFromGitHub {
     owner = "obra";
     repo = "superpowers";
-    rev = "v5.0.7";
-    hash = "sha256-HQtO9cZfPPIkHDj64NeQuG9p9WhSKBVkWGWhZkZjZoo=";
+    rev = "v6.2.0";
+    hash = "sha256-F5LEk0yNWbMpan1vZSFZM76XSpsFGvA7h8q6Idrvenk=";
   };
 
   superpowersSkillsList = [
@@ -47,9 +53,11 @@ let
 
   defaultSkills = {
     # keep-sorted start
+    flake-parts = ../../../assets/.config/opencode/skills/flake-parts;
     ghq-lookup = ../../../assets/.config/opencode/skills/ghq-lookup;
     git-commit = ../../../assets/.config/opencode/skills/git-commit;
     gitlab-cli-tool = ../../../assets/.config/opencode/skills/gitlab-cli-tool;
+    nix-coding = ../../../assets/.config/opencode/skills/nix-coding;
     skill-creator = ../../../assets/.config/opencode/skills/skill-creator;
     style = ../../../assets/.config/opencode/skills/style;
     # keep-sorted end
@@ -101,22 +109,87 @@ in
       source = ../../../assets/.config/snip/config.toml;
     };
 
+    programs.mcp = {
+      enable = true;
+      servers = import ./mcp.nix { inherit lib pkgs; };
+    };
+
     programs.opencode = {
       enable = true;
       inherit (cfg) package;
+
+      enableMcpIntegration = true;
 
       settings = {
         autoshare = false;
         autoupdate = false;
         experimental.disable_paste_summary = true;
         share = "disabled";
+        lsp = {
+          nixd = {
+            command = [ (lib.getExe pkgs.nil) ];
+            extensions = [ ".nix" ];
+          };
+
+          jsonls = {
+            command = [
+              (lib.getExe' pkgs.vscode-langservers-extracted "vscode-json-language-server")
+              "--stdio"
+            ];
+            extensions = [
+              ".json"
+              ".jsonc"
+            ];
+          };
+
+          yamlls = {
+            command = [
+              (lib.getExe pkgs.yaml-language-server)
+              "--stdio"
+            ];
+            extensions = [
+              ".yaml"
+              ".yml"
+            ];
+          };
+
+          gopls = {
+            command = [ (lib.getExe pkgs.gopls) ];
+            extensions = [
+              ".go"
+              ".mod"
+              ".sum"
+            ];
+          };
+
+          bashls = {
+            command = [
+              (lib.getExe pkgs.bash-language-server)
+              "start"
+            ];
+            extensions = [
+              ".sh"
+              ".bash"
+            ];
+          };
+
+          biome = {
+            command = [
+              (lib.getExe pkgs.biome)
+              "lsp-proxy"
+            ];
+            extensions = [
+              ".js"
+              ".ts"
+              ".jsx"
+              ".tsx"
+            ];
+          };
+        };
       }
       // import ./permissions.nix { enableSnip = cfg.snip.enable; }
-      // import ./mcp.nix { inherit lib pkgs; }
-      // import ./plugins.nix {
-        inherit lib pkgs;
-        enableSnip = cfg.snip.enable;
-        enableCopilotAutoModel = cfg.copilotAutoModel.enable;
+      // {
+        inherit (pluginConfig) plugin;
       };
 
       tui = {
