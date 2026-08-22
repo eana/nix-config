@@ -12,11 +12,10 @@
         atuinSecretsPath = config.age.secrets.atuin.path;
       };
       imports = [
-        # keep-sorted start
         ../../../home/users/jonas/darwin.nix
-        ../../../modules/common/default.nix
-        # keep-sorted end
-      ];
+        inputs.nixvim-darwin.homeModules.nixvim
+      ]
+      ++ builtins.attrValues (lib.eana.modulesFromDir ../../../modules/common);
       home.stateVersion = "26.05";
       home.enableNixpkgsReleaseCheck = false;
 
