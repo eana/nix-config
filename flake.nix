@@ -140,6 +140,13 @@
               nixfmt
               statix
             ];
+            commands = [
+              {
+                name = "repl";
+                help = "nix repl with full flake context pre-loaded";
+                command = "nix repl --file ${toString ./.}/dev/repl.nix";
+              }
+            ];
           };
         };
 
