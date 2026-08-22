@@ -3,6 +3,7 @@
   lib,
   enableSnip ? false,
   enableCopilotAutoModel ? false,
+  copilotAutoModelAutos ? [ ],
 }:
 let
   inherit (pkgs) callPackage;
@@ -11,6 +12,14 @@ let
   opencode-github-copilot-auto-model =
     callPackage ./packages/opencode-github-copilot-auto-model.nix
       { };
+  copilotAutoModelEntry =
+    if copilotAutoModelAutos != [ ] then
+      [
+        "${opencode-github-copilot-auto-model}/lib/opencode-github-copilot-auto-model"
+        { autos = copilotAutoModelAutos; }
+      ]
+    else
+      "${opencode-github-copilot-auto-model}/lib/opencode-github-copilot-auto-model";
 in
 {
   plugin = [
@@ -20,6 +29,6 @@ in
     "${opencode-snip}/lib/opencode-snip"
   ]
   ++ lib.optionals enableCopilotAutoModel [
-    "${opencode-github-copilot-auto-model}/lib/opencode-github-copilot-auto-model"
+    copilotAutoModelEntry
   ];
 }
