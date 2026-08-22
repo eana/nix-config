@@ -6,11 +6,7 @@
 }:
 let
   inherit (lib)
-    mkEnableOption
-    mkOption
-    types
     mkIf
-    literalExpression
     ;
 
   cfg = config.module.zsh;
@@ -53,25 +49,7 @@ let
 
 in
 {
-  options.module.zsh = {
-    enable = mkEnableOption "Z shell opinionated profile";
-
-    p10kConfigFile = mkOption {
-      type = types.nullOr types.path;
-      default = ../../../assets/.p10k.zsh;
-      description = "Path to the Powerlevel10k configuration file (.p10k.zsh)";
-      example = "./assets/.p10k.zsh";
-    };
-
-    # We keep 'package' as a convenience, but it could also be removed
-    # if you rely strictly on programs.zsh.package
-    package = mkOption {
-      type = types.package;
-      default = pkgs.zsh;
-      defaultText = literalExpression "pkgs.zsh";
-      description = "Z shell package to use";
-    };
-  };
+  imports = [ ./interface.nix ];
 
   config = mkIf cfg.enable {
     # 1. Handle the P10k config file if provided
