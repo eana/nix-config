@@ -106,7 +106,7 @@ in
 
     # Linux
     systemd.user.services.atuin-login =
-      mkIf (pkgs.stdenv.isLinux && cfg.sync.enable && cfg.sync.credentialsFile != null)
+      mkIf (pkgs.stdenv.hostPlatform.isLinux && cfg.sync.enable && cfg.sync.credentialsFile != null)
         {
           Unit = {
             Description = "Atuin automatic login/logout service";
@@ -132,7 +132,7 @@ in
 
     # macOS
     launchd.agents.atuin-login =
-      mkIf (pkgs.stdenv.isDarwin && cfg.sync.enable && cfg.sync.credentialsFile != null)
+      mkIf (pkgs.stdenv.hostPlatform.isDarwin && cfg.sync.enable && cfg.sync.credentialsFile != null)
         {
           enable = true;
           config = {

@@ -67,7 +67,7 @@ in
     # lock update, which transitively requires libdrm (Linux-only). Guard it
     # so macbox does not attempt to evaluate the Linux-only dep chain.
     # TODO: remove the guard once nixpkgs fixes d2 darwin compatibility.
-    (lib.mkIf stdenv.isLinux d2)
+    (lib.mkIf stdenv.hostPlatform.isLinux d2)
 
     # Security & Encryption
     age # Simple, modern and secure encryption tool
@@ -105,7 +105,7 @@ in
 
     opencode = {
       enable = true;
-      package = if pkgs.stdenv.isDarwin then opencodeForDarwin else pkgs.opencode;
+      package = if pkgs.stdenv.hostPlatform.isDarwin then opencodeForDarwin else pkgs.opencode;
     };
 
     podman = {

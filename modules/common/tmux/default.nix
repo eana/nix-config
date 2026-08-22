@@ -16,12 +16,12 @@ let
   cfg = config.module.tmux;
 
   # Platform-specific clipboard configuration
-  clipboardPackage = if pkgs.stdenv.isLinux then pkgs.wl-clipboard else null;
+  clipboardPackage = if pkgs.stdenv.hostPlatform.isLinux then pkgs.wl-clipboard else null;
 
   defaultClipboardCmd =
-    if pkgs.stdenv.isDarwin then
+    if pkgs.stdenv.hostPlatform.isDarwin then
       "pbcopy"
-    else if pkgs.stdenv.isLinux then
+    else if pkgs.stdenv.hostPlatform.isLinux then
       "${clipboardPackage}/bin/wl-paste"
     else
       "";
@@ -247,6 +247,8 @@ in
       extraConfig = finalExtraConfig;
     };
 
-    home.packages = mkIf pkgs.stdenv.isLinux (lib.optional (clipboardPackage != null) clipboardPackage);
+    home.packages = mkIf pkgs.stdenv.hostPlatform.isLinux (
+      lib.optional (clipboardPackage != null) clipboardPackage
+    );
   };
 }

@@ -86,7 +86,7 @@ in
     home.packages = [ cfg.package ];
 
     # Linux: Use NixOS services.ollama module
-    services.ollama = mkIf pkgs.stdenv.isLinux {
+    services.ollama = mkIf pkgs.stdenv.hostPlatform.isLinux {
       enable = true;
       inherit (cfg.server) host;
       inherit (cfg.server) port;
@@ -95,7 +95,7 @@ in
     };
 
     # macOS: Use launchd agent
-    launchd.agents.ollama = mkIf pkgs.stdenv.isDarwin {
+    launchd.agents.ollama = mkIf pkgs.stdenv.hostPlatform.isDarwin {
       enable = true;
       config = {
         Label = "org.nix-community.ollama";
@@ -128,7 +128,7 @@ in
 
     # Warning for unsupported platforms
     warnings = lib.optional (
-      !pkgs.stdenv.isLinux && !pkgs.stdenv.isDarwin
+      !pkgs.stdenv.hostPlatform.isLinux && !pkgs.stdenv.hostPlatform.isDarwin
     ) "Ollama service is only supported on Linux and macOS platforms.";
   };
 }
