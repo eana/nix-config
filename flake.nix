@@ -134,6 +134,12 @@
           };
 
           devshells.default = {
+            env = [
+              {
+                name = "NIX_USER_CONF_FILES";
+                value = toString ./dev/nix.conf;
+              }
+            ];
             packages = with pkgs; [
               cachix
               deadnix
