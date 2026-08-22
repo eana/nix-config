@@ -72,27 +72,13 @@
       ...
     }:
     let
-      # Only cross-platform (common/) modules are exported as homeModules.
-      # Linux-specific modules (modules/linux/) are consumed directly by host
-      # configurations and are not suitable for standalone home-manager use.
-      moduleList = [
-        # keep-sorted start
-        "git"
-        "gpg-agent"
-        "nixvim"
-        "ollama"
-        "opencode"
-        "podman"
-        "tmux"
-        "zsh"
-        # keep-sorted end
-      ];
-      homeModules = builtins.listToAttrs (
-        map (name: {
-          inherit name;
-          value = import ./modules/common/${name};
-        }) moduleList
-      );
+      eana = import ./lib.nix { lib = inputs.nixpkgs.lib; };
+      eanaLib =
+        system:
+        (if system == "x86_64-darwin" then inputs.nixpkgs-darwin.lib else inputs.nixpkgs.lib).extend (
+          _: _: { inherit eana; }
+        );
+      homeModules = eana.modulesFromDir ./modules/common;
     in
     flake-parts.lib.mkFlake { inherit inputs; } {
       systems = [
@@ -231,7 +217,10 @@
             }
           ];
 
-          specialArgs = { inherit inputs; };
+          specialArgs = {
+            inherit inputs;
+            lib = eanaLib "x86_64-linux";
+          };
         };
 
         darwinConfigurations."macbox" = inputs.nix-darwin.lib.darwinSystem {
@@ -268,7 +257,10 @@
             }
           ];
 
-          specialArgs = { inherit inputs; };
+          specialArgs = {
+            inherit inputs;
+            lib = eanaLib "x86_64-darwin";
+          };
         };
 
         homeConfigurations."nasbox" = inputs.home-manager.lib.homeManagerConfiguration {

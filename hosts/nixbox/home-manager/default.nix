@@ -2,6 +2,7 @@
   pkgs,
   config,
   inputs,
+  lib,
   ...
 }:
 {
@@ -12,12 +13,13 @@
         atuinSecretsPath = config.age.secrets.atuin.path;
       };
       imports = [
-        # keep-sorted start
         ../../../home/users/jonas/linux.nix
-        ../../../modules/common/default.nix
-        ../../../modules/linux/default.nix
-        # keep-sorted end
-      ];
+        inputs.nixvim.homeModules.nixvim
+      ]
+      ++ builtins.attrValues (lib.eana.modulesFromDir ../../../modules/common)
+      ++ builtins.attrValues (
+        lib.filterAttrs (name: _: name != "libvirt") (lib.eana.modulesFromDir ../../../modules/linux)
+      );
     };
 
     extraSpecialArgs = {
