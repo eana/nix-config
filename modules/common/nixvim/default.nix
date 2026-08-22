@@ -125,8 +125,8 @@ in
 
       clipboard = {
         providers = {
-          wl-copy.enable = pkgs.stdenv.isLinux;
-          pbcopy.enable = pkgs.stdenv.isDarwin;
+          wl-copy.enable = pkgs.stdenv.hostPlatform.isLinux;
+          pbcopy.enable = pkgs.stdenv.hostPlatform.isDarwin;
         };
         register = "unnamedplus";
       };

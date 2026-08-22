@@ -164,47 +164,53 @@ in
     };
 
     # Linux — path unit re-fires the service whenever agenix rewrites the secret
-    systemd.user.paths.ssh-secret-provision = mkIf (pkgs.stdenv.isLinux && cfg.secretsFile != null) {
-      Unit.Description = "Watch for SSH secret changes";
-      Path = {
-        # PathChanged fires on inode replacement, which is how agenix writes atomically.
-        PathChanged = cfg.secretsFile;
-        Unit = "ssh-secret-provision.service";
-      };
-      Install.WantedBy = [ "default.target" ];
-    };
+    systemd.user.paths.ssh-secret-provision =
+      mkIf (pkgs.stdenv.hostPlatform.isLinux && cfg.secretsFile != null)
+        {
+          Unit.Description = "Watch for SSH secret changes";
+          Path = {
+            # PathChanged fires on inode replacement, which is how agenix writes atomically.
+            PathChanged = cfg.secretsFile;
+            Unit = "ssh-secret-provision.service";
+          };
+          Install.WantedBy = [ "default.target" ];
+        };
 
     # Linux
-    systemd.user.services.ssh-secret-provision = mkIf (pkgs.stdenv.isLinux && cfg.secretsFile != null) {
-      Unit = {
-        Description = "Provision SSH secret configuration";
-        After = [ "default.target" ];
-      };
+    systemd.user.services.ssh-secret-provision =
+      mkIf (pkgs.stdenv.hostPlatform.isLinux && cfg.secretsFile != null)
+        {
+          Unit = {
+            Description = "Provision SSH secret configuration";
+            After = [ "default.target" ];
+          };
 
-      Service = {
-        Type = "oneshot";
-        ExecStart = "${sshProvisionScript}";
-      };
+          Service = {
+            Type = "oneshot";
+            ExecStart = "${sshProvisionScript}";
+          };
 
-      Install = {
-        WantedBy = [ "default.target" ];
-      };
-    };
+          Install = {
+            WantedBy = [ "default.target" ];
+          };
+        };
 
     # macOS
-    launchd.agents.ssh-secret-provision = mkIf (pkgs.stdenv.isDarwin && cfg.secretsFile != null) {
-      enable = true;
-      config = {
-        Label = "org.nix-community.ssh-secret-provision";
-        ProgramArguments = [ "${sshProvisionScript}" ];
-        RunAtLoad = true;
-        KeepAlive = false;
-        # Re-run whenever agenix (re)writes the secret, eliminating the race
-        # between activate-agenix and this agent at login.
-        WatchPaths = [ cfg.secretsFile ];
-        StandardOutPath = "${config.home.homeDirectory}/Library/Logs/ssh-secret-provision.out.log";
-        StandardErrorPath = "${config.home.homeDirectory}/Library/Logs/ssh-secret-provision.err.log";
-      };
-    };
+    launchd.agents.ssh-secret-provision =
+      mkIf (pkgs.stdenv.hostPlatform.isDarwin && cfg.secretsFile != null)
+        {
+          enable = true;
+          config = {
+            Label = "org.nix-community.ssh-secret-provision";
+            ProgramArguments = [ "${sshProvisionScript}" ];
+            RunAtLoad = true;
+            KeepAlive = false;
+            # Re-run whenever agenix (re)writes the secret, eliminating the race
+            # between activate-agenix and this agent at login.
+            WatchPaths = [ cfg.secretsFile ];
+            StandardOutPath = "${config.home.homeDirectory}/Library/Logs/ssh-secret-provision.out.log";
+            StandardErrorPath = "${config.home.homeDirectory}/Library/Logs/ssh-secret-provision.err.log";
+          };
+        };
   };
 }
