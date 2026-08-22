@@ -129,7 +129,7 @@
           pre-commit = import ./dev/pre-commit.nix { inherit pkgs; };
 
           packages = {
-            agenix = inputs.agenix.packages.${system}.default;
+            agenix = pkgs.callPackage "${inputs.agenix}/pkgs/agenix.nix" { };
             pre-commit = config.pre-commit.settings.package;
             pre-commit-install = pkgs.writeShellScriptBin "pre-commit-install" ''
               #!${pkgs.runtimeShell}
