@@ -7,6 +7,7 @@
 let
   inherit (lib) mkIf;
   cfg = config.module.kitty;
+  customFonts = config.custom.fonts or { };
 
   defaultSettings = {
     scrollback_lines = 10000;
@@ -19,41 +20,51 @@ in
 {
   imports = [ ./interface.nix ];
 
-  config = mkIf cfg.enable {
-    programs.kitty = {
-      enable = true;
-      inherit (cfg) package;
-
-      font = {
-        name = cfg.font.family;
-        inherit (cfg.font) size;
+  config = mkIf cfg.enable (
+    lib.mkMerge [
+      {
+        module.kitty.font = {
+          family = lib.mkDefault (customFonts.monospace or "MesloLGS NF");
+          size = lib.mkDefault ((customFonts.monoSize or 11) + 0.0);
+        };
       }
-      // lib.optionalAttrs (cfg.font.package != null) {
-        inherit (cfg.font) package;
-      };
+      {
+        programs.kitty = {
+          enable = true;
+          inherit (cfg) package;
 
-      settings = lib.recursiveUpdate defaultSettings (
-        cfg.settings
-        // {
-          background_opacity = toString cfg.appearance.opacity;
-        }
-      );
+          font = {
+            name = cfg.font.family;
+            inherit (cfg.font) size;
+          }
+          // lib.optionalAttrs (cfg.font.package != null) {
+            inherit (cfg.font) package;
+          };
 
-      extraConfig = ''
-        # Color scheme
-        foreground ${cfg.appearance.colors.foreground}
-        background ${cfg.appearance.colors.background}
-        ${lib.concatStringsSep "\n" (
-          lib.mapAttrsToList (name: value: "${name} ${value}") cfg.appearance.colors
-        )}
+          settings = lib.recursiveUpdate defaultSettings (
+            cfg.settings
+            // {
+              background_opacity = toString cfg.appearance.opacity;
+            }
+          );
 
-        # Keybindings
-        ${lib.concatStringsSep "\n" (
-          lib.mapAttrsToList (key: action: "map ${key} ${action}") cfg.keybindings
-        )}
+          extraConfig = ''
+            # Color scheme
+            foreground ${cfg.appearance.colors.foreground}
+            background ${cfg.appearance.colors.background}
+            ${lib.concatStringsSep "\n" (
+              lib.mapAttrsToList (name: value: "${name} ${value}") cfg.appearance.colors
+            )}
 
-        ${cfg.extraConfig}
-      '';
-    };
-  };
+            # Keybindings
+            ${lib.concatStringsSep "\n" (
+              lib.mapAttrsToList (key: action: "map ${key} ${action}") cfg.keybindings
+            )}
+
+            ${cfg.extraConfig}
+          '';
+        };
+      }
+    ]
+  );
 }

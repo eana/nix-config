@@ -6,6 +6,7 @@
 
 let
   cfg = config.module.foot;
+  customFonts = config.custom.fonts or { };
 
   tokyoNight = import ../../common/colors/tokyo-night.nix;
   c = tokyoNight.hex;
@@ -51,19 +52,29 @@ in
 {
   imports = [ ./interface.nix ];
 
-  config = lib.mkIf cfg.enable {
-    programs.foot = {
-      enable = true;
-      inherit (cfg) package;
-      settings = lib.recursiveUpdate defaultSettings cfg.settings // {
-        main =
-          (defaultSettings.main or { })
-          // (cfg.settings.main or { })
-          // {
-            font = mkFontString cfg.font.family cfg.font.size;
-            dpi-aware = if cfg.dpiAware then "yes" else "no";
+  config = lib.mkIf cfg.enable (
+    lib.mkMerge [
+      {
+        module.foot.font = {
+          family = lib.mkDefault (customFonts.monospace or "MesloLGS NF");
+          size = lib.mkDefault (customFonts.monoSize or 10);
+        };
+      }
+      {
+        programs.foot = {
+          enable = true;
+          inherit (cfg) package;
+          settings = lib.recursiveUpdate defaultSettings cfg.settings // {
+            main =
+              (defaultSettings.main or { })
+              // (cfg.settings.main or { })
+              // {
+                font = mkFontString cfg.font.family cfg.font.size;
+                dpi-aware = if cfg.dpiAware then "yes" else "no";
+              };
           };
-      };
-    };
-  };
+        };
+      }
+    ]
+  );
 }

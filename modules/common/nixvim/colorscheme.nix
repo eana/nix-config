@@ -1,4 +1,14 @@
-{ pkgs, ... }:
+{
+  config,
+  lib,
+  pkgs,
+  ...
+}:
+
+let
+  custom = config.custom or { };
+  theme = custom.theme or "tokyo-night";
+in
 
 {
   programs.nixvim = {
@@ -19,7 +29,7 @@
 
     colorschemes = {
       gruvbox-material = {
-        enable = true;
+        enable = theme == "gruvbox";
         settings = {
           enable_bold = 1;
           enable_italic = 1;
@@ -31,7 +41,7 @@
       };
 
       catppuccin = {
-        enable = false;
+        enable = theme == "tokyo-night";
         settings = {
           background = {
             light = "macchiato";
@@ -85,7 +95,7 @@
       };
     };
 
-    extraConfigLua = ''
+    extraConfigLua = lib.mkAfter ''
       vim.api.nvim_create_user_command("ToggleTheme", function()
         if vim.opt.background:get() == "dark" then
           vim.opt.background = "light"
