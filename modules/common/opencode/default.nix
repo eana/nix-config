@@ -9,6 +9,8 @@ let
     mkIf
     ;
   cfg = config.module.opencode;
+  custom = config.custom or { };
+  tuiTheme = if (custom.theme or "gruvbox") == "gruvbox" then "gruvbox" else "catppuccin";
 
   pluginConfig = import ./plugins.nix {
     inherit lib pkgs;
@@ -157,7 +159,7 @@ in
       };
 
       tui = {
-        theme = "gruvbox";
+        theme = tuiTheme;
         keybinds = {
           session_export = "none";
           session_share = "none";

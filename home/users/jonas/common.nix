@@ -81,6 +81,8 @@ in
     TERM = "xterm-256color";
   };
 
+  custom.theme = "gruvbox";
+
   module = {
     atuin = {
       enable = true;
