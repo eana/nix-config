@@ -10,12 +10,8 @@
       trusted-users = [
         "root"
       ];
-
-      experimental-features = [
-        "nix-command"
-        "flakes"
-      ];
     };
+    extraOptions = builtins.readFile ../../../dev/nix.conf;
   };
 
   nixpkgs.config = {

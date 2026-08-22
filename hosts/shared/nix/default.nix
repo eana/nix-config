@@ -14,11 +14,8 @@
         config.module.variables.userName
       ]
       ++ lib.optionals pkgs.stdenv.hostPlatform.isLinux [ "@wheel" ];
-      experimental-features = [
-        "nix-command"
-        "flakes"
-      ];
     };
+    extraOptions = builtins.readFile ../../../dev/nix.conf;
     gc = {
       automatic = true;
     }
