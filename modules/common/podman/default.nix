@@ -8,41 +8,7 @@ let
   cfg = config.module.podman;
 in
 {
-  options.module.podman = {
-    enable = lib.mkEnableOption "Podman container engine";
-
-    dockerCompat = lib.mkOption {
-      type = lib.types.bool;
-      default = true;
-      description = "Set DOCKER_HOST to use rootless podman socket for docker CLI compatibility (Linux only).";
-    };
-
-    machine = {
-      enable = lib.mkOption {
-        type = lib.types.bool;
-        default = pkgs.stdenv.hostPlatform.isDarwin;
-        description = "Enable podman machine (macOS only).";
-      };
-
-      memory = lib.mkOption {
-        type = lib.types.nullOr lib.types.ints.positive;
-        default = 4096;
-        description = "Memory in MB for the podman machine.";
-      };
-
-      cpus = lib.mkOption {
-        type = lib.types.nullOr lib.types.ints.positive;
-        default = 2;
-        description = "Number of CPUs for the podman machine.";
-      };
-
-      diskSize = lib.mkOption {
-        type = lib.types.nullOr lib.types.ints.positive;
-        default = 50;
-        description = "Disk size in GB for the podman machine.";
-      };
-    };
-  };
+  imports = [ ./interface.nix ];
 
   config = lib.mkIf cfg.enable {
     services.podman = {
