@@ -66,7 +66,11 @@
   };
 
   outputs =
-    inputs@{ flake-parts, ... }:
+    inputs@{
+      self,
+      flake-parts,
+      ...
+    }:
     let
       # Only cross-platform (common/) modules are exported as homeModules.
       # Linux-specific modules (modules/linux/) are consumed directly by host
@@ -131,6 +135,13 @@
               #!${pkgs.runtimeShell}
               ${pkgs.pre-commit}/bin/pre-commit install
             '';
+          }
+          // pkgs.lib.optionalAttrs (system == "x86_64-linux") {
+            nasbox = self.homeConfigurations.nasbox.activationPackage;
+            nixbox = self.nixosConfigurations.nixbox.config.system.build.toplevel;
+          }
+          // pkgs.lib.optionalAttrs (system == "x86_64-darwin") {
+            macbox = self.darwinConfigurations.macbox.system;
           };
 
           devshells.default = {
