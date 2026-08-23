@@ -1,7 +1,6 @@
 { config, ... }: {
   networking = {
     knownNetworkServices = config.module.variables.knownNetworkServices;
-    dns = config.module.variables.dnsServers;
   };
 
   security.sudo.extraConfig = ''

@@ -1,7 +1,6 @@
 { config, ... }: {
   networking.networkmanager = {
     enable = true;
-    insertNameservers = config.module.variables.dnsServers;
   };
 
   security.sudo.extraRules = [

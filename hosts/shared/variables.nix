@@ -5,6 +5,14 @@
       default = [ "192.168.0.145" ];
       description = "Custom DNS servers";
     };
+    fallbackDns = lib.mkOption {
+      type = lib.types.listOf lib.types.str;
+      default = [
+        "1.1.1.1"
+        "9.9.9.9"
+      ];
+      description = "DNS servers for non-home networks (Cloudflare + Quad9)";
+    };
     userName = lib.mkOption {
       type = lib.types.str;
       default = "jonas";
