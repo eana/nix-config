@@ -8,6 +8,7 @@
     ./home-manager/default.nix
     ./nix/default.nix
     ./system/defaults.nix
+    ./system/dns-switcher.nix
     ./system/environment.nix
     ./system/homebrew.nix
     ./system/packages.nix
