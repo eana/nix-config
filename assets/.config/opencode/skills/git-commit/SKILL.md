@@ -86,7 +86,7 @@ feat(opencode): add declarative skills support
 
 - Add skills.enable toggle for built-in skills bundled with the config
 - Add skills.extraSkillsDirs for external skill directories
-- Deploy each skill to ~/.config/opencode/skills/<name>/SKILL.md
+- Keep skill source in assets/.config/opencode/skills/<name>/SKILL.md and wire it through modules/common/opencode/default.nix
 - Use last-writer-wins on name collision to allow overrides
 ```
 

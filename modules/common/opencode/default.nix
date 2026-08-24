@@ -56,7 +56,9 @@ let
     ghq-lookup = ../../../assets/.config/opencode/skills/ghq-lookup;
     git-commit = ../../../assets/.config/opencode/skills/git-commit;
     gitlab-cli-tool = ../../../assets/.config/opencode/skills/gitlab-cli-tool;
+    nix-check = ../../../assets/.config/opencode/skills/nix-check;
     nix-coding = ../../../assets/.config/opencode/skills/nix-coding;
+    nix-config = ../../../assets/.config/opencode/skills/nix-config;
     skill-creator = ../../../assets/.config/opencode/skills/skill-creator;
     style = ../../../assets/.config/opencode/skills/style;
     # keep-sorted end
