@@ -3,7 +3,6 @@ let
   inherit (lib) filterAttrs optionalAttrs;
   inherit (pkgs) callPackage;
   mcp-nixos = callPackage ./packages/mcp-nixos.nix { };
-  context-mode = callPackage ./packages/context-mode.nix { };
 in
 filterAttrs (_n: v: v != { }) {
   k8s = optionalAttrs (pkgs ? mcp-k8s-go) {
@@ -31,6 +30,6 @@ filterAttrs (_n: v: v != { }) {
   };
 
   "context-mode" = {
-    command = "${context-mode}/bin/context-mode";
+    command = "${pkgs.context-mode}/bin/context-mode";
   };
 }

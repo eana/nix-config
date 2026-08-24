@@ -7,7 +7,6 @@
 }:
 let
   inherit (pkgs) callPackage;
-  context-mode = callPackage ./packages/context-mode.nix { };
   opencode-snip = callPackage ./packages/opencode-snip.nix { };
   opencode-github-copilot-auto-model =
     callPackage ./packages/opencode-github-copilot-auto-model.nix
@@ -23,7 +22,7 @@ let
 in
 {
   plugin = [
-    "${context-mode}/lib/context-mode"
+    "${pkgs.context-mode}/lib/context-mode"
   ]
   ++ lib.optionals enableSnip [
     "${opencode-snip}/lib/opencode-snip"
