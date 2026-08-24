@@ -1,12 +1,7 @@
 { pkgs, ... }:
 
 let
-  d2-grammar-src = pkgs.fetchFromGitHub {
-    owner = "ravsii";
-    repo = "tree-sitter-d2";
-    rev = "ffb66ce4c801a1e37ed145ebd5eca1ea8865e00f";
-    hash = "sha256-E8NcTrPsann8NMB8yLTbJghyf19chhpnKFlthuZ4l14=";
-  };
+  d2-grammar-src = import ./d2-grammar-src.nix { inherit pkgs; };
 
   d2-grammar = pkgs.tree-sitter.buildGrammar {
     language = "d2";
