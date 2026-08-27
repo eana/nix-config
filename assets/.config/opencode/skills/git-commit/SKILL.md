@@ -9,6 +9,10 @@ description: Use when writing commit messages, staging changes for commit, or re
 - **Protect main/master:** If the current branch is `main` or `master`, halt and explicitly ask the user for permission before proceeding.
 - **Prefer feature branches:** When asked to commit on `main` or `master`, actively suggest creating a new feature branch (`git checkout -b <type>/<brief-description>`).
 
+## Conform file
+
+At the start of any commit workflow, check for `.conform.yml` or `.conform.yaml` in the repo root. If found, read it and extract the allowed types and scopes defined there — those replace the hardcoded defaults below. Obey whatever the conform file specifies; it is the source of truth for this repo.
+
 ## Commit message structure
 
 ```
@@ -21,7 +25,9 @@ description: Use when writing commit messages, staging changes for commit, or re
 
 ## Types
 
-Use exactly one of: `build`, `chore`, `ci`, `docs`, `feat`, `fix`, `perf`, `refactor`, `style`, `test`
+Default (used when no `.conform.yml` is present):
+
+`build`, `chore`, `ci`, `docs`, `feat`, `fix`, `perf`, `refactor`, `style`, `test`
 
 ## Subject line rules
 
@@ -31,7 +37,7 @@ Use exactly one of: `build`, `chore`, `ci`, `docs`, `feat`, `fix`, `perf`, `refa
 - Limit to 60 characters
 - Lowercase the entire subject line
 - Do not end with punctuation
-- ASCII only: no emojis, dashes, or other non-standard characters
+- ASCII only: no emojis, no non-ASCII characters whatsoever
 
 ## Scope rules
 
@@ -39,6 +45,7 @@ Use exactly one of: `build`, `chore`, `ci`, `docs`, `feat`, `fix`, `perf`, `refa
 - Use `deps` for dependency or flake input updates
 - Use `flake` for structural changes to `flake.nix`
 - Omit scope when a change is genuinely cross-cutting (touches three or more unrelated areas)
+- If `.conform.yml` defines allowed scopes, use only those
 
 ## Body rules
 
@@ -47,7 +54,7 @@ Use exactly one of: `build`, `chore`, `ci`, `docs`, `feat`, `fix`, `perf`, `refa
 - Capitalise the first letter of each bullet point
 - Write each bullet in imperative mood
 - Keep bullet points short and clear
-- ASCII only: no emojis, dashes, or other non-standard characters
+- ASCII only: no emojis, no non-ASCII characters whatsoever
 - Omit the body entirely if it adds no useful detail beyond the subject
 
 ## Breaking changes
@@ -68,9 +75,57 @@ Before writing the commit message:
 2. Avoid `git add .` or `git add -A` unless every change in the working tree is intentional and part of this commit
 3. Run `git diff --staged` and confirm the staged diff matches the intended change before proceeding
 
+## Pre-commit hooks
+
+Pre-commit hooks exist for a reason — always run them before committing. Never bypass with `--no-verify`.
+
+1. If `pre-commit` is available, run `pre-commit run` against the staged files before committing
+2. If hooks fail, fix the issues, re-stage, and re-run before proceeding
+3. In Nix repos (presence of `flake.nix`), ensure hooks are up to date before running them:
+   - Run `nix run .#pre-commit-install` to regenerate hooks, or enter the dev shell (`nix develop`) which installs them via `shellHook`
+
+## Signing commits
+
+Always sign commits with `-S`. This applies to every `git commit` and `git commit --amend` invocation. If signing fails because the key is locked, unlock the key and retry — do not fall back to unsigned.
+
+## Amending commits
+
+`git commit --amend` follows all the same rules as a new commit: conventional format, ASCII only, imperative mood, signed (`-S`), pre-commit hooks passing.
+
 ## Rebase rules
 
-- Always pass `--committer-date-is-author-date` when rebasing
+Rebase can invoke `$EDITOR` for commit messages and the todo list, which may open vim/nvim and block. Prevent this by setting both editor env vars to `true` (the Unix no-op binary) for every rebase command:
+
+```bash
+GIT_EDITOR=true GIT_SEQUENCE_EDITOR=true git rebase --committer-date-is-author-date <target>
+```
+
+Always pass `--committer-date-is-author-date` to preserve original author timestamps.
+
+### Pre-commit hooks during rebase
+
+Run pre-commit hooks after each replayed commit using `--exec`. Only check files changed by that specific commit — not the entire tree — so pre-existing issues in unrelated files don't block the rebase:
+
+```bash
+GIT_EDITOR=true GIT_SEQUENCE_EDITOR=true git rebase --committer-date-is-author-date \
+  --exec 'files=$(git diff-tree --no-commit-id -r --name-only HEAD | tr "\n" " "); [ -z "$files" ] || pre-commit run --files $files' \
+  <target>
+```
+
+The guard `[ -z "$files" ]` skips hook execution when a commit touches no files (e.g., empty or merge commits).
+
+If hooks fail mid-rebase, fix the issues, re-stage, then run `git rebase --continue`.
+
+### Nix repos and hook regeneration
+
+In repos with `flake.nix`, regenerate pre-commit hooks before starting the rebase:
+
+```bash
+nix run .#pre-commit-install
+# or: nix develop (hooks install via shellHook)
+```
+
+Then proceed with the rebase command above.
 
 ## Examples
 
