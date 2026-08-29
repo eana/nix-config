@@ -80,8 +80,14 @@ in
         {
           Unit = {
             Description = "Atuin automatic login/logout service";
-            After = [ "network-online.target" ];
-            Wants = [ "network-online.target" ];
+            After = [
+              "agenix.service"
+              "network-online.target"
+            ];
+            Wants = [
+              "agenix.service"
+              "network-online.target"
+            ];
             ConditionPathExists = cfg.sync.credentialsFile;
           };
 
