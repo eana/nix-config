@@ -1,8 +1,25 @@
-{ pkgs, ... }:
+{
+  pkgs,
+  atuinSecretsPath ? null,
+  ...
+}:
 {
   imports = [ ./common.nix ];
 
   programs.home-manager.enable = true;
+
+  module.atuin = {
+    enable = true;
+    sync = {
+      enable = true;
+      address = "https://atuin.eana.win";
+      credentialsFile = atuinSecretsPath;
+    };
+    settings = {
+      sync_frequency = "10m";
+      search_mode = "fuzzy";
+    };
+  };
 
   # Install packages for user.
   # Search for packages here: https://search.nixos.org/packages
