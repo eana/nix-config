@@ -106,6 +106,11 @@
           system,
           ...
         }:
+        let
+          version-check = pkgs.writeShellScriptBin "version-check" ''
+            exec ${pkgs.python3}/bin/python3 ${./dev/version-check.py} "$@"
+          '';
+        in
         {
           # Must use _module.args.pkgs (not a let binding) so submodules
           # like dev-flake's devshell resolve pkgs through the module
@@ -119,15 +124,16 @@
               };
 
           treefmt = import ./dev/treefmt.nix { inherit pkgs; };
-          pre-commit = import ./dev/pre-commit.nix { inherit pkgs; };
+          pre-commit = import ./dev/pre-commit.nix { inherit pkgs version-check; };
 
           packages = {
             agenix = pkgs.callPackage "${inputs.agenix}/pkgs/agenix.nix" { };
             pre-commit = config.pre-commit.settings.package;
             pre-commit-install = pkgs.writeShellScriptBin "pre-commit-install" ''
               #!${pkgs.runtimeShell}
-              ${pkgs.pre-commit}/bin/pre-commit install
+              ${pkgs.pre-commit}/bin/pre-commit install --hook-type pre-commit --hook-type pre-push
             '';
+            inherit version-check;
           }
           // pkgs.lib.optionalAttrs (system == "x86_64-linux") {
             nasbox = self.homeConfigurations.nasbox.activationPackage;
@@ -144,12 +150,16 @@
                 value = toString ./dev/nix.conf;
               }
             ];
-            packages = with pkgs; [
-              cachix
-              deadnix
-              nixfmt
-              statix
-            ];
+            packages =
+              (with pkgs; [
+                cachix
+                deadnix
+                nixfmt
+                nix-prefetch-github
+                python3
+                statix
+              ])
+              ++ [ config.packages.version-check ];
             commands = [
               {
                 name = "repl";

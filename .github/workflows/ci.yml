@@ -19,6 +19,8 @@ jobs:
           install_url: https://releases.nixos.org/nix/nix-2.33.0/install
       - name: Run pre-commit Checks
         run: nix develop --command bash -c "pre-commit run --all-files"
+      - name: Check version pins
+        run: nix develop --command bash -c "version-check --check"
 
   changes:
     name: Changes
