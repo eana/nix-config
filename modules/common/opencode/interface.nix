@@ -39,15 +39,28 @@ in
           {
             name = "Auto Planning";
             preferredModels = [
-              "claude-sonnet-4.6"
+              "claude-sonnet-5"
+            ];
+            reasoning = [
+              "claude-sonnet-5"
+            ];
+            noReasoning = [
+              "claude-haiku-4.5"
               "claude-sonnet-5"
             ];
           }
           {
             name = "Auto Building";
             preferredModels = [
-              "gpt-4.1"
               "gpt-5.3-codex"
+              "gpt-5.4-mini"
+            ];
+            reasoning = [
+              "gpt-5.3-codex"
+              "gpt-5.4-mini"
+            ];
+            noReasoning = [
+              "gpt-5.6-luna"
               "gpt-5.4-mini"
             ];
           }
