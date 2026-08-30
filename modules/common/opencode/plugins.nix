@@ -7,6 +7,11 @@
 }:
 let
   inherit (pkgs) callPackage;
+  # HACK: context-mode isn't in nixpkgs-darwin (stable) yet, only nixpkgs
+  # (unstable). Fall back to our own package on hosts using the stable
+  # branch. Remove local package + fallback once context-mode lands in
+  # nixpkgs-darwin.
+  context-mode = pkgs.context-mode or (callPackage ./packages/context-mode.nix { });
   opencode-snip = callPackage ./packages/opencode-snip.nix { };
   opencode-github-copilot-auto-model =
     callPackage ./packages/opencode-github-copilot-auto-model.nix
@@ -22,7 +27,7 @@ let
 in
 {
   plugin = [
-    "${pkgs.context-mode}/lib/context-mode"
+    "${context-mode}/lib/context-mode"
   ]
   ++ lib.optionals enableSnip [
     "${opencode-snip}/lib/opencode-snip"

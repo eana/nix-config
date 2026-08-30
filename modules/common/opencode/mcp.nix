@@ -3,6 +3,11 @@ let
   inherit (lib) filterAttrs optionalAttrs;
   inherit (pkgs) callPackage;
   mcp-nixos = callPackage ./packages/mcp-nixos.nix { };
+  # HACK: context-mode isn't in nixpkgs-darwin (stable) yet, only nixpkgs
+  # (unstable). Fall back to our own package on hosts using the stable
+  # branch. Remove local package + fallback once context-mode lands in
+  # nixpkgs-darwin.
+  context-mode = pkgs.context-mode or (callPackage ./packages/context-mode.nix { });
 in
 filterAttrs (_n: v: v != { }) {
   k8s = optionalAttrs (pkgs ? mcp-k8s-go) {
@@ -30,6 +35,6 @@ filterAttrs (_n: v: v != { }) {
   };
 
   "context-mode" = {
-    command = "${pkgs.context-mode}/bin/context-mode";
+    command = "${context-mode}/bin/context-mode";
   };
 }
