@@ -40,8 +40,11 @@ EXCLUDES = [
 SCAN_DIRS = ["modules", "home", "configurations", "hosts"]
 
 HASH_RE = re.compile(r"sha256-[A-Za-z0-9+/=]+")
-GITHUB_FETCH_BLOCK_RE = re.compile(r"fetchFromGitHub\s*\{[^}]*\}", re.DOTALL)
-FETCHURL_BLOCK_RE = re.compile(r"fetchurl\s*\{[^}]*\}", re.DOTALL)
+# [^{}]|\{[^{}]*\} tolerates one level of nested braces (e.g. Nix string
+# interpolations like ${finalAttrs.version}) without terminating the match
+# early and truncating the block before the hash field.
+GITHUB_FETCH_BLOCK_RE = re.compile(r"fetchFromGitHub\s*\{(?:[^{}]|\{[^{}]*\})*\}", re.DOTALL)
+FETCHURL_BLOCK_RE = re.compile(r"fetchurl\s*\{(?:[^{}]|\{[^{}]*\})*\}", re.DOTALL)
 
 # fetchFromGitHub { owner = "..."; repo = "..."; rev = "..."; hash = "..."; }
 GITHUB_BLOCK_RE = re.compile(
@@ -238,7 +241,7 @@ def compute_hash_github(owner: str, repo: str, rev: str) -> str | None:
 
 
 def compute_hash_npm(package: str, version: str) -> str | None:
-    """Run nix-prefetch-url for npm tarball, return hash or None."""
+    """Run nix-prefetch-url for npm tarball, return SRI-format hash or None."""
     url = f"https://registry.npmjs.org/{package}/-/{package}-{version}.tgz"
     try:
         out = subprocess.check_output(
@@ -246,7 +249,14 @@ def compute_hash_npm(package: str, version: str) -> str | None:
             text=True,
             stderr=subprocess.DEVNULL,
         )
-        return out.strip()
+        # nix-prefetch-url returns bare base32, not the SRI format ("sha256-...")
+        # used in the `hash = "...";` attribute — convert it.
+        sri = subprocess.check_output(
+            ["nix", "hash", "convert", "--hash-algo", "sha256", "--to", "sri", out.strip()],
+            text=True,
+            stderr=subprocess.DEVNULL,
+        )
+        return sri.strip()
     except subprocess.CalledProcessError:
         return None
 
