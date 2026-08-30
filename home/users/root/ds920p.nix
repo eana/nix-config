@@ -56,15 +56,14 @@ in
 
     if "$ATUIN" status &>/dev/null; then
       echo "Atuin: already logged in."
-      exit 0
+    else
+      USERNAME=$(${pkgs.gnugrep}/bin/grep "^username:" "$CRED_FILE" | ${pkgs.coreutils}/bin/cut -d: -f2- | ${pkgs.coreutils}/bin/tr -d '[:space:]')
+      PASSWORD=$(${pkgs.gnugrep}/bin/grep "^password:" "$CRED_FILE" | ${pkgs.coreutils}/bin/cut -d: -f2- | ${pkgs.coreutils}/bin/tr -d '[:space:]')
+      KEY=$(${pkgs.gnugrep}/bin/grep "^key:" "$CRED_FILE" | ${pkgs.coreutils}/bin/cut -d: -f2-)
+
+      "$ATUIN" login --username "$USERNAME" --password "$PASSWORD" --key "$KEY"
+      echo "Atuin: login successful."
     fi
-
-    USERNAME=$(${pkgs.gnugrep}/bin/grep "^username:" "$CRED_FILE" | ${pkgs.coreutils}/bin/cut -d: -f2- | ${pkgs.coreutils}/bin/tr -d '[:space:]')
-    PASSWORD=$(${pkgs.gnugrep}/bin/grep "^password:" "$CRED_FILE" | ${pkgs.coreutils}/bin/cut -d: -f2- | ${pkgs.coreutils}/bin/tr -d '[:space:]')
-    KEY=$(${pkgs.gnugrep}/bin/grep "^key:" "$CRED_FILE" | ${pkgs.coreutils}/bin/cut -d: -f2-)
-
-    "$ATUIN" login --username "$USERNAME" --password "$PASSWORD" --key "$KEY"
-    echo "Atuin: login successful."
   '';
 
   # Install packages for user.
