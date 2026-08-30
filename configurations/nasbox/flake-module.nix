@@ -8,7 +8,6 @@
     modules = [
       ../../hosts/nasbox/default.nix
       { nixpkgs.config.allowUnfree = true; }
-      inputs.agenix.homeManagerModules.default
     ];
 
     extraSpecialArgs = {

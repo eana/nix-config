@@ -1,8 +1,13 @@
 {
+  config,
+  lib,
   pkgs,
-  atuinSecretsPath ? null,
   ...
 }:
+let
+  atuinCredentialsFile = "${config.home.homeDirectory}/.local/share/atuin/atuin-credentials";
+  atuinEncryptedCredentialsFile = ../../../secrets/atuin.age;
+in
 {
   imports = [ ./common.nix ];
 
@@ -13,13 +18,47 @@
     sync = {
       enable = true;
       address = "https://atuin.eana.win";
-      credentialsFile = atuinSecretsPath;
+      credentialsFile = atuinCredentialsFile;
     };
     settings = {
       sync_frequency = "10m";
       search_mode = "fuzzy";
     };
   };
+
+  # HACK: DSM does not provide systemd --user for root, so agenix and atuin-login
+  # user units never start. Decrypt credentials and run atuin login in activation.
+  # TODO: Remove this fallback once DSM provides a working root systemd --user
+  # session and restore the agenix + systemd.user.services.atuin-login flow.
+  home.activation.atuinLogin = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
+    set -euo pipefail
+
+    CRED_FILE="${atuinCredentialsFile}"
+    ATUIN="${pkgs.atuin}/bin/atuin"
+
+    mkdir -p "$(dirname "$CRED_FILE")"
+
+    ${pkgs.gnused}/bin/sed -i '/atuin\.eana\.win/d' /etc/hosts
+    ${pkgs.coreutils}/bin/printf "192.168.0.145 atuin.eana.win\n" >> /etc/hosts
+
+    ${pkgs.age}/bin/age --decrypt \
+      -i "${config.home.homeDirectory}/.ssh/id_ed25519" \
+      -o "$CRED_FILE" \
+      ${atuinEncryptedCredentialsFile}
+    chmod 0400 "$CRED_FILE"
+
+    if "$ATUIN" status &>/dev/null; then
+      echo "Atuin: already logged in."
+      exit 0
+    fi
+
+    USERNAME=$(${pkgs.gnugrep}/bin/grep "^username:" "$CRED_FILE" | ${pkgs.coreutils}/bin/cut -d: -f2- | ${pkgs.coreutils}/bin/tr -d '[:space:]')
+    PASSWORD=$(${pkgs.gnugrep}/bin/grep "^password:" "$CRED_FILE" | ${pkgs.coreutils}/bin/cut -d: -f2- | ${pkgs.coreutils}/bin/tr -d '[:space:]')
+    KEY=$(${pkgs.gnugrep}/bin/grep "^key:" "$CRED_FILE" | ${pkgs.coreutils}/bin/cut -d: -f2-)
+
+    "$ATUIN" login --username "$USERNAME" --password "$PASSWORD" --key "$KEY"
+    echo "Atuin: login successful."
+  '';
 
   # Install packages for user.
   # Search for packages here: https://search.nixos.org/packages
