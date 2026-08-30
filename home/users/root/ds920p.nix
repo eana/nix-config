@@ -13,16 +13,23 @@ in
 
   programs.home-manager.enable = true;
 
-  module.atuin = {
-    enable = true;
-    sync = {
+  module = {
+    atuin = {
       enable = true;
-      address = "https://atuin.eana.win";
-      credentialsFile = atuinCredentialsFile;
+      sync = {
+        enable = true;
+        address = "https://atuin.eana.win";
+        credentialsFile = atuinCredentialsFile;
+      };
+      settings = {
+        sync_frequency = "10m";
+        search_mode = "fuzzy";
+      };
     };
-    settings = {
-      sync_frequency = "10m";
-      search_mode = "fuzzy";
+
+    git.identities.default = {
+      sshKey = "~/.ssh/id_ed25519_git";
+      pathPatterns = [ "~/repos/**" ];
     };
   };
 
