@@ -74,6 +74,14 @@ in
       };
     };
 
+    gsd = {
+      enable = mkOption {
+        type = types.bool;
+        default = true;
+        description = "Enable GSD Core opencode plugin + companion MCP server.";
+      };
+    };
+
     extraContext = mkOption {
       type = types.lines;
       default = "";

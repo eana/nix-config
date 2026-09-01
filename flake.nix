@@ -16,6 +16,13 @@
 
     disko.url = "github:nix-community/disko";
 
+    gsd = {
+      url = "github:neosam/gsd-flake";
+      # Follow the darwin (26.05) nixpkgs: unstable (26.11) dropped
+      # x86_64-darwin, and macbox must build the gsd package there.
+      inputs.nixpkgs.follows = "nixpkgs-darwin";
+    };
+
     flake-parts = {
       url = "github:hercules-ci/flake-parts";
       inputs.nixpkgs-lib.url = "github:nix-community/nixpkgs.lib";

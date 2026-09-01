@@ -4,6 +4,8 @@
   enableSnip ? false,
   enableCopilotAutoModel ? false,
   copilotAutoModelAutos ? [ ],
+  enableGsd ? false,
+  gsdPlugin ? null,
 }:
 let
   inherit (pkgs) callPackage;
@@ -34,5 +36,8 @@ in
   ]
   ++ lib.optionals enableCopilotAutoModel [
     copilotAutoModelEntry
+  ]
+  ++ lib.optionals enableGsd [
+    gsdPlugin
   ];
 }

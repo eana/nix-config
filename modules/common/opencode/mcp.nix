@@ -1,4 +1,8 @@
-{ lib, pkgs }:
+{
+  lib,
+  pkgs,
+  gsdMcpBin ? null,
+}:
 let
   inherit (lib) filterAttrs optionalAttrs;
   inherit (pkgs) callPackage;
@@ -36,5 +40,9 @@ filterAttrs (_n: v: v != { }) {
 
   "context-mode" = {
     command = "${context-mode}/bin/context-mode";
+  };
+
+  gsd = optionalAttrs (gsdMcpBin != null) {
+    command = gsdMcpBin;
   };
 }

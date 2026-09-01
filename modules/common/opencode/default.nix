@@ -2,6 +2,7 @@
   config,
   lib,
   pkgs,
+  inputs,
   ...
 }:
 let
@@ -12,11 +13,17 @@ let
   custom = config.custom or { };
   tuiTheme = if (custom.theme or "gruvbox") == "gruvbox" then "gruvbox" else "catppuccin";
 
+  gsd = pkgs.callPackage ./packages/gsd-core.nix {
+    gsdInput = inputs.gsd.packages.${pkgs.stdenv.hostPlatform.system}.gsd;
+  };
+
   pluginConfig = import ./plugins.nix {
     inherit lib pkgs;
     enableSnip = cfg.snip.enable;
     enableCopilotAutoModel = cfg.copilotAutoModel.enable;
     copilotAutoModelAutos = cfg.copilotAutoModel.autos;
+    enableGsd = cfg.gsd.enable;
+    gsdPlugin = "${gsd}/.opencode/plugins/gsd-core.js";
   };
 
   superpowersSrc = pkgs.fetchFromGitHub {
@@ -79,7 +86,10 @@ in
 
     programs.mcp = {
       enable = true;
-      servers = import ./mcp.nix { inherit lib pkgs; };
+      servers = import ./mcp.nix {
+        inherit lib pkgs;
+        gsdMcpBin = if cfg.gsd.enable then "${gsd}/bin/gsd-mcp-server" else null;
+      };
     };
 
     programs.opencode = {
