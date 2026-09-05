@@ -32,6 +32,10 @@ in
       enable = mkEnableOption "snip shell-command recording plugin for opencode";
     };
 
+    playwright = {
+      enable = mkEnableOption "Playwright browser-automation MCP server (for LinkedIn profile editing and similar tasks)";
+    };
+
     copilotAutoModel = {
       autos = mkOption {
         type = types.listOf (types.attrsOf types.anything);

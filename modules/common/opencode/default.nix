@@ -63,7 +63,10 @@ let
     style = ../../../assets/.config/opencode/skills/style;
     # keep-sorted end
   }
-  // superpowersSkills;
+  // superpowersSkills
+  // lib.optionalAttrs cfg.playwright.enable {
+    linkedin-profile-editor = ../../../assets/.config/opencode/skills/linkedin-profile-editor;
+  };
 
   baseContext = builtins.readFile ./base-context.md;
 in
@@ -79,7 +82,11 @@ in
 
     programs.mcp = {
       enable = true;
-      servers = import ./mcp.nix { inherit lib pkgs; };
+      servers = import ./mcp.nix {
+        inherit lib pkgs;
+        enablePlaywright = cfg.playwright.enable;
+        playwrightUserDataDir = "${config.home.homeDirectory}/.cache/playwright-mcp";
+      };
     };
 
     programs.opencode = {
