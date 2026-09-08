@@ -108,6 +108,7 @@ in
     opencode = {
       enable = true;
       playwright.enable = true;
+      social.enable = true;
       package = if pkgs.stdenv.hostPlatform.isDarwin then opencodeForDarwin else pkgs.opencode;
     };
 

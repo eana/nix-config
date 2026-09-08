@@ -36,6 +36,10 @@ in
       enable = mkEnableOption "Playwright browser-automation MCP server (for LinkedIn profile editing and similar tasks)";
     };
 
+    social = {
+      enable = mkEnableOption "social media content skills (inklate/social-skills)";
+    };
+
     copilotAutoModel = {
       autos = mkOption {
         type = types.listOf (types.attrsOf types.anything);

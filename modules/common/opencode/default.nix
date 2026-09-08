@@ -22,6 +22,7 @@ let
   skillsConfig = import ./skills.nix {
     inherit lib pkgs;
     enableLinkedin = cfg.playwright.enable;
+    enableSocial = cfg.social.enable;
   };
 
   baseContext = builtins.readFile ./base-context.md;

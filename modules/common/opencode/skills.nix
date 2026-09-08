@@ -2,6 +2,7 @@
   lib,
   pkgs,
   enableLinkedin ? false,
+  enableSocial ? false,
 }:
 let
   superpowersSrc = pkgs.fetchFromGitHub {
@@ -34,6 +35,37 @@ let
       value = "${superpowersSrc}/skills/${name}";
     }) superpowersSkillsList
   );
+
+  socialSkillsSrc = pkgs.fetchFromGitHub {
+    owner = "inklate";
+    repo = "social-skills";
+    rev = "v0.1.0";
+    hash = "sha256-ba6eKvREZ1a5WPKiXpWUUKD1cpAz7h0OF0hpIyTYXdY=";
+  };
+
+  socialSkillsList = [
+    "idk"
+    "social-context"
+    "social-voice"
+    "social-post"
+    "social-thread"
+    "social-carousel"
+    "social-hook"
+    "social-crosspost"
+    "social-repurpose"
+    "social-reply"
+    "social-ad"
+    "social-calendar"
+    "social-audit"
+    "social-check"
+  ];
+
+  socialSkills = builtins.listToAttrs (
+    map (name: {
+      inherit name;
+      value = "${socialSkillsSrc}/skills/${name}";
+    }) socialSkillsList
+  );
 in
 {
   # keep-sorted start
@@ -52,3 +84,4 @@ in
 // lib.optionalAttrs enableLinkedin {
   linkedin-profile-editor = ../../../assets/.config/opencode/skills/linkedin-profile-editor;
 }
+// lib.optionalAttrs enableSocial socialSkills
