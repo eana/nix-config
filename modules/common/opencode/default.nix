@@ -19,53 +19,9 @@ let
     copilotAutoModelAutos = cfg.copilotAutoModel.autos;
   };
 
-  superpowersSrc = pkgs.fetchFromGitHub {
-    owner = "obra";
-    repo = "superpowers";
-    rev = "v6.3.0";
-    hash = "sha256-EsGNO0dULWf5Bx6bGrCv2kI2Z8aKH0kRvGiuN23wChQ=";
-  };
-
-  superpowersSkillsList = [
-    "brainstorming"
-    "dispatching-parallel-agents"
-    "executing-plans"
-    "finishing-a-development-branch"
-    "receiving-code-review"
-    "requesting-code-review"
-    "subagent-driven-development"
-    "systematic-debugging"
-    "test-driven-development"
-    "using-git-worktrees"
-    "using-superpowers"
-    "verification-before-completion"
-    "writing-plans"
-    "writing-skills"
-  ];
-
-  superpowersSkills = builtins.listToAttrs (
-    map (name: {
-      name = "superpowers-${name}";
-      value = "${superpowersSrc}/skills/${name}";
-    }) superpowersSkillsList
-  );
-
-  defaultSkills = {
-    # keep-sorted start
-    flake-parts = ../../../assets/.config/opencode/skills/flake-parts;
-    ghq-lookup = ../../../assets/.config/opencode/skills/ghq-lookup;
-    git-commit = ../../../assets/.config/opencode/skills/git-commit;
-    gitlab-cli-tool = ../../../assets/.config/opencode/skills/gitlab-cli-tool;
-    nix-check = ../../../assets/.config/opencode/skills/nix-check;
-    nix-coding = ../../../assets/.config/opencode/skills/nix-coding;
-    nix-config = ../../../assets/.config/opencode/skills/nix-config;
-    skill-creator = ../../../assets/.config/opencode/skills/skill-creator;
-    style = ../../../assets/.config/opencode/skills/style;
-    # keep-sorted end
-  }
-  // superpowersSkills
-  // lib.optionalAttrs cfg.playwright.enable {
-    linkedin-profile-editor = ../../../assets/.config/opencode/skills/linkedin-profile-editor;
+  skillsConfig = import ./skills.nix {
+    inherit lib pkgs;
+    enableLinkedin = cfg.playwright.enable;
   };
 
   baseContext = builtins.readFile ./base-context.md;
@@ -100,67 +56,7 @@ in
         autoupdate = false;
         experimental.disable_paste_summary = true;
         share = "disabled";
-        lsp = {
-          nixd = {
-            command = [ (lib.getExe pkgs.nil) ];
-            extensions = [ ".nix" ];
-          };
-
-          jsonls = {
-            command = [
-              (lib.getExe' pkgs.vscode-langservers-extracted "vscode-json-language-server")
-              "--stdio"
-            ];
-            extensions = [
-              ".json"
-              ".jsonc"
-            ];
-          };
-
-          yamlls = {
-            command = [
-              (lib.getExe pkgs.yaml-language-server)
-              "--stdio"
-            ];
-            extensions = [
-              ".yaml"
-              ".yml"
-            ];
-          };
-
-          gopls = {
-            command = [ (lib.getExe pkgs.gopls) ];
-            extensions = [
-              ".go"
-              ".mod"
-              ".sum"
-            ];
-          };
-
-          bashls = {
-            command = [
-              (lib.getExe pkgs.bash-language-server)
-              "start"
-            ];
-            extensions = [
-              ".sh"
-              ".bash"
-            ];
-          };
-
-          biome = {
-            command = [
-              (lib.getExe pkgs.biome)
-              "lsp-proxy"
-            ];
-            extensions = [
-              ".js"
-              ".ts"
-              ".jsx"
-              ".tsx"
-            ];
-          };
-        };
+        lsp = import ./lsp.nix { inherit lib pkgs; };
       }
       // import ./permissions.nix { enableSnip = cfg.snip.enable; }
       // {
@@ -181,7 +77,7 @@ in
 
       context = baseContext + cfg.extraContext;
 
-      skills = defaultSkills // cfg.extraSkills;
+      skills = skillsConfig // cfg.extraSkills;
     };
   };
 }
