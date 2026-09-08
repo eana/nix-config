@@ -108,7 +108,9 @@ in
     opencode = {
       enable = true;
       playwright.enable = true;
-      social.enable = true;
+      # To get the full list of skills:
+      # nix eval --json --file modules/common/opencode/skills-catalog.nix | jaq .
+      skills.enabled = [ "social" ];
       package = if pkgs.stdenv.hostPlatform.isDarwin then opencodeForDarwin else pkgs.opencode;
     };
 

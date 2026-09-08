@@ -10,6 +10,14 @@ let
     mkOption
     types
     ;
+
+  catalog = import ./skills-catalog.nix;
+  catalogKeys =
+    catalog.local ++ (map (name: "superpowers-${name}") catalog.superpowers) ++ catalog.social;
+  groupAliases = [
+    "superpowers"
+    "social"
+  ];
 in
 {
   options.module.opencode = {
@@ -36,8 +44,17 @@ in
       enable = mkEnableOption "Playwright browser-automation MCP server (for LinkedIn profile editing and similar tasks)";
     };
 
-    social = {
-      enable = mkEnableOption "social media content skills (inklate/social-skills)";
+    skills = {
+      enabled = mkOption {
+        type = types.listOf (types.enum (catalogKeys ++ groupAliases));
+        default = catalog.local ++ [ "superpowers" ];
+        description = ''
+          Skills to enable, by flat skill name (e.g. "nix-check",
+          "superpowers-brainstorming", "social-post") or group alias
+          ("superpowers", "social") which expands to every skill in that
+          group. Unknown names error at eval time.
+        '';
+      };
     };
 
     copilotAutoModel = {

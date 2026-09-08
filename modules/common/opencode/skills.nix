@@ -1,40 +1,17 @@
 {
   lib,
   pkgs,
-  enableLinkedin ? false,
-  enableSocial ? false,
+  enabledSkills ? [ ],
 }:
 let
+  catalog = import ./skills-catalog.nix;
+
   superpowersSrc = pkgs.fetchFromGitHub {
     owner = "obra";
     repo = "superpowers";
     rev = "v6.3.0";
     hash = "sha256-EsGNO0dULWf5Bx6bGrCv2kI2Z8aKH0kRvGiuN23wChQ=";
   };
-
-  superpowersSkillsList = [
-    "brainstorming"
-    "dispatching-parallel-agents"
-    "executing-plans"
-    "finishing-a-development-branch"
-    "receiving-code-review"
-    "requesting-code-review"
-    "subagent-driven-development"
-    "systematic-debugging"
-    "test-driven-development"
-    "using-git-worktrees"
-    "using-superpowers"
-    "verification-before-completion"
-    "writing-plans"
-    "writing-skills"
-  ];
-
-  superpowersSkills = builtins.listToAttrs (
-    map (name: {
-      name = "superpowers-${name}";
-      value = "${superpowersSrc}/skills/${name}";
-    }) superpowersSkillsList
-  );
 
   socialSkillsSrc = pkgs.fetchFromGitHub {
     owner = "inklate";
@@ -43,45 +20,38 @@ let
     hash = "sha256-ba6eKvREZ1a5WPKiXpWUUKD1cpAz7h0OF0hpIyTYXdY=";
   };
 
-  socialSkillsList = [
-    "idk"
-    "social-context"
-    "social-voice"
-    "social-post"
-    "social-thread"
-    "social-carousel"
-    "social-hook"
-    "social-crosspost"
-    "social-repurpose"
-    "social-reply"
-    "social-ad"
-    "social-calendar"
-    "social-audit"
-    "social-check"
-  ];
+  localSkills = builtins.listToAttrs (
+    map (name: {
+      inherit name;
+      value = ../../../assets/.config/opencode/skills/${name};
+    }) catalog.local
+  );
+
+  superpowersSkills = builtins.listToAttrs (
+    map (name: {
+      name = "superpowers-${name}";
+      value = "${superpowersSrc}/skills/${name}";
+    }) catalog.superpowers
+  );
 
   socialSkills = builtins.listToAttrs (
     map (name: {
       inherit name;
       value = "${socialSkillsSrc}/skills/${name}";
-    }) socialSkillsList
+    }) catalog.social
+  );
+
+  fullCatalog = localSkills // superpowersSkills // socialSkills;
+
+  groupMembers = {
+    superpowers = builtins.attrNames superpowersSkills;
+    social = builtins.attrNames socialSkills;
+  };
+
+  expandedNames = lib.unique (
+    lib.concatMap (
+      name: if lib.hasAttr name groupMembers then groupMembers.${name} else [ name ]
+    ) enabledSkills
   );
 in
-{
-  # keep-sorted start
-  flake-parts = ../../../assets/.config/opencode/skills/flake-parts;
-  ghq-lookup = ../../../assets/.config/opencode/skills/ghq-lookup;
-  git-commit = ../../../assets/.config/opencode/skills/git-commit;
-  gitlab-cli-tool = ../../../assets/.config/opencode/skills/gitlab-cli-tool;
-  nix-check = ../../../assets/.config/opencode/skills/nix-check;
-  nix-coding = ../../../assets/.config/opencode/skills/nix-coding;
-  nix-config = ../../../assets/.config/opencode/skills/nix-config;
-  skill-creator = ../../../assets/.config/opencode/skills/skill-creator;
-  style = ../../../assets/.config/opencode/skills/style;
-  # keep-sorted end
-}
-// superpowersSkills
-// lib.optionalAttrs enableLinkedin {
-  linkedin-profile-editor = ../../../assets/.config/opencode/skills/linkedin-profile-editor;
-}
-// lib.optionalAttrs enableSocial socialSkills
+lib.filterAttrs (name: _: builtins.elem name expandedNames) fullCatalog
