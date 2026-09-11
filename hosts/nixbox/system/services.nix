@@ -49,7 +49,7 @@
     gnome.gcr-ssh-agent.enable = false;
 
     # Limit storage space of journald.
-    journald.extraConfig = ''
+    journald.settings.Journal = ''
       SystemMaxUse=100M
       RuntimeMaxUse=100M
     '';
