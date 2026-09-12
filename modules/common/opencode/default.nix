@@ -19,6 +19,7 @@ let
     enableSnip = cfg.snip.enable;
     enableCopilotAutoModel = cfg.copilotAutoModel.enable;
     copilotAutoModelAutos = cfg.copilotAutoModel.autos;
+    enableHistorySearch = cfg.historySearch.enable;
   };
 
   skillsConfig = import ./skills.nix {

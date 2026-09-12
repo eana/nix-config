@@ -40,6 +40,14 @@ in
       enable = mkEnableOption "snip shell-command recording plugin for opencode";
     };
 
+    historySearch = {
+      enable = mkOption {
+        type = types.bool;
+        default = true;
+        description = "Enable opencode-history-search plugin (opt-out).";
+      };
+    };
+
     playwright = {
       enable = mkEnableOption "Playwright browser-automation MCP server (for LinkedIn profile editing and similar tasks)";
     };

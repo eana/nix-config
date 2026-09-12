@@ -4,6 +4,7 @@
   enableSnip ? false,
   enableCopilotAutoModel ? false,
   copilotAutoModelAutos ? [ ],
+  enableHistorySearch ? true,
 }:
 let
   inherit (pkgs) callPackage;
@@ -13,6 +14,7 @@ let
   # nixpkgs-darwin.
   context-mode = pkgs.context-mode or (callPackage ./packages/context-mode.nix { });
   opencode-snip = callPackage ./packages/opencode-snip.nix { };
+  opencode-history-search = callPackage ./packages/opencode-history-search.nix { };
   opencode-github-copilot-auto-model =
     callPackage ./packages/opencode-github-copilot-auto-model.nix
       { };
@@ -31,6 +33,9 @@ in
   ]
   ++ lib.optionals enableSnip [
     "${opencode-snip}/lib/opencode-snip"
+  ]
+  ++ lib.optionals enableHistorySearch [
+    "${opencode-history-search}/lib/opencode-history-search"
   ]
   ++ lib.optionals enableCopilotAutoModel [
     copilotAutoModelEntry
