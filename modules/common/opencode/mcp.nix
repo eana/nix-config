@@ -2,7 +2,6 @@
   lib,
   pkgs,
   enablePlaywright ? false,
-  playwrightUserDataDir ? null,
 }:
 let
   inherit (lib) filterAttrs optionalAttrs;
@@ -27,16 +26,6 @@ filterAttrs (_n: v: v != { }) {
   playwright = optionalAttrs (enablePlaywright && pkgs ? playwright-mcp) {
     command = "${pkgs.playwright-mcp}/bin/playwright-mcp";
     enabled = false;
-    # HACK: playwright-mcp defaults to a user-data-dir derived from its
-    # own package path under /nix/store, which is read-only, causing an
-    # EACCES on launch. Point it at a writable directory instead.
-    # Upstream: no upstream issue filed.
-    # TODO: remove once playwright-mcp defaults to a writable location
-    # (e.g. via os.tmpdir()) without needing --user-data-dir.
-    args = lib.optionals (playwrightUserDataDir != null) [
-      "--user-data-dir"
-      playwrightUserDataDir
-    ];
   };
 
   context7 = optionalAttrs (pkgs ? context7-mcp) {

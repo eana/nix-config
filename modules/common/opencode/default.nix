@@ -48,7 +48,6 @@ in
       servers = import ./mcp.nix {
         inherit lib pkgs;
         enablePlaywright = cfg.playwright.enable;
-        playwrightUserDataDir = "${config.home.homeDirectory}/.cache/playwright-mcp";
       };
     };
 
