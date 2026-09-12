@@ -143,6 +143,14 @@
             macbox = self.darwinConfigurations.macbox.system;
           };
 
+          # flake-parts' `formatter.<system>` is a package output group, so
+          # `nix run .#formatter` cannot resolve it (nix run only accepts
+          # apps/packages output groups). Export it as an app instead.
+          apps.formatter = {
+            type = "app";
+            program = "${config.treefmt.build.wrapper}/bin/treefmt";
+          };
+
           devshells.default = {
             env = [
               {
