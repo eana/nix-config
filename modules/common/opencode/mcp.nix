@@ -2,6 +2,7 @@
   lib,
   pkgs,
   enablePlaywright ? false,
+  enableGarmin ? false,
 }:
 let
   inherit (lib) filterAttrs optionalAttrs;
@@ -11,6 +12,7 @@ let
   # branch. Remove local package + fallback once context-mode lands in
   # nixpkgs-darwin.
   context-mode = pkgs.context-mode or (callPackage ./packages/context-mode.nix { });
+  garmin-mcp = callPackage ./packages/garmin-mcp.nix { };
 in
 filterAttrs (_n: v: v != { }) {
   k8s = optionalAttrs (pkgs ? mcp-k8s-go) {
@@ -40,5 +42,10 @@ filterAttrs (_n: v: v != { }) {
 
   "context-mode" = {
     command = "${context-mode}/bin/context-mode";
+  };
+
+  garmin = optionalAttrs enableGarmin {
+    command = "${garmin-mcp}/bin/garmin-mcp";
+    enabled = false;
   };
 }

@@ -104,6 +104,7 @@ in
     opencode = {
       enable = true;
       playwright.enable = true;
+      garmin.enable = true;
       # To get the full list of skills:
       # nix eval --json --file modules/common/opencode/skills-catalog.nix | jaq .
       skills.enabled = [ "social" ];

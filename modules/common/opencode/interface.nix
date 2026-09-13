@@ -44,6 +44,10 @@ in
       enable = mkEnableOption "Playwright browser-automation MCP server (for LinkedIn profile editing and similar tasks)";
     };
 
+    garmin = {
+      enable = mkEnableOption "Garmin Connect MCP server and auth CLI";
+    };
+
     skills = {
       enabled = mkOption {
         type = types.listOf (types.enum (catalogKeys ++ groupAliases));

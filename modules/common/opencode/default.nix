@@ -27,6 +27,8 @@ let
   };
 
   baseContext = builtins.readFile ./base-context.md;
+  inherit (pkgs) callPackage;
+  garmin-mcp-auth = callPackage ./packages/garmin-mcp-auth.nix { };
 in
 {
   imports = [ ./interface.nix ];
@@ -37,7 +39,8 @@ in
     # opt-in (see playwright.enable and skills.enabled = [ "social" ... ]).
     module.opencode.skills.enabled = catalog.local ++ [ "superpowers" ];
 
-    home.packages = lib.optionals cfg.snip.enable [ pkgs.snip ];
+    home.packages =
+      lib.optionals cfg.snip.enable [ pkgs.snip ] ++ lib.optionals cfg.garmin.enable [ garmin-mcp-auth ];
 
     xdg.configFile."snip/config.toml" = mkIf cfg.snip.enable {
       source = ../../../assets/.config/snip/config.toml;
@@ -48,6 +51,7 @@ in
       servers = import ./mcp.nix {
         inherit lib pkgs;
         enablePlaywright = cfg.playwright.enable;
+        enableGarmin = cfg.garmin.enable;
       };
     };
 
