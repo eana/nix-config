@@ -88,7 +88,7 @@ jobs:
           name: eana
           authToken: ${{ secrets.CACHIX_AUTH_TOKEN }}
       - name: Free Disk Space
-        uses: jlumbroso/free-disk-space@3f13feab2962a87273d379ebc36ea159527e6cc9 # v1.3.2
+        uses: jlumbroso/free-disk-space@ceedf095f4ec1a097402bc6bd80831f2e1a6fde6 # v2.0.0
       - name: Build nixbox
         run: nix build --print-build-logs ".#nixosConfigurations.nixbox.config.system.build.toplevel"
 
