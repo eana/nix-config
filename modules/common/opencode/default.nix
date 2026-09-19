@@ -2,6 +2,7 @@
   config,
   lib,
   pkgs,
+  inputs,
   ...
 }:
 let
@@ -28,7 +29,9 @@ let
 
   baseContext = builtins.readFile ./base-context.md;
   inherit (pkgs) callPackage;
-  garmin-mcp-auth = callPackage ./packages/garmin-mcp-auth.nix { };
+  garmin-mcp = callPackage ./packages/garmin-mcp.nix {
+    inherit (inputs) uv2nix pyproject-nix pyproject-build-systems;
+  };
 in
 {
   imports = [ ./interface.nix ];
@@ -40,7 +43,7 @@ in
     module.opencode.skills.enabled = catalog.local ++ [ "superpowers" ];
 
     home.packages =
-      lib.optionals cfg.snip.enable [ pkgs.snip ] ++ lib.optionals cfg.garmin.enable [ garmin-mcp-auth ];
+      lib.optionals cfg.snip.enable [ pkgs.snip ] ++ lib.optionals cfg.garmin.enable [ garmin-mcp ];
 
     xdg.configFile."snip/config.toml" = mkIf cfg.snip.enable {
       source = ../../../assets/.config/snip/config.toml;
@@ -49,7 +52,7 @@ in
     programs.mcp = {
       enable = true;
       servers = import ./mcp.nix {
-        inherit lib pkgs;
+        inherit lib pkgs garmin-mcp;
         enablePlaywright = cfg.playwright.enable;
         enableGarmin = cfg.garmin.enable;
       };
