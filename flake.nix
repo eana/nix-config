@@ -87,7 +87,6 @@
 
   outputs =
     inputs@{
-      self,
       flake-parts,
       ...
     }:
@@ -107,96 +106,13 @@
       ];
 
       imports = [
-        inputs.dev-flake.flakeModule
+        ./dev/flake-module.nix
         ./configurations/macbox/flake-module.nix
         ./configurations/nasbox/flake-module.nix
         ./configurations/nixbox/flake-module.nix
       ];
 
       _module.args.eanaLib = eanaLib;
-
-      # Dev configuration
-      dev.name = "devbox";
-
-      # Per-system configuration
-      perSystem =
-        {
-          config,
-          pkgs,
-          system,
-          ...
-        }:
-        let
-          version-check = pkgs.writeShellScriptBin "version-check" ''
-            exec ${pkgs.python3}/bin/python3 ${./dev/version-check.py} "$@"
-          '';
-        in
-        {
-          # Must use _module.args.pkgs (not a let binding) so submodules
-          # like dev-flake's devshell resolve pkgs through the module
-          # system. No reference to the parameter pkgs — import fresh
-          # for both branches to avoid circularity.
-          _module.args.pkgs =
-            import (if system == "x86_64-darwin" then inputs.nixpkgs-darwin else inputs.nixpkgs)
-              {
-                inherit system;
-                config.allowUnfree = true;
-              };
-
-          treefmt = import ./dev/treefmt.nix { inherit pkgs; };
-          pre-commit = import ./dev/pre-commit.nix { inherit pkgs version-check; };
-
-          packages = {
-            agenix = pkgs.callPackage "${inputs.agenix}/pkgs/agenix.nix" { };
-            pre-commit = config.pre-commit.settings.package;
-            pre-commit-install = pkgs.writeShellScriptBin "pre-commit-install" ''
-              #!${pkgs.runtimeShell}
-              ${pkgs.pre-commit}/bin/pre-commit install --hook-type pre-commit --hook-type pre-push
-            '';
-            inherit version-check;
-          }
-          // pkgs.lib.optionalAttrs (system == "x86_64-linux") {
-            nasbox = self.homeConfigurations.nasbox.activationPackage;
-            nixbox = self.nixosConfigurations.nixbox.config.system.build.toplevel;
-          }
-          // pkgs.lib.optionalAttrs (system == "x86_64-darwin") {
-            macbox = self.darwinConfigurations.macbox.system;
-          };
-
-          # flake-parts' `formatter.<system>` is a package output group, so
-          # `nix run .#formatter` cannot resolve it (nix run only accepts
-          # apps/packages output groups). Export it as an app instead.
-          apps.formatter = {
-            type = "app";
-            program = "${config.treefmt.build.wrapper}/bin/treefmt";
-          };
-
-          devshells.default = {
-            env = [
-              {
-                name = "NIX_USER_CONF_FILES";
-                value = toString ./dev/nix.conf;
-              }
-            ];
-            packages =
-              (with pkgs; [
-                cachix
-                deadnix
-                nixfmt
-                nix-prefetch-github
-                python3
-                statix
-              ])
-              ++ [ config.packages.version-check ];
-            commands = [
-              {
-                name = "repl";
-                help = "nix repl with full flake context pre-loaded";
-                command = "nix repl --file ${toString ./.}/dev/repl.nix";
-              }
-            ];
-          };
-        };
 
       flake = {
         inherit homeModules;
