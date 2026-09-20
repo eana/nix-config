@@ -1,65 +1,90 @@
 {
   lib,
   pkgs,
-  stdenvNoCC,
   fetchFromGitHub,
-  uv,
-  makeWrapper,
+  uv2nix,
+  pyproject-nix,
+  pyproject-build-systems,
 }:
-
-stdenvNoCC.mkDerivation rec {
-  pname = "garmin-mcp";
-  # Static; not derived from `rev` below. garmin_mcp has no release tags,
-  # so this just mirrors the version string in its own pyproject.toml.
-  version = "0.1.0";
+let
   src = fetchFromGitHub {
     owner = "Taxuspt";
     repo = "garmin_mcp";
     rev = "655efb8f5639602f661c26164282d0ddd4f5d3db";
     hash = "sha256-EhiJOcQfhYjccFkIfywhdcmKbmmT2Kd112gjLkbQA8Q=";
   };
-  nativeBuildInputs = [
-    uv
-    makeWrapper
-  ];
-  dontBuild = true;
-  # HACK: uv resolves and downloads cryptography's wheel from PyPI at build
-  # time instead of from a committed uv.lock, so this build is
-  # network-dependent and non-hermetic. A prior attempt (29cedee) fixed
-  # this via uv2nix + a committed lock, but that pipeline can't resolve
-  # maturin's transitive build deps (maturin itself, then puccinialin)
-  # when cryptography has no prebuilt wheel for the target platform, which
-  # broke the build on x86_64-darwin with nixpkgs-26.05.
-  # --only-binary cryptography forces a prebuilt wheel and skips the
-  # maturin source build entirely; if PyPI has no matching wheel for the
-  # target platform/interpreter, this install fails outright with no
-  # fallback.
-  #
-  # Deliberately left unpinned (no requirements/hash lock for cryptography)
-  # after evaluating the tradeoff: this is a single opt-in MCP server on
-  # one host, failures are visible at build time (not silent/runtime), and
-  # there is no historical incident of version drift causing a break here
-  # (every prior break came from *adding* pinning, not from its absence).
-  # Pinning without automated freshness tooling (dev/version-check.py only
-  # scans fetchFromGitHub/fetchurl blocks, not Python requirement files)
-  # would let the pin go stale indefinitely, which for a crypto library
-  # risks missing upstream security fixes for longer than staying
-  # unpinned. Not worth the added maintenance surface at this scale.
-  #
-  # TODO: Restore lockfile-pinned hermetic build once uv2nix/pyproject-nix
-  # can resolve maturin's transitive build deps on darwin, or once
-  # cryptography ships wheels covering all our target platforms.
-  installPhase = ''
-    ${uv}/bin/uv --cache-dir "$TMPDIR/uv-cache" pip install --only-binary cryptography --python ${pkgs.python3} --target $out/lib $src
-    makeWrapper ${pkgs.python3}/bin/python3 $out/bin/garmin-mcp \
-      --add-flags "-m garmin_mcp" \
-      --prefix PYTHONPATH : $out/lib
-  '';
-  meta = {
+
+  workspace = uv2nix.lib.workspace.loadWorkspace {
+    workspaceRoot = src;
+    # HACK: upstream uv.lock records only an sdist for fitparse (no wheel),
+    # and fitparse is a legacy setup.py-only project with no declared
+    # build-system. uv's sdist build then can't import setuptools and fails
+    # with ModuleNotFoundError. Mirror uv's own hint by declaring setuptools
+    # as an extra build dependency.
+    # TODO: Remove once upstream lock ships a fitparse wheel entry or a
+    # pyproject.toml build-system.
+    config = {
+      extra-build-dependencies = {
+        fitparse = [
+          { requirement = pyproject-nix.lib.pep508.parseString "setuptools"; }
+        ];
+      };
+    };
+  };
+
+  # HACK: garmin_mcp's own uv.lock prefers wheels; some transitive deps
+  # (mcp -> pydantic-core, cryptography via garminconnect) need compiled
+  # artifacts. wheel sourcePreference avoids building them from sdist in
+  # the sandbox. TODO: revisit if upstream locks new sdists-only deps.
+  overlay = workspace.mkPyprojectOverlay { sourcePreference = "wheel"; };
+
+  python = pkgs.python3;
+
+  hacks = pkgs.callPackage pyproject-nix.build.hacks { };
+
+  # HACK: cryptography uses maturin (Rust) as its build backend, but PyPI
+  # has no prebuilt wheel for x86_64-darwin on this nixpkgs/Python
+  # combination, so uv2nix falls back to a source build. That source build
+  # needs maturin's own transitive build deps (maturin itself, then
+  # puccinialin) which pyproject-nix's package set can't resolve, breaking
+  # the build on darwin only (see the CI run that surfaced this: nixbox
+  # built fine, macbox didn't, because Linux had a usable wheel and darwin
+  # didn't).
+  # Substitute nixpkgs' own prebuilt cryptography instead of letting
+  # uv2nix build it from PyPI at all. Nixpkgs already builds and caches
+  # cryptography for every platform we target (darwin included), so this
+  # sidesteps the maturin/puccinialin resolution gap entirely, requires no
+  # network at build time, and inherits nixpkgs' own version/security
+  # update cadence instead of us needing to track a separate pin.
+  # TODO: Drop this override if uv2nix/pyproject-nix ever gains a way to
+  # resolve maturin's transitive build deps for source builds on darwin.
+  pyprojectOverrides = _final: prev: {
+    cryptography = hacks.nixpkgsPrebuilt {
+      from = pkgs.python3Packages.cryptography;
+      prev = prev.cryptography;
+    };
+  };
+
+  pythonSet =
+    (pkgs.callPackage pyproject-nix.build.packages {
+      inherit python;
+    }).overrideScope
+      (
+        lib.composeManyExtensions [
+          pyproject-build-systems.overlays.default
+          overlay
+          pyprojectOverrides
+        ]
+      );
+
+  venv = pythonSet.mkVirtualEnv "garmin-mcp" workspace.deps.default;
+in
+venv.overrideAttrs (old: {
+  meta = (old.meta or { }) // {
     description = "MCP server to access Garmin Connect data";
     homepage = "https://github.com/Taxuspt/garmin_mcp";
     license = lib.licenses.mit;
     platforms = lib.platforms.all;
     mainProgram = "garmin-mcp";
   };
-}
+})
