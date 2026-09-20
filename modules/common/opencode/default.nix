@@ -2,7 +2,6 @@
   config,
   lib,
   pkgs,
-  inputs,
   ...
 }:
 let
@@ -29,9 +28,7 @@ let
 
   baseContext = builtins.readFile ./base-context.md;
   inherit (pkgs) callPackage;
-  garmin-mcp = callPackage ./packages/garmin-mcp.nix {
-    inherit (inputs) uv2nix pyproject-nix pyproject-build-systems;
-  };
+  garmin-mcp = callPackage ./packages/garmin-mcp.nix { };
 in
 {
   imports = [ ./interface.nix ];
