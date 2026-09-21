@@ -1,36 +1,9 @@
 {
-  lib,
   pkgs,
   sshSecretsPath ? null,
   atuinSecretsPath ? null,
   ...
 }:
-let
-  # Pin opencode to 1.14.25 on x86_64-darwin: newer releases drop support for
-  # that platform. bun install uses --os="*" --cpu="*" so node_modules hash is
-  # platform-independent.
-  opencodeForDarwin =
-    let
-      version = "1.14.25";
-      src = pkgs.fetchFromGitHub {
-        owner = "anomalyco";
-        repo = "opencode";
-        tag = "v${version}";
-        hash = "sha256-v1aaq4HWAJ5wZm9bUeaRkyKr0iYjdOhigr/I31wwhEk=";
-      };
-    in
-    pkgs.opencode.overrideAttrs (old: {
-      inherit version src;
-      node_modules = old.node_modules.overrideAttrs (_: {
-        inherit src;
-        outputHash = "sha256-r0UCWhxIB4q4Te+LpXNcfexjfmI4Th2swfWOL3cUp3g=";
-      });
-      meta = old.meta // {
-        platforms = (old.meta.platforms or [ ]) ++ [ "x86_64-darwin" ];
-        badPlatforms = lib.remove "x86_64-darwin" (old.meta.badPlatforms or [ ]);
-      };
-    });
-in
 {
   imports = [ ../shared.nix ];
 
@@ -108,7 +81,7 @@ in
       # To get the full list of skills:
       # nix eval --json --file modules/common/opencode/skills-catalog.nix | jaq .
       skills.enabled = [ "social" ];
-      package = if pkgs.stdenv.hostPlatform.isDarwin then opencodeForDarwin else pkgs.opencode;
+      package = pkgs.opencode;
     };
 
     podman = {

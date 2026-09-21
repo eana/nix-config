@@ -20,14 +20,11 @@
     {
       # Must use _module.args.pkgs (not a let binding) so submodules
       # like dev-flake's devshell resolve pkgs through the module
-      # system. No reference to the parameter pkgs — import fresh
-      # for both branches to avoid circularity.
-      _module.args.pkgs =
-        import (if system == "x86_64-darwin" then inputs.nixpkgs-darwin else inputs.nixpkgs)
-          {
-            inherit system;
-            config.allowUnfree = true;
-          };
+      # system. No reference to the parameter pkgs — import fresh.
+      _module.args.pkgs = import inputs.nixpkgs {
+        inherit system;
+        config.allowUnfree = true;
+      };
 
       treefmt = import ./treefmt.nix { inherit pkgs; };
       pre-commit = import ./pre-commit.nix { inherit pkgs version-check; };
@@ -45,7 +42,7 @@
         nasbox = self.homeConfigurations.nasbox.activationPackage;
         nixbox = self.nixosConfigurations.nixbox.config.system.build.toplevel;
       }
-      // pkgs.lib.optionalAttrs (system == "x86_64-darwin") {
+      // pkgs.lib.optionalAttrs (system == "aarch64-darwin") {
         macbox = self.darwinConfigurations.macbox.system;
       };
 

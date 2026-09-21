@@ -4,10 +4,6 @@
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
 
-    # 26.05 is the last nixpkgs release supporting x86_64-darwin.
-    # macbox is x86_64-darwin, so this pin is required.
-    nixpkgs-darwin.url = "github:NixOS/nixpkgs/nixos-26.05";
-
     dev-flake = {
       url = "github:terlar/dev-flake";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -28,12 +24,6 @@
 
     nixvim.url = "github:nix-community/nixvim";
 
-    nixvim-darwin = {
-      url = "github:nix-community/nixvim/nixos-26.05";
-      inputs.nixpkgs.follows = "nixpkgs-darwin";
-      inputs.flake-parts.follows = "flake-parts";
-    };
-
     # Intentionally tracking unstable for nixbox (linux). macbox overrides
     # its pkgs via home-manager.useGlobalPkgs + extra arguments, so HM
     # version is decoupled from the nixpkgs used for packages.
@@ -53,8 +43,8 @@
     };
 
     nix-darwin = {
-      url = "github:nix-darwin/nix-darwin/nix-darwin-26.05";
-      inputs.nixpkgs.follows = "nixpkgs-darwin";
+      url = "github:nix-darwin/nix-darwin/master";
+      inputs.nixpkgs.follows = "nixpkgs";
     };
 
     nix-homebrew.url = "github:zhaofengli/nix-homebrew";
@@ -92,17 +82,13 @@
     }:
     let
       eana = import ./lib.nix { lib = inputs.nixpkgs.lib; };
-      eanaLib =
-        system:
-        (if system == "x86_64-darwin" then inputs.nixpkgs-darwin.lib else inputs.nixpkgs.lib).extend (
-          _: _: { inherit eana; }
-        );
+      eanaLib = _system: inputs.nixpkgs.lib.extend (_: _: { inherit eana; });
       homeModules = eana.modulesFromDir ./modules/common;
     in
     flake-parts.lib.mkFlake { inherit inputs; } {
       systems = [
         "x86_64-linux"
-        "x86_64-darwin"
+        "aarch64-darwin"
       ];
 
       imports = [

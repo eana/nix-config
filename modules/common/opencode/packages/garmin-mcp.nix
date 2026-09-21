@@ -43,13 +43,12 @@ let
   hacks = pkgs.callPackage pyproject-nix.build.hacks { };
 
   # HACK: cryptography uses maturin (Rust) as its build backend, but PyPI
-  # has no prebuilt wheel for x86_64-darwin on this nixpkgs/Python
-  # combination, so uv2nix falls back to a source build. That source build
-  # needs maturin's own transitive build deps (maturin itself, then
-  # puccinialin) which pyproject-nix's package set can't resolve, breaking
-  # the build on darwin only (see the CI run that surfaced this: nixbox
-  # built fine, macbox didn't, because Linux had a usable wheel and darwin
-  # didn't).
+  # has no prebuilt wheel for this nixpkgs/Python combination on darwin,
+  # so uv2nix falls back to a source build. That source build needs
+  # maturin's own transitive build deps (maturin itself, then puccinialin)
+  # which pyproject-nix's package set can't resolve, breaking the build on
+  # darwin only (see the CI run that surfaced this: nixbox built fine,
+  # macbox didn't, because Linux had a usable wheel and darwin didn't).
   # Substitute nixpkgs' own prebuilt cryptography instead of letting
   # uv2nix build it from PyPI at all. Nixpkgs already builds and caches
   # cryptography for every platform we target (darwin included), so this
