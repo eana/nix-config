@@ -6,6 +6,12 @@
       owner = config.module.variables.userName;
       group = if pkgs.stdenv.hostPlatform.isDarwin then "staff" else "users";
     };
+    home-gateway-mac = {
+      file = ../../secrets/home-gateway-mac.age;
+      mode = "0400";
+      owner = config.module.variables.userName;
+      group = if pkgs.stdenv.hostPlatform.isDarwin then "staff" else "users";
+    };
     ssh-hosts = {
       file = ../../secrets/ssh-hosts.age;
       mode = "0400";

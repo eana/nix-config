@@ -34,6 +34,7 @@ let
 in
 {
   "secrets/home-ssid.age".publicKeys = allUsers ++ allSystems;
+  "secrets/home-gateway-mac.age".publicKeys = allUsers ++ allSystems;
   "secrets/ssh-hosts.age".publicKeys = allUsers ++ allSystems;
   "secrets/atuin.age".publicKeys = allUsers ++ allSystems;
 }
