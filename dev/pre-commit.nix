@@ -4,7 +4,10 @@
     check-json.enable = true;
     check-xml.enable = true;
     conform.enable = false;
-    end-of-file-fixer.enable = true;
+    end-of-file-fixer = {
+      enable = true;
+      excludes = [ "\\.age$" ];
+    };
     version-check = {
       enable = true;
       entry = "${version-check}/bin/version-check --hook";
