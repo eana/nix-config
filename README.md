@@ -38,7 +38,7 @@ sudo chown -v $(id -nu):$(id -ng) /etc/nix-darwin
 cd /etc/nix-darwin
 
 # To use Nixpkgs unstable:
-nix flake init -t nix-darwin/master
+nix flake --experimental-features "nix-command flakes" init -t nix-darwin/master
 
 sed -i '' "s/simple/$(scutil --get LocalHostName)/" flake.nix
 sed -i '' "s/aarch64-darwin/x86_64-darwin/" flake.nix
@@ -99,7 +99,7 @@ Steps:
 
 ```shell
 sudo launchctl kickstart -k system/org.nixos.activate-agenix
-ls -alh /run/agenix/
+sudo ls -alh /run/agenix/
 ```
 
 #### SSH host config after login (`~/.ssh/config.d/ssh-hosts`)
