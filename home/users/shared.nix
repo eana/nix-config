@@ -31,9 +31,6 @@
       lazygit # Simple terminal UI for Git commands
       tig # Text-mode interface for Git
 
-      # Nix Tools
-      cachix # Binary cache client for Nix
-
       # System Information
       fastfetch # System information tool
     ];

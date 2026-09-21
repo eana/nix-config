@@ -69,6 +69,7 @@ in
   # Install packages for user.
   # Search for packages here: https://search.nixos.org/packages
   home.packages = with pkgs; [
+    cachix # Binary cache client for Nix
     dnsutils # DNS utilities like dig, nslookup, etc.
     file # File type identification utility
     iftop # Display bandwidth usage on an interface
