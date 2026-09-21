@@ -11,6 +11,7 @@ in
       "firefox"
       "google-chrome"
       "iterm2"
+      "karabiner-elements"
       "protonvpn"
       "vlc"
       # keep-sorted end

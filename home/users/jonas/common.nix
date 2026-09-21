@@ -71,6 +71,15 @@
       keybindings = {
         "shift+enter" = "send_text all \\x1b[13;2u";
         "ctrl+enter" = "send_text all \\x1b[13;5u";
+        # PC-style editing keys. Karabiner-Elements (brew cask, rules in
+        # hosts/macbox/home-manager/karabiner.nix) remaps RCtrl+arrows, Home/End,
+        # RCtrl+Backspace to opt/cmd combos globally; kitty receives those as
+        # opt/cmd modifiers, so remap to sequences the shell binds.
+        "opt+left" = "send_text all \\x1bb";
+        "opt+right" = "send_text all \\x1bf";
+        "cmd+left" = "send_text all \\x1b[1~";
+        "cmd+right" = "send_text all \\x1b[4~";
+        "opt+delete" = "send_text all \\x1bd";
       };
     };
 

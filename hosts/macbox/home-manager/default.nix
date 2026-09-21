@@ -14,6 +14,7 @@
       imports = [
         ../../../home/users/jonas/darwin.nix
         inputs.nixvim.homeModules.nixvim
+        ./karabiner.nix
       ]
       ++ builtins.attrValues (lib.eana.modulesFromDir ../../../modules/common);
       home.stateVersion = "26.05";
