@@ -40,30 +40,6 @@ let
 
   python = pkgs.python3;
 
-  hacks = pkgs.callPackage pyproject-nix.build.hacks { };
-
-  # HACK: cryptography uses maturin (Rust) as its build backend, but PyPI
-  # has no prebuilt wheel for this nixpkgs/Python combination on darwin,
-  # so uv2nix falls back to a source build. That source build needs
-  # maturin's own transitive build deps (maturin itself, then puccinialin)
-  # which pyproject-nix's package set can't resolve, breaking the build on
-  # darwin only (see the CI run that surfaced this: nixbox built fine,
-  # macbox didn't, because Linux had a usable wheel and darwin didn't).
-  # Substitute nixpkgs' own prebuilt cryptography instead of letting
-  # uv2nix build it from PyPI at all. Nixpkgs already builds and caches
-  # cryptography for every platform we target (darwin included), so this
-  # sidesteps the maturin/puccinialin resolution gap entirely, requires no
-  # network at build time, and inherits nixpkgs' own version/security
-  # update cadence instead of us needing to track a separate pin.
-  # TODO: Drop this override if uv2nix/pyproject-nix ever gains a way to
-  # resolve maturin's transitive build deps for source builds on darwin.
-  pyprojectOverrides = _final: prev: {
-    cryptography = hacks.nixpkgsPrebuilt {
-      from = pkgs.python3Packages.cryptography;
-      prev = prev.cryptography;
-    };
-  };
-
   pythonSet =
     (pkgs.callPackage pyproject-nix.build.packages {
       inherit python;
@@ -72,7 +48,6 @@ let
         lib.composeManyExtensions [
           pyproject-build-systems.overlays.default
           overlay
-          pyprojectOverrides
         ]
       );
 
