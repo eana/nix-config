@@ -16,9 +16,9 @@ in
       "vlc"
       # keep-sorted end
     ];
-    # masApps = {
-    #   Bitwarden = 1352778147;
-    # };
+    masApps = {
+      Bitwarden = 1352778147;
+    };
     onActivation.cleanup = "zap";
     taps = builtins.attrNames config.nix-homebrew.taps;
   };
