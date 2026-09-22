@@ -29,6 +29,8 @@
       treefmt = import ./treefmt.nix { inherit pkgs; };
       pre-commit = import ./pre-commit.nix { inherit pkgs version-check; };
 
+      # The flake only supports x86_64-linux and aarch64-darwin, so the
+      # linux hosts and the darwin host are mutually exclusive per system.
       packages = {
         agenix = pkgs.callPackage "${inputs.agenix}/pkgs/agenix.nix" { };
         pre-commit = config.pre-commit.settings.package;
@@ -38,13 +40,17 @@
         '';
         inherit version-check;
       }
-      // pkgs.lib.optionalAttrs (system == "x86_64-linux") {
-        nasbox = self.homeConfigurations.nasbox.activationPackage;
-        nixbox = self.nixosConfigurations.nixbox.config.system.build.toplevel;
-      }
-      // pkgs.lib.optionalAttrs (system == "aarch64-darwin") {
-        macbox = self.darwinConfigurations.macbox.system;
-      };
+      // (
+        if system == "x86_64-linux" then
+          {
+            nasbox = self.homeConfigurations.nasbox.activationPackage;
+            nixbox = self.nixosConfigurations.nixbox.config.system.build.toplevel;
+          }
+        else
+          {
+            macbox = self.darwinConfigurations.macbox.system;
+          }
+      );
 
       # flake-parts' `formatter.<system>` is a package output group, so
       # `nix run .#formatter` cannot resolve it (nix run only accepts
