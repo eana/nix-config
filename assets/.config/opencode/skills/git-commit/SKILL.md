@@ -79,7 +79,7 @@ Before writing the commit message:
 
 Pre-commit hooks exist for a reason — always run them before committing. Never bypass with `--no-verify`.
 
-1. If `pre-commit` is available, run `pre-commit run` against the staged files before committing
+1. If `prek` is available, run `prek run` against the staged files before committing
 2. If hooks fail, fix the issues, re-stage, and re-run before proceeding
 3. In Nix repos (presence of `flake.nix`), ensure hooks are up to date before running them:
    - Run `nix run .#pre-commit-install` to regenerate hooks, or enter the dev shell (`nix develop`) which installs them via `shellHook`
@@ -108,7 +108,7 @@ Run pre-commit hooks after each replayed commit using `--exec`. Only check files
 
 ```bash
 GIT_EDITOR=true GIT_SEQUENCE_EDITOR=true git rebase --committer-date-is-author-date \
-  --exec 'files=$(git diff-tree --no-commit-id -r --name-only HEAD | tr "\n" " "); [ -z "$files" ] || pre-commit run --files $files' \
+  --exec 'files=$(git diff-tree --no-commit-id -r --name-only HEAD | tr "\n" " "); [ -z "$files" ] || prek run --files $files' \
   <target>
 ```
 
