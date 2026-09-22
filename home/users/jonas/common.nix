@@ -24,7 +24,7 @@
     mpg123 # Audio player
 
     # Development Tools
-    pre-commit # Framework for managing pre-commit hooks
+    prek # Fast Git hook manager (pre-commit drop-in)
     ripgrep # Search tool
 
     # Version Control
