@@ -4,6 +4,7 @@
     home-manager
     m-cli
     mkalias
+    nightlight
     zsh-powerlevel10k
     # keep-sorted end
   ];
