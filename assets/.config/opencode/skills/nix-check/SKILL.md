@@ -9,7 +9,7 @@ compatibility: opencode
 Run these in order before considering a change complete:
 
 1. `nix fmt` - format and lint everything
-2. `nix develop -c pre-commit run --all-files` - run all pre-commit hooks
+2. `nix develop -c prek run --all-files` - run all pre-commit hooks
 3. `nix flake check --system x86_64-linux` - evaluate and check the flake
 4. Run the appropriate `nix build` for any host whose files were modified
 
@@ -37,7 +37,7 @@ Touch `flake.nix` or `flake.lock` -> build all three.
 | Check (Linux) | `nix flake check --system x86_64-linux` |
 | Check (all systems) | `nix flake check --all-systems` |
 | Pre-commit check | `nix build .#checks.x86_64-linux.pre-commit` |
-| Run all hooks | `nix develop -c pre-commit run --all-files` |
+| Run all hooks | `nix develop -c prek run --all-files` |
 | Static lint | `nix develop -c sh -c "deadnix . && statix check ."` |
 
 ## Maintenance
@@ -75,7 +75,7 @@ treefmt orchestrates all formatters via `nix fmt`:
 
 ## Pre-commit hooks
 
-Run via `nix develop -c pre-commit run --all-files`:
+Run via `nix develop -c prek run --all-files`:
 
 - `check-json` - validate JSON files
 - `check-xml` - validate XML files
