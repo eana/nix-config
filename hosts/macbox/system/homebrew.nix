@@ -10,7 +10,6 @@ in
       # keep-sorted start
       "firefox"
       "google-chrome"
-      "iterm2"
       "karabiner-elements"
       "protonvpn"
       "vlc"

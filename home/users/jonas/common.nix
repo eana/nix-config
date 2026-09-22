@@ -68,6 +68,7 @@
 
     kitty = {
       enable = true;
+      font.size = 14.0;
       keybindings = {
         "shift+enter" = "send_text all \\x1b[13;2u";
         "ctrl+enter" = "send_text all \\x1b[13;5u";
