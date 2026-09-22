@@ -181,9 +181,19 @@ let
   '';
 in
 {
+  # HACK: wrap exec in wait4path because /nix lives on a separate APFS volume
+  #   that mounts after launchd starts daemons at boot. A direct store path
+  #   makes launchd fail the job with ENOENT ("Missing executable detected")
+  #   and never retry. nix-darwin core daemons (nix-daemon, activate-system)
+  #   use the same guard. TODO: drop if nix-darwin ever wraps launchd.daemons
+  #   automatically.
   launchd.daemons.dns-switcher = {
     serviceConfig = {
-      ProgramArguments = [ "${script}" ];
+      ProgramArguments = [
+        "/bin/sh"
+        "-c"
+        "/bin/wait4path /nix/store && exec ${script}"
+      ];
       RunAtLoad = true;
       KeepAlive = true;
       StandardOutPath = "/var/log/dns-switcher.log";
