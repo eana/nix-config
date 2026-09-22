@@ -83,6 +83,12 @@
             help = "nix repl with full flake context pre-loaded";
             command = "nix repl --file ${toString ./repl.nix}";
           }
+          {
+            package = pkgs.writeShellScriptBin "pre-commit" ''
+              exec ${pkgs.prek}/bin/prek "$@"
+            '';
+            help = "Drop-in pre-commit alias that runs prek";
+          }
         ];
       };
     };
