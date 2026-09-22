@@ -88,8 +88,17 @@ in
         # Fix ctrl + left/right arrow keys
         bindkey "\e[1;5C" forward-word
         bindkey "\e[1;5D" backward-word
-        # Bind esc + backspace to delete the word before the cursor
+        # Home/End (kitty sends \e[1~/\e[4~ via cmd+arrow; tmux already
+        # auto-binds these through its terminfo, kitty does not)
+        bindkey '\e[1~' beginning-of-line
+        bindkey '\e[4~' end-of-line
+        bindkey '\e[H' beginning-of-line
+        bindkey '\e[F' end-of-line
+        bindkey '\e[7~' beginning-of-line
+        bindkey '\e[8~' end-of-line
+        # Bind esc + backspace / esc + d to delete the word before the cursor
         bindkey '\e^?' backward-kill-word
+        bindkey '\ed' backward-kill-word
 
         source ${pkgs.zsh-powerlevel10k}/share/zsh-powerlevel10k/powerlevel10k.zsh-theme
         [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh

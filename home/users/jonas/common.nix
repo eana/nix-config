@@ -80,6 +80,7 @@
         "cmd+left" = "send_text all \\x1b[1~";
         "cmd+right" = "send_text all \\x1b[4~";
         "opt+delete" = "send_text all \\x1bd";
+        "opt+backspace" = "send_text all \\x1bd";
       };
     };
 

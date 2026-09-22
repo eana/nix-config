@@ -832,6 +832,60 @@ _:
         action = "<cmd>Themery<CR>";
         options.desc = "Theme switcher";
       }
+
+      # ==================== PC-style editing ====================
+      # RCtrl+arrows reach nvim as <M-b>/<M-f> via kitty (\x1bb/\x1bf in
+      # home/users/jonas/common.nix). Unbound, nvim splits the ESC prefix and runs
+      # the plain-letter command ('f' = find) instead of a word motion; explicit
+      # binds stop that fallback. RCtrl+Backspace -> <M-d> (kitty opt+backspace).
+      {
+        key = "<M-b>";
+        mode = [
+          "n"
+          "v"
+          "o"
+        ];
+        action = "b";
+        options.desc = "Move word back";
+      }
+      {
+        key = "<M-f>";
+        mode = [
+          "n"
+          "v"
+          "o"
+        ];
+        action = "w";
+        options.desc = "Move word forward";
+      }
+      {
+        key = "<M-b>";
+        mode = "i";
+        action = "<C-o>b";
+        options.desc = "Move word back (insert mode)";
+      }
+      {
+        key = "<M-f>";
+        mode = "i";
+        action = "<C-o>w";
+        options.desc = "Move word forward (insert mode)";
+      }
+      {
+        key = "<M-d>";
+        mode = "n";
+        action = "\"_db";
+        options = {
+          noremap = true;
+          silent = true;
+          desc = "Delete word back without yanking";
+        };
+      }
+      {
+        key = "<M-d>";
+        mode = "i";
+        action = "<C-w>";
+        options.desc = "Delete word back (insert mode)";
+      }
     ];
   };
 }
