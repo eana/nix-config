@@ -6,6 +6,9 @@
 {
   imports = [ ./common.nix ];
 
+  module.aerospace.enable = true;
+  module.aerospace.modifier = "cmd";
+
   # Install packages for user.
   # Search for packages here: https://search.nixos.org/packages
   home = {

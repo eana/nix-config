@@ -42,6 +42,11 @@
       flake = false;
     };
 
+    nikitabobko-tap = {
+      url = "github:nikitabobko/homebrew-tap";
+      flake = false;
+    };
+
     nix-darwin = {
       url = "github:nix-darwin/nix-darwin/master";
       inputs.nixpkgs.follows = "nixpkgs";

@@ -14,6 +14,7 @@
       imports = [
         ../../../home/users/jonas/darwin.nix
         inputs.nixvim.homeModules.nixvim
+        ../../../modules/darwin/aerospace
         ./karabiner.nix
         ./nightlight.nix
       ]

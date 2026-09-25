@@ -1,13 +1,15 @@
-{ config, inputs, ... }:
+{ inputs, ... }:
 let
   inherit (inputs) homebrew-core;
   inherit (inputs) homebrew-cask;
+  inherit (inputs) nikitabobko-tap;
 in
 {
   homebrew = {
     enable = true;
     casks = [
       # keep-sorted start
+      "aerospace"
       "firefox"
       "google-chrome"
       "karabiner-elements"
@@ -19,7 +21,14 @@ in
       Bitwarden = 1352778147;
     };
     onActivation.cleanup = "zap";
-    taps = builtins.attrNames config.nix-homebrew.taps;
+    taps = [
+      "homebrew/homebrew-core"
+      "homebrew/homebrew-cask"
+      {
+        name = "nikitabobko/homebrew-tap";
+        trusted = true;
+      }
+    ];
   };
 
   nix-homebrew = {
@@ -29,7 +38,9 @@ in
     taps = {
       "homebrew/homebrew-core" = homebrew-core;
       "homebrew/homebrew-cask" = homebrew-cask;
+      "nikitabobko/homebrew-tap" = nikitabobko-tap;
     };
     mutableTaps = false;
+    trust.taps = [ "nikitabobko/tap" ];
   };
 }
