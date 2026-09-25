@@ -82,6 +82,10 @@
         "cmd+right" = "send_text all \\x1b[4~";
         "opt+delete" = "send_text all \\x1bd";
         "opt+backspace" = "send_text all \\x1bd";
+        # Disable macOS secure keyboard entry toggle (default: opt+cmd+s).
+        # Secure input blocks other apps from receiving keystrokes, breaking
+        # AeroSpace/Karabiner. no_op unbinds the shortcut.
+        "opt+cmd+s" = "no_op";
       };
     };
 
