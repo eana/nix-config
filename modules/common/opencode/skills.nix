@@ -9,8 +9,8 @@ let
   superpowersSrc = pkgs.fetchFromGitHub {
     owner = "obra";
     repo = "superpowers";
-    rev = "v6.4.1";
-    hash = "sha256-rgeJhjQyABYlhlyFRmgyhbZmmmIPPNkch4CXyTkGEyM=";
+    rev = "v6.4.2";
+    hash = "sha256-BWPiXoXV+jePP+wn/Z+Af4iehIL7oei00plaWaTzq8s=";
   };
 
   socialSkillsSrc = pkgs.fetchFromGitHub {
