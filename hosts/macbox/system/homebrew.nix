@@ -15,6 +15,7 @@ in
       "karabiner-elements"
       "protonvpn"
       "vlc"
+      "xnviewmp"
       # keep-sorted end
     ];
     masApps = {
