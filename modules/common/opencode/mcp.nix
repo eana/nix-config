@@ -7,7 +7,6 @@
 }:
 let
   inherit (lib) filterAttrs optionalAttrs;
-  inherit (pkgs) context-mode;
 in
 filterAttrs (_n: v: v != { }) {
   k8s = optionalAttrs (pkgs ? mcp-k8s-go) {
@@ -33,10 +32,6 @@ filterAttrs (_n: v: v != { }) {
   sequential-thinking = optionalAttrs (pkgs ? mcp-server-sequential-thinking) {
     command = "${pkgs.mcp-server-sequential-thinking}/bin/mcp-server-sequential-thinking";
     enabled = false;
-  };
-
-  "context-mode" = {
-    command = "${context-mode}/bin/context-mode";
   };
 
   garmin = optionalAttrs enableGarmin {

@@ -17,6 +17,7 @@ let
 
   pluginConfig = import ./plugins.nix {
     inherit lib pkgs;
+    contextMode = cfg.contextMode.package;
     enableSnip = cfg.snip.enable;
     enableCopilotAutoModel = cfg.copilotAutoModel.enable;
     copilotAutoModelAutos = cfg.copilotAutoModel.autos;
@@ -26,6 +27,26 @@ let
     inherit lib pkgs;
     enabledSkills = cfg.skills.enabled;
   };
+
+  # Enumerated by name: home-manager's skills option wants an attrset, not
+  # context-mode's own skills dir. New upstream skills need adding here.
+  contextModeSkills = builtins.listToAttrs (
+    map
+      (name: {
+        inherit name;
+        value = "${cfg.contextMode.package}/share/skills/context-mode/${name}";
+      })
+      [
+        "context-mode"
+        "ctx-doctor"
+        "ctx-index"
+        "ctx-insight"
+        "ctx-purge"
+        "ctx-search"
+        "ctx-stats"
+        "ctx-upgrade"
+      ]
+  );
 
   baseContext = builtins.readFile ./base-context.md;
   inherit (pkgs) callPackage;
@@ -42,8 +63,11 @@ in
     # opt-in (see playwright.enable and skills.enabled = [ "social" ... ]).
     module.opencode.skills.enabled = catalog.local ++ [ "superpowers" ];
 
-    home.packages =
-      lib.optionals cfg.snip.enable [ pkgs.snip ] ++ lib.optionals cfg.garmin.enable [ garmin-mcp ];
+    home.packages = [
+      cfg.contextMode.runtime
+    ]
+    ++ lib.optionals cfg.snip.enable [ pkgs.snip ]
+    ++ lib.optionals cfg.garmin.enable [ garmin-mcp ];
 
     xdg.configFile."snip/config.toml" = mkIf cfg.snip.enable {
       source = ../../../assets/.config/snip/config.toml;
@@ -95,6 +119,7 @@ in
         // lib.optionalAttrs cfg.playwright.enable {
           linkedin-profile-editor = ../../../assets/.config/opencode/skills/linkedin-profile-editor;
         }
+        // contextModeSkills
         // cfg.extraSkills;
     };
   };

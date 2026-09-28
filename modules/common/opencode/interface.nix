@@ -36,6 +36,31 @@ in
       description = "Skills merged on top of the default set.";
     };
 
+    contextMode = {
+      package = mkOption {
+        type = types.package;
+        default = pkgs.callPackage ./packages/context-mode.nix { };
+        defaultText = literalExpression "callPackage ./packages/context-mode.nix { }";
+        description = ''
+          The context-mode plugin package opencode loads. Built locally from
+          the npm tarball, not pkgs.context-mode (pinned to 1.0.143, no
+          build/ directory - no plugin entry, no ctx_* tools).
+        '';
+      };
+
+      runtime = mkOption {
+        type = types.package;
+        default = pkgs.bun;
+        defaultText = literalExpression "pkgs.bun";
+        description = ''
+          JS runtime for context-mode's ctx_execute, put on PATH. It only
+          accepts a host fallback when process.execPath is named node, bun or
+          deno; opencode's binary is named opencode, so without this on PATH
+          ctx_execute throws "No JavaScript runtime available".
+        '';
+      };
+    };
+
     snip = {
       enable = mkEnableOption "snip shell-command recording plugin for opencode";
     };
