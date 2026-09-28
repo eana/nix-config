@@ -123,4 +123,19 @@
       };
     };
   };
+
+  # Ollama split:
+  #   home/users/jonas/linux.nix (nixbox) -> CLI only, point at a remote server:
+  #     home.packages = [ pkgs.ollama ];
+  #     home.sessionVariables.OLLAMA_HOST = "macbox.local:11434";
+  #   home/users/jonas/darwin.nix (macbox) -> local server plus Apple Silicon tuning:
+  #     services.ollama = {
+  #       enable = true;
+  #       environmentVariables = {
+  #         OLLAMA_FLASH_ATTENTION = "1";
+  #         OLLAMA_KV_CACHE_TYPE = "q8_0";
+  #         OLLAMA_NUM_PARALLEL = "1";
+  #         OLLAMA_MAX_LOADED_MODELS = "1";
+  #       };
+  #     };
 }

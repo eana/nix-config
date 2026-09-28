@@ -128,6 +128,7 @@ in
       # Development Tools
       aws-export-profile # AWS profile exporter
       awscli2 # AWS command-line interface
+      ollama # Ollama CLI
       nix-tree # Visualize Nix dependencies
       oath-toolkit # OATH one-time password tool
 
@@ -144,6 +145,7 @@ in
 
     sessionVariables = {
       LIBGL_ALWAYS_INDIRECT = 1;
+      OLLAMA_HOST = "macbox.local:11434";
     };
   };
 
@@ -158,7 +160,6 @@ in
       swayKeybinding = "Mod4+Shift+m";
     };
     mpv.enable = true;
-    ollama.enable = true;
     openra = {
       enable = true;
       variants.red-alert = {
