@@ -10,17 +10,33 @@ let
     ;
   cfg = config.module.ollama;
 
-  defaultServerSettings = {
-    host = "0.0.0.0";
-    port = 11434;
-    acceleration = null;
+  # ollama's build hardcodes GGML_METAL=ON for aarch64-darwin, so Metal is not
+  # a selectable backend there — there is nothing to turn on. These tune the
+  # Metal path for a unified-memory budget instead. Anything set in
+  # `server.environmentVariables` overrides them.
+  appleSiliconDefaults = {
+    # Attention over the Metal kernels instead of the CPU fallback path.
+    OLLAMA_FLASH_ATTENTION = "1";
+    # Halves KV cache size, buying context length in shared memory.
+    OLLAMA_KV_CACHE_TYPE = "q8_0";
+    # Metal has no parallel-request support; setting it keeps ollama from
+    # logging a warning on every model load.
+    OLLAMA_NUM_PARALLEL = "1";
+    # One resident model at a time, so a second load evicts instead of
+    # pushing the machine into swap.
+    OLLAMA_MAX_LOADED_MODELS = "1";
   };
 
-  finalEnvironmentVariables =
-    cfg.server.environmentVariables
-    // lib.optionalAttrs (cfg.server.host != defaultServerSettings.host) {
+  # NixOS's services.ollama derives OLLAMA_HOST from host/port itself, so the
+  # launchd agent is the only side that needs it spelled out.
+  darwinEnvironmentVariables =
+    appleSiliconDefaults
+    // {
       OLLAMA_HOST = "${cfg.server.host}:${toString cfg.server.port}";
-    };
+    }
+    // cfg.server.environmentVariables;
+
+  linuxEnvironmentVariables = cfg.server.environmentVariables;
 in
 {
   imports = [ ./interface.nix ];
@@ -33,8 +49,7 @@ in
       enable = true;
       inherit (cfg.server) host;
       inherit (cfg.server) port;
-      inherit (cfg.server) acceleration;
-      environmentVariables = mkIf (finalEnvironmentVariables != { }) finalEnvironmentVariables;
+      environmentVariables = linuxEnvironmentVariables;
     };
 
     # macOS: Use launchd agent
@@ -47,23 +62,12 @@ in
           "serve"
         ]
         ++ cfg.server.extraFlags;
-        EnvironmentVariables =
-          finalEnvironmentVariables
-          // {
-            OLLAMA_HOST = "${cfg.server.host}:${toString cfg.server.port}";
-          }
-          // lib.optionalAttrs (cfg.server.acceleration != null) (
-            if !cfg.server.acceleration then
-              { OLLAMA_ACCELERATION = "cpu"; }
-            else if cfg.server.acceleration == "rocm" then
-              { OLLAMA_ACCELERATION = "rocm"; }
-            else if cfg.server.acceleration == "cuda" then
-              { OLLAMA_ACCELERATION = "cuda"; }
-            else
-              { }
-          );
+        EnvironmentVariables = darwinEnvironmentVariables;
         RunAtLoad = true;
         KeepAlive = true;
+        # Inference is never the foreground task on a laptop; let launchd
+        # throttle it against whatever the user is actually doing.
+        ProcessType = "Background";
         StandardOutPath = "${config.home.homeDirectory}/Library/Logs/ollama.out.log";
         StandardErrorPath = "${config.home.homeDirectory}/Library/Logs/ollama.err.log";
       };

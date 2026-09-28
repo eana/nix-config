@@ -11,9 +11,8 @@ let
     ;
 
   defaultServerSettings = {
-    host = "0.0.0.0";
+    host = "127.0.0.1";
     port = 11434;
-    acceleration = null;
   };
 in
 {
@@ -23,40 +22,39 @@ in
     package = mkOption {
       type = types.package;
       default = pkgs.ollama;
-      description = "The Ollama package to use for the LLM service";
-      example = lib.literalExpression "pkgs.ollama";
+      description = ''
+        The Ollama package to use for the LLM service.
+
+        The package selects the compiled-in runner, so this is where hardware
+        acceleration is chosen:
+
+        - `pkgs.ollama`: autodetect. On Linux this follows
+          `nixpkgs.config.{rocm,cuda}Support`; on aarch64-darwin it is Metal,
+          which ollama's build always enables for Apple Silicon.
+        - `pkgs.ollama-cpu`: force CPU-only.
+        - `pkgs.ollama-rocm`: AMD GPUs.
+        - `pkgs.ollama-cuda`: NVIDIA GPUs.
+        - `pkgs.ollama-vulkan`: any Vulkan-capable GPU.
+      '';
+      example = lib.literalExpression "pkgs.ollama-rocm";
     };
 
     server = {
       host = mkOption {
         type = types.str;
         default = defaultServerSettings.host;
-        description = "Host address to bind the Ollama server to";
+        description = ''
+          Host address to bind the Ollama server to.
+
+          The Ollama API is unauthenticated, so anything wider than
+          `127.0.0.1` exposes model inference to every host on the network.
+        '';
       };
 
       port = mkOption {
         type = types.port;
         default = defaultServerSettings.port;
         description = "Port number for the Ollama server to listen on";
-      };
-
-      acceleration = mkOption {
-        type = types.nullOr (
-          types.either types.bool (
-            types.enum [
-              "rocm"
-              "cuda"
-            ]
-          )
-        );
-        default = defaultServerSettings.acceleration;
-        description = ''
-          Hardware acceleration to use:
-          - null: Automatic detection (default)
-          - false: Force CPU-only mode
-          - "rocm": AMD GPU acceleration
-          - "cuda": NVIDIA GPU acceleration
-        '';
       };
 
       environmentVariables = mkOption {
