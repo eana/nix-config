@@ -6,10 +6,10 @@
 
 stdenvNoCC.mkDerivation rec {
   pname = "opencode-snip";
-  version = "1.6.1";
+  version = "2.0.0";
   src = fetchurl {
     url = "https://registry.npmjs.org/${pname}/-/${pname}-${version}.tgz";
-    hash = "sha256-FQCXf/QupEa6vb07gpiT5xBUW/Aoj4paedmxoUYz12E=";
+    hash = "sha256-1s8MyzS7Lt1GQaxBgMUCl0GJxG1lbAaEfLGba1UAuWA=";
   };
   dontBuild = true;
   installPhase = ''
