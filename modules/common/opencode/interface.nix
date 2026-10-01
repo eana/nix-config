@@ -91,6 +91,12 @@ in
         type = types.listOf (types.attrsOf types.anything);
         default = [
           {
+            name = "Auto GPT";
+            preferredModels = [
+              "gpt-5.3-codex"
+            ];
+          }
+          {
             name = "Auto Planning";
             preferredModels = [
               "claude-sonnet-5"
@@ -99,7 +105,8 @@ in
           {
             name = "Auto Building";
             preferredModels = [
-              "gpt-5.3-codex"
+              "claude-haiku-4.5"
+              "gpt-5.4"
               "gpt-5.4-mini"
             ];
           }
