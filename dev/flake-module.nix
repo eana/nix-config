@@ -61,6 +61,10 @@
       };
 
       devshells.default = {
+        devshell.startup.pre-commit-install.text = pkgs.lib.mkForce (
+          pkgs.lib.replaceStrings [ " install -c " ] [ " install -f -c " ]
+            config.pre-commit.installationScript
+        );
         env = [
           {
             name = "NIX_USER_CONF_FILES";
