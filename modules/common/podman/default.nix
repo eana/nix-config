@@ -29,13 +29,17 @@ in
       };
     };
 
-    home.shellAliases = {
-      docker = "podman";
-      docker-compose = "podman-compose";
-    };
+    home = {
+      packages = [ pkgs.podman-compose ];
 
-    home.sessionVariables = lib.mkIf (cfg.dockerCompat && pkgs.stdenv.hostPlatform.isLinux) {
-      DOCKER_HOST = "unix://$XDG_RUNTIME_DIR/podman/podman.sock";
+      shellAliases = {
+        docker = "podman";
+        docker-compose = "podman-compose";
+      };
+
+      sessionVariables = lib.mkIf (cfg.dockerCompat && pkgs.stdenv.hostPlatform.isLinux) {
+        DOCKER_HOST = "unix://$XDG_RUNTIME_DIR/podman/podman.sock";
+      };
     };
 
     systemd.user.sockets.podman = lib.mkIf pkgs.stdenv.hostPlatform.isLinux {
