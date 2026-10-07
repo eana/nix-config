@@ -26,6 +26,8 @@
       cmake # Build system
       mas # Mac App Store command-line interface
 
+      procps # Utilities that give information about processes
+
       maccy # Lightweight clipboard manager
 
       # Networking
