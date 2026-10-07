@@ -1,0 +1,56 @@
+direction: right
+
+flake.nix: {
+  label: "flake.nix\n(flake-parts)"
+  inputs: "inputs\n16 flake inputs"
+  lib: "lib.nix\nmodulesFromDir"
+}
+
+configs: configurations/ {
+  nixbox: configurations/nixbox
+  nasbox: configurations/nasbox
+  macbox: configurations/macbox
+}
+
+hosts: hosts/ {
+  shared: shared/\n(shared defaults)
+  nixbox: nixbox/\n(NixOS desktop)
+  nasbox: nasbox/\n(HM only, DSM)
+  macbox: macbox/\n(nix-darwin)
+}
+
+home: home/users/ {
+  shared: shared.nix
+  jonas: jonas/\n(darwin + linux)
+  root: root/\n(ds920p)
+}
+
+modules: modules/ {
+  common: common/\n(auto-import all)
+  linux: linux/\n(auto-import nixbox)
+  darwin: darwin/\n(manual, macbox)
+}
+
+assets: assets/\n(dotfile payloads)
+secrets: agenix\nsecrets.nix + secrets/*.age
+dev: dev/\n(devshell, CI, version-check)
+
+flake.nix -> configs: "imports"
+configs.nixbox -> hosts.nixbox: "nixosSystem"
+configs.nasbox -> hosts.nasbox: "homeManagerConfiguration"
+configs.macbox -> hosts.macbox: "darwinSystem"
+hosts.nixbox -> hosts.shared: "imports"
+hosts.macbox -> hosts.shared: "imports"
+hosts.shared -> secrets: "age.secrets"
+hosts.shared -> modules.common: "useGlobalPkgs"
+hosts.nixbox -> home.jonas: "HM user"
+hosts.macbox -> home.jonas: "HM user"
+hosts.nasbox -> home.root: "HM user"
+home.jonas -> home.shared: "imports"
+home.root -> home.shared: "imports"
+home.jonas -> modules.common: "modules"
+home.jonas -> modules.linux: "modules"
+hosts.macbox -> modules.darwin: "modules"
+modules.common -> assets: "store paths"
+modules.linux -> assets: "store paths"
+flake.nix -> dev: "flake-module"
