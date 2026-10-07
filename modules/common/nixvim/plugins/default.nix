@@ -13,6 +13,7 @@
     ./lsp.nix
     ./lualine.nix
     ./mini.nix
+    ./render-markdown.nix
     ./snacks-nvim.nix
     ./themery-nvim.nix
     ./treesitter.nix
