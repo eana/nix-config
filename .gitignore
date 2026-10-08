@@ -7,3 +7,9 @@
 /result*
 secrets/*
 !secrets/*.age
+
+# Python
+__pycache__/
+
+# Wiki cache
+/.wiki-cache
