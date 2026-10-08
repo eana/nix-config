@@ -16,20 +16,9 @@
       version-check = pkgs.writeShellScriptBin "version-check" ''
         exec ${pkgs.python3}/bin/python3 ${./version-check.py} "$@"
       '';
-      repo-wiki-index = pkgs.writeShellScriptBin "repo-wiki-index" ''
-        exec ${repo-wiki-python}/bin/python3 ${./repo-wiki-index.py} "$@"
-      '';
-      repo-wiki-query = pkgs.writeShellScriptBin "repo-wiki-query" ''
-        exec ${repo-wiki-python}/bin/python3 ${./repo-wiki-query.py} "$@"
-      '';
-      repo-wiki-python = pkgs.python3.withPackages (
-        ps: with ps; [
-          numpy
-          requests
-          tree-sitter
-          tree-sitter-language-pack
-        ]
-      );
+      # Same package the opencode HM module installs on hosts; exposed here
+      # so the devshell can index this repo without duplicating the scripts.
+      repo-wiki = pkgs.callPackage ../modules/common/opencode/packages/repo-wiki.nix { };
     in
     {
       # Must use _module.args.pkgs (not a let binding) so submodules
@@ -52,7 +41,7 @@
           #!${pkgs.runtimeShell}
           ${pkgs.prek}/bin/prek install -f --hook-type pre-commit --hook-type pre-push
         '';
-        inherit version-check repo-wiki-index repo-wiki-query;
+        inherit version-check repo-wiki;
       }
       // (
         if system == "x86_64-linux" then
@@ -96,8 +85,7 @@
           ++ pkgs.lib.optionals (system == "x86_64-linux") [ pkgs.cachix ]
           ++ [
             config.packages.version-check
-            config.packages.repo-wiki-index
-            config.packages.repo-wiki-query
+            config.packages.repo-wiki
           ];
         commands = [
           {

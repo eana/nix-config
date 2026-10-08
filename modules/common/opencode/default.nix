@@ -53,6 +53,12 @@ let
   garmin-mcp = callPackage ./packages/garmin-mcp.nix {
     inherit (inputs) uv2nix pyproject-nix pyproject-build-systems;
   };
+
+  # Bundles the repo-wiki SKILL.md plus its index/query tools. Installed as a
+  # normal package (commands on PATH) and pointed at as the skill directory,
+  # so the tools work on any repo, not just inside this flake's devshell.
+  repo-wiki = callPackage ./packages/repo-wiki.nix { };
+  repoWikiEnabled = lib.elem "repo-wiki" cfg.skills.enabled;
 in
 {
   imports = [ ./interface.nix ];
@@ -67,7 +73,8 @@ in
       cfg.contextMode.runtime
     ]
     ++ lib.optionals cfg.snip.enable [ pkgs.snip ]
-    ++ lib.optionals cfg.garmin.enable [ garmin-mcp ];
+    ++ lib.optionals cfg.garmin.enable [ garmin-mcp ]
+    ++ lib.optional repoWikiEnabled repo-wiki;
 
     xdg.configFile."snip/config.toml" = mkIf cfg.snip.enable {
       source = ../../../assets/.config/snip/config.toml;
@@ -116,6 +123,7 @@ in
 
       skills =
         skillsConfig
+        // lib.optionalAttrs repoWikiEnabled { repo-wiki = "${repo-wiki}"; }
         // lib.optionalAttrs cfg.playwright.enable {
           linkedin-profile-editor = ../../../assets/.config/opencode/skills/linkedin-profile-editor;
         }
