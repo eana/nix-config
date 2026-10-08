@@ -16,6 +16,20 @@
       version-check = pkgs.writeShellScriptBin "version-check" ''
         exec ${pkgs.python3}/bin/python3 ${./version-check.py} "$@"
       '';
+      repo-wiki-index = pkgs.writeShellScriptBin "repo-wiki-index" ''
+        exec ${repo-wiki-python}/bin/python3 ${./repo-wiki-index.py} "$@"
+      '';
+      repo-wiki-query = pkgs.writeShellScriptBin "repo-wiki-query" ''
+        exec ${repo-wiki-python}/bin/python3 ${./repo-wiki-query.py} "$@"
+      '';
+      repo-wiki-python = pkgs.python3.withPackages (
+        ps: with ps; [
+          numpy
+          requests
+          tree-sitter
+          tree-sitter-language-pack
+        ]
+      );
     in
     {
       # Must use _module.args.pkgs (not a let binding) so submodules
@@ -38,7 +52,7 @@
           #!${pkgs.runtimeShell}
           ${pkgs.prek}/bin/prek install -f --hook-type pre-commit --hook-type pre-push
         '';
-        inherit version-check;
+        inherit version-check repo-wiki-index repo-wiki-query;
       }
       // (
         if system == "x86_64-linux" then
@@ -80,7 +94,11 @@
             statix
           ])
           ++ pkgs.lib.optionals (system == "x86_64-linux") [ pkgs.cachix ]
-          ++ [ config.packages.version-check ];
+          ++ [
+            config.packages.version-check
+            config.packages.repo-wiki-index
+            config.packages.repo-wiki-query
+          ];
         commands = [
           {
             name = "repl";
