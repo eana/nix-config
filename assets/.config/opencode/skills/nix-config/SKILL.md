@@ -6,13 +6,13 @@ compatibility: opencode
 
 ## Repository structure
 
-- `flake.nix` — flake inputs, `homeModules` exposure, host configurations
-- `modules/common/<name>/default.nix` — home-manager modules (all hosts)
-- `modules/linux/<name>/default.nix` — Linux-only home-manager modules
-- `modules/darwin/<name>/default.nix` — macOS-only home-manager modules
-- `home/users/<user>/<platform>.nix` — per-user, per-platform module wiring
-- `hosts/<hostname>/` — host-specific NixOS/nix-darwin/home-manager config
-- `dev/` — formatter and pre-commit hook configuration
+- `flake.nix` - flake inputs, `homeModules` exposure, host configurations
+- `modules/common/<name>/default.nix` - home-manager modules (all hosts)
+- `modules/linux/<name>/default.nix` - Linux-only home-manager modules
+- `modules/darwin/<name>/default.nix` - macOS-only home-manager modules
+- `home/users/<user>/<platform>.nix` - per-user, per-platform module wiring
+- `hosts/<hostname>/` - host-specific NixOS/nix-darwin/home-manager config
+- `dev/` - formatter and pre-commit hook configuration
 
 ## Module pattern
 
@@ -37,7 +37,7 @@ in
 
 Key rules:
 
-- Namespace is always `config.module.<name>` — never `programs.*` or `services.*` at the top level
+- Namespace is always `config.module.<name>` - never `programs.*` or `services.*` at the top level
 - `cfg = config.module.<name>` is the canonical let-binding name
 - Gate all config behind `lib.mkIf cfg.enable`
 - Thin `default.nix` aggregators just list `imports` in keep-sorted order; no logic
@@ -55,6 +55,7 @@ Key rules:
 - Prefer `pkgs.lib` or `inputs.nixpkgs.lib` utilities rather than ad-hoc helpers
 - Avoid impure paths; use flake inputs or `./relative` references
 - Keep platform-specific logic scoped under the relevant host/module
+- Write ASCII-only comments and docs - no emdashes, emojis, or other non-ASCII characters. Use hyphens (-) instead of emdashes, spell out symbols, and keep all text ASCII-safe.
 
 ## Imports and structure
 

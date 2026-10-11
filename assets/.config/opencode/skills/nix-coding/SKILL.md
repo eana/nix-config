@@ -1,7 +1,7 @@
 ---
 name: nix-coding
 description: >
-  Use when writing, editing, or reviewing Nix code — including NixOS modules,
+  Use when writing, editing, or reviewing Nix code - including NixOS modules,
   Home Manager configuration, packages, and overlays. Covers Nix coding style,
   module system patterns, common lib functions, and tooling (nixfmt, deadnix,
   statix). For flake-parts-specific patterns use the flake-parts skill instead.
@@ -26,14 +26,17 @@ compatibility: opencode
   names from the same attrset.
 - Always bind `cfg = config.<module-path>;` at the top of a module's `let`
   block and reference it throughout.
+- Write ASCII-only comments and docs - no emdashes, emojis, or other
+  non-ASCII characters. Use hyphens (-) instead of emdashes, spell out
+  symbols, and keep all text ASCII-safe.
 
 ## Module decomposition
 
 Split large modules across files by concern:
 
-- `interface.nix` — options declarations only, no `config`
-- `default.nix` — `imports` list + top-level wiring, minimal logic
-- Backend/feature files — each contributes only `config` for their concern
+- `interface.nix` - options declarations only, no `config`
+- `default.nix` - `imports` list + top-level wiring, minimal logic
+- Backend/feature files - each contributes only `config` for their concern
 
 ```
 my-module/
@@ -92,9 +95,9 @@ Key functions:
 | `mkDefault value` | Set a value at low priority (overridable) |
 | `mkOverride priority value` | Set priority explicitly (100 = default) |
 | `mkForce value` | Set at priority 50 (overrides mkDefault) |
-| `mkBefore [ … ]` | Prepend to a list (priority 500) |
-| `mkAfter [ … ]` | Append to a list (priority 1500) |
-| `mkOrder n [ … ]` | Insert at explicit list priority |
+| `mkBefore [ ... ]` | Prepend to a list (priority 500) |
+| `mkAfter [ ... ]` | Append to a list (priority 1500) |
+| `mkOrder n [ ... ]` | Insert at explicit list priority |
 
 ### Overriding mkEnableOption defaults
 
@@ -124,7 +127,7 @@ config.github-actions = lib.mkMerge [
 ];
 ```
 
-### apply — normalise at definition time
+### apply - normalise at definition time
 
 Use `apply` to canonicalise a value whenever the option is set:
 
@@ -147,31 +150,31 @@ needs = lib.mkOption {
 
 | Type | When to use |
 |---|---|
-| `types.lazyAttrsOf t` | Attrsets of submodules — avoids evaluating all values upfront |
+| `types.lazyAttrsOf t` | Attrsets of submodules - avoids evaluating all values upfront |
 | `types.functionTo t` | Expose a configurable strategy/transform function as an option |
 | `types.deferredModule` | Store a module for deferred/separate evaluation |
 | `types.submoduleWith { modules; specialArgs; shorthandOnlyDefinesConfig; }` | Submodule with extra args or shorthand support |
 
 ```nix
-# lazyAttrsOf — prefer over attrsOf for submodule attrsets
+# lazyAttrsOf - prefer over attrsOf for submodule attrsets
 jobs = lib.mkOption {
   type = lib.types.lazyAttrsOf (lib.types.submoduleWith { modules = [ ./job ]; });
 };
 
-# functionTo — expose a configurable transform
+# functionTo - expose a configurable transform
 formatName = lib.mkOption {
   type = lib.types.functionTo lib.types.str;
   default = lib.concatStringsSep "-";
 };
 
-# shorthandOnlyDefinesConfig — let callers use bare attrsets
+# shorthandOnlyDefinesConfig - let callers use bare attrsets
 type = lib.types.submoduleWith {
   modules = [ ./item ];
   shorthandOnlyDefinesConfig = true;
 };
 ```
 
-### _module.args — inject shared libraries
+### _module.args - inject shared libraries
 
 Inject a shared library at the module root so all submodules receive it as a
 regular function argument without needing import paths:
@@ -186,7 +189,7 @@ config._module.args.my-lib = import ./lib { inherit lib; };
 }
 ```
 
-### _module.freeformType — escape hatch for unknown fields
+### _module.freeformType - escape hatch for unknown fields
 
 Allow arbitrary fields while still validating known options:
 
@@ -203,11 +206,11 @@ them from documentation:
 _computed = lib.mkOption {
   internal = true;
   type = lib.types.package;
-  default = lib.pipe config.documents [ … ];
+  default = lib.pipe config.documents [ ... ];
 };
 ```
 
-### specialArgs — pass parent config into submodules
+### specialArgs - pass parent config into submodules
 
 Pass a parent's `config` into child submodules via `specialArgs`:
 
@@ -227,7 +230,7 @@ type = types.submodule {
 };
 ```
 
-Look up unfamiliar `lib` functions with `@nixpkgs-lib` — browse
+Look up unfamiliar `lib` functions with `@nixpkgs-lib` - browse
 `lib/attrsets.nix`, `lib/lists.nix`, `lib/strings.nix`, `lib/modules.nix`,
 `lib/trivial.nix`, etc.
 
@@ -238,7 +241,7 @@ Look up unfamiliar `lib` functions with `@nixpkgs-lib` — browse
 lib.optionals condition [ "a" "b" ]
 lib.optional condition "a"
 
-# Conditional attrset assembly — prefer over chained // operators
+# Conditional attrset assembly - prefer over chained // operators
 lib.mergeAttrsList [
   { always = "present"; }
   (lib.optionalAttrs condition { extra = "field"; })
@@ -269,11 +272,11 @@ lib.getExe pkg  # shorthand for "${pkg}/bin/${lib.getName pkg}"
 ## Tooling
 
 Tools are not guaranteed to be installed. Use `,` (comma) to run them without
-installing — `, nixfmt`, `, deadnix`, `, statix` etc.
+installing - `, nixfmt`, `, deadnix`, `, statix` etc.
 
 ### nixfmt
 
-nixfmt is the **official, opinionated Nix formatter** — no configuration.
+nixfmt is the **official, opinionated Nix formatter** - no configuration.
 Always run it on new or modified `.nix` files before committing.
 
 ```bash

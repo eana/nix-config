@@ -11,7 +11,7 @@ description: Use when writing commit messages, staging changes for commit, or re
 
 ## Conform file
 
-At the start of any commit workflow, check for `.conform.yml` or `.conform.yaml` in the repo root. If found, read it and extract the allowed types and scopes defined there — those replace the hardcoded defaults below. Obey whatever the conform file specifies; it is the source of truth for this repo.
+At the start of any commit workflow, check for `.conform.yml` or `.conform.yaml` in the repo root. If found, read it and extract the allowed types and scopes defined there - those replace the hardcoded defaults below. Obey whatever the conform file specifies; it is the source of truth for this repo.
 
 ## Commit message structure
 
@@ -37,7 +37,7 @@ Default (used when no `.conform.yml` is present):
 - Limit to 60 characters
 - Lowercase the entire subject line
 - Do not end with punctuation
-- ASCII only: no emojis, no non-ASCII characters whatsoever
+- ASCII only: no emdashes, emojis, or other non-ASCII characters. Use hyphens (-) instead of emdashes
 
 ## Scope rules
 
@@ -52,7 +52,7 @@ Default (used when no `.conform.yml` is present):
 - `assets` covers non-config assets
 - `flake` covers flake.nix structural changes
 - Omit scope when a change is genuinely cross-cutting (touches three or more unrelated areas)
-- The conform hook allows substring matching, so `home` accepts `home-manager`, `homebrew`, etc. — prefer canonical names when possible
+- The conform hook allows substring matching, so `home` accepts `home-manager`, `homebrew`, etc. - prefer canonical names when possible
 
 ## Body rules
 
@@ -61,7 +61,7 @@ Default (used when no `.conform.yml` is present):
 - Capitalise the first letter of each bullet point
 - Write each bullet in imperative mood
 - Keep bullet points short and clear
-- ASCII only: no emojis, no non-ASCII characters whatsoever
+- ASCII only: no emdashes, emojis, or other non-ASCII characters. Use hyphens (-) instead of emdashes
 - Omit the body entirely if it adds no useful detail beyond the subject
 
 ## Breaking changes
@@ -85,7 +85,7 @@ Before writing the commit message:
 
 ## Pre-commit hooks
 
-Pre-commit hooks exist for a reason — always run them before committing. Never bypass with `--no-verify`.
+Pre-commit hooks exist for a reason - always run them before committing. Never bypass with `--no-verify`.
 
 1. If `prek` is available, run `prek run` against the staged files before committing
 2. If hooks fail, fix the issues, re-stage, and re-run before proceeding
@@ -94,7 +94,7 @@ Pre-commit hooks exist for a reason — always run them before committing. Never
 
 ## Signing commits
 
-Always sign commits with `-S`. This applies to every `git commit` and `git commit --amend` invocation. If signing fails because the key is locked, unlock the key and retry — do not fall back to unsigned.
+Always sign commits with `-S`. This applies to every `git commit` and `git commit --amend` invocation. If signing fails because the key is locked, unlock the key and retry - do not fall back to unsigned.
 
 ## Amending commits
 
@@ -112,7 +112,7 @@ Always pass `--committer-date-is-author-date` to preserve original author timest
 
 ### Pre-commit hooks during rebase
 
-Run pre-commit hooks after each replayed commit using `--exec`. Only check files changed by that specific commit — not the entire tree — so pre-existing issues in unrelated files don't block the rebase:
+Run pre-commit hooks after each replayed commit using `--exec`. Only check files changed by that specific commit - not the entire tree - so pre-existing issues in unrelated files don't block the rebase:
 
 ```bash
 GIT_EDITOR=true GIT_SEQUENCE_EDITOR=true git rebase --committer-date-is-author-date \
