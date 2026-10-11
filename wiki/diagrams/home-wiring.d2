@@ -1,0 +1,29 @@
+direction: right
+
+host: "hosts/<host>/home-manager/default.nix" {
+  args: "nixbox, macbox only:\n_module.args.sshSecretsPath,\natuinSecretsPath"
+}
+
+entry: "user entry file\njonas/linux.nix | jonas/darwin.nix\n| root/ds920p.nix"
+
+common: "home/users/<user>/common.nix"
+
+shared: "home/users/shared.nix"
+
+mods: "imported modules\nmodules/common (all hosts)\nmodules/linux (nixbox)\nmodules/darwin/aerospace (macbox)\nhosts/macbox/home-manager/{karabiner,nightlight}.nix\n+ nixvim HM module" {
+  shape: package
+}
+
+host -> entry: "imports"
+entry -> common: "imports"
+common -> shared: "imports"
+host -> mods: "imports"
+entry -> mods: "sets module.*" {
+  style.stroke-dash: 3
+}
+common -> mods: "sets module.*" {
+  style.stroke-dash: 3
+}
+shared -> mods: "sets module.*" {
+  style.stroke-dash: 3
+}

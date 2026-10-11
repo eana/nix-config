@@ -1,0 +1,71 @@
+direction: down
+
+flake: "flake.nix (flake-parts)" {
+  shape: package
+  lib: "lib.nix\nmodulesFromDir"
+  inputs: "inputs\nnixpkgs (unstable) + followers,\ndisko, nixvim, nix-homebrew, taps"
+}
+
+dev: "dev/flake-module.nix\ndevshell, treefmt, pre-commit,\nversion-check, host packages"
+
+configurations: "configurations/" {
+  cfg_nixbox: "nixbox\nnixosSystem"
+  cfg_macbox: "macbox\ndarwinSystem"
+  cfg_nasbox: "nasbox\nhomeManagerConfiguration"
+}
+
+hosts: "hosts/" {
+  hosts_shared: "shared/\nhome-manager, nix, secrets,\nenvironment, packages, variables\n(+ system/linux, system/darwin)"
+  host_nixbox: "nixbox/\nsystem/*, disko, gdm,\nhardware-configuration, home-manager"
+  host_macbox: "macbox/\nsystem/* (homebrew, dns-switcher),\nhome-manager"
+  host_nasbox: "nasbox/\nnix, home-manager"
+}
+
+home: "home/users/" {
+  user_jonas: "jonas/\nlinux.nix | darwin.nix -> common.nix"
+  user_root: "root/\nds920p.nix -> common.nix"
+  user_shared: "shared.nix"
+}
+
+modules: "modules/" {
+  mod_common: "common/"
+  mod_linux: "linux/"
+  mod_darwin: "darwin/aerospace"
+}
+
+assets: "assets/\ndotfiles + opencode skills"
+
+secrets: "secrets/*.age" {
+  shape: cylinder
+}
+
+outputs: "packages.<system>.<host>" {
+  shape: package
+}
+
+flake -> dev: "imports"
+flake -> configurations: "imports"
+flake.lib -> modules.mod_common: "flake.homeModules"
+dev -> outputs: "defines"
+configurations.cfg_nixbox -> hosts.host_nixbox
+configurations.cfg_macbox -> hosts.host_macbox
+configurations.cfg_nasbox -> hosts.host_nasbox
+hosts.host_nixbox -> hosts.hosts_shared: "imports"
+hosts.host_macbox -> hosts.hosts_shared: "imports"
+hosts.host_nixbox -> home.user_jonas
+hosts.host_macbox -> home.user_jonas
+hosts.host_nasbox -> home.user_root
+home.user_jonas -> home.user_shared
+home.user_root -> home.user_shared
+hosts.host_nixbox -> modules.mod_common: "HM"
+hosts.host_nixbox -> modules.mod_linux: "HM (minus libvirt)\n+ libvirt at system level"
+hosts.host_macbox -> modules.mod_common: "HM"
+hosts.host_macbox -> modules.mod_darwin: "HM (manual)"
+hosts.host_nasbox -> modules.mod_common: "HM"
+home -> modules: "sets module.* options" {
+  style.stroke-dash: 3
+}
+modules.mod_common -> assets: "relative paths"
+modules.mod_linux -> assets: "relative paths"
+secrets -> hosts.hosts_shared: "agenix"
+secrets -> home.user_root: "age --decrypt\n(activation)"
