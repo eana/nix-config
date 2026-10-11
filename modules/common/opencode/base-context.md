@@ -7,6 +7,12 @@
 - Technical terms stay exact. Code blocks unchanged.
 - Pattern: [thing] [action] [reason]. [next step].
 
+# Generated content
+
+- All generated content MUST use only ASCII characters - no emdashes, emojis, or other non-ASCII characters.
+- Use hyphens (-) instead of emdashes, spell out symbols, and keep all text ASCII-safe.
+- Applies to markdown, diagrams, commit messages, code comments, and any file you write.
+
 # Hacks
 
 - Mark every hack with `HACK:` comment.

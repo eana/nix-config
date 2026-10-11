@@ -47,6 +47,13 @@ description: >
 - No trailing whitespace; files must end with newline
 - Code fences with language tags for commands and config
 
+## Character set
+
+- All generated content MUST use only ASCII characters - no emdashes, emojis, or other non-ASCII characters.
+- Use hyphens (-) instead of emdashes, spell out symbols, and keep all text ASCII-safe.
+- Applies to markdown, diagrams, commit messages, code comments, and any file you write.
+- To check, search for the non-ASCII range with `rg '[^\x00-\x7F]' <path>` (BSD grep on macOS lacks `-P`).
+
 ## Visual aids
 
 Reference diagrams and screenshots to support explanations when helpful.
