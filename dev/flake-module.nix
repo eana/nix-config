@@ -9,6 +9,7 @@
     {
       config,
       pkgs,
+      lib,
       system,
       ...
     }:
@@ -30,7 +31,7 @@
       };
 
       treefmt = import ./treefmt.nix { inherit pkgs; };
-      pre-commit = import ./hooks.nix { inherit pkgs version-check; };
+      pre-commit = import ./hooks.nix { inherit pkgs lib version-check; };
 
       # The flake only supports x86_64-linux and aarch64-darwin, so the
       # linux hosts and the darwin host are mutually exclusive per system.
