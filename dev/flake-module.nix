@@ -39,7 +39,7 @@
         pre-commit = config.pre-commit.settings.package;
         pre-commit-install = pkgs.writeShellScriptBin "pre-commit-install" ''
           #!${pkgs.runtimeShell}
-          ${pkgs.prek}/bin/prek install -f --hook-type pre-commit --hook-type pre-push
+          ${pkgs.prek}/bin/prek install -f --hook-type pre-commit --hook-type pre-push --hook-type commit-msg
         '';
         inherit version-check repo-wiki;
       }

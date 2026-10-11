@@ -5,7 +5,7 @@
     hooks = {
       check-json.enable = true;
       check-xml.enable = true;
-      conform.enable = false;
+      conform.enable = true;
       end-of-file-fixer = {
         enable = true;
         excludes = [ "\\.age$" ];

@@ -41,11 +41,18 @@ Default (used when no `.conform.yml` is present):
 
 ## Scope rules
 
-- Use the name of the most directly affected component: module name, host name, or directory
-- Use `deps` for dependency or flake input updates
-- Use `flake` for structural changes to `flake.nix`
+- Use one of the area categories defined in `.conform.yaml`: `module`, `deps`, `devshell`, `configurations`, `home`, `hosts`, `secrets`, `assets`, `flake`
+- `module` covers changes in `modules/` directory
+- `deps` covers flake.lock and dependency updates
+- `devshell` covers dev environment and dev workflows
+- `configurations` covers per-host flake module configurations
+- `home` covers home-manager user configurations
+- `hosts` covers NixOS/darwin system configurations
+- `secrets` covers secret management
+- `assets` covers non-config assets
+- `flake` covers flake.nix structural changes
 - Omit scope when a change is genuinely cross-cutting (touches three or more unrelated areas)
-- If `.conform.yml` defines allowed scopes, use only those
+- The conform hook allows substring matching, so `home` accepts `home-manager`, `homebrew`, etc. — prefer canonical names when possible
 
 ## Body rules
 
@@ -71,6 +78,7 @@ Default (used when no `.conform.yml` is present):
 ## Staging hygiene
 
 Before writing the commit message:
+
 1. Stage only files that were explicitly changed during the session; never stage unrelated pre-existing modifications
 2. Avoid `git add .` or `git add -A` unless every change in the working tree is intentional and part of this commit
 3. Run `git diff --staged` and confirm the staged diff matches the intended change before proceeding
