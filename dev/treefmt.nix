@@ -3,7 +3,10 @@
   programs = {
     # keep-sorted start block=yes
     keep-sorted.enable = true;
-    mdformat.enable = true;
+    mdformat = {
+      enable = true;
+      plugins = ps: [ ps.mdformat-frontmatter ];
+    };
     nixfmt = {
       enable = true;
       package = pkgs.nixfmt;
@@ -18,7 +21,8 @@
     # keep-sorted end
   };
 
-  # SKILL.md files contain YAML frontmatter that mdformat misinterprets as
-  # horizontal rules and headings.  Exclude them from Markdown formatting.
+  # SKILL.md files are left untouched: mdformat would reflow their bodies and
+  # re-serialize their YAML frontmatter (quoting, block scalars). The
+  # frontmatter plugin above keeps wiki/ page frontmatter intact.
   settings.formatter.mdformat.excludes = [ "**/SKILL.md" ];
 }
