@@ -24,7 +24,7 @@
     {
       # Must use _module.args.pkgs (not a let binding) so submodules
       # like dev-flake's devshell resolve pkgs through the module
-      # system. No reference to the parameter pkgs — import fresh.
+      # system. No reference to the parameter pkgs - import fresh.
       _module.args.pkgs = import inputs.nixpkgs {
         inherit system;
         config.allowUnfree = true;

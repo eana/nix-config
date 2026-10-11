@@ -53,7 +53,7 @@ in
               description = ''
                 Path to the SSH private key used for git operations in repos matching
                 this identity. When null, defaults to ~/.ssh/id_ed25519.
-                The key file is not managed by this module — only the path is referenced.
+                The key file is not managed by this module - only the path is referenced.
               '';
             };
           };

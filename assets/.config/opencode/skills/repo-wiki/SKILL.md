@@ -20,14 +20,14 @@ Generate or refresh markdown wiki pages documenting a repository's architecture.
 
 ```
 wiki/
-├── index.md                          # architecture overview
-├── diagrams/                         # ALL diagrams here (source + rendered)
-│   ├── architecture.d2               # D2 source
-│   └── architecture.svg              # rendered SVG
-├── unit-a/
-│   └── index.md
-└── unit-b/
-    └── index.md
+|-- index.md                          # architecture overview
+|-- diagrams/                         # ALL diagrams here (source + rendered)
+|   |-- architecture.d2               # D2 source
+|   `-- architecture.svg              # rendered SVG
+|-- unit-a/
+|   `-- index.md
+`-- unit-b/
+    `-- index.md
 ```
 
 Key rules:
@@ -53,10 +53,10 @@ The root unit (unit name `.`, detected from top-level files like `README.md`) do
 
 ```
 .wiki-cache/
-├── index.json           # chunk metadata: unit, file, line range, content hash
-├── vectors.bin          # raw float32 embeddings (or sqlite-vec / LanceDB file)
-├── manifest.json        # owned by repo-wiki-index: last commit, model, dim
-└── skill-config.json    # owned by this skill: tunables like the semantic-skip threshold
+|-- index.json           # chunk metadata: unit, file, line range, content hash
+|-- vectors.bin          # raw float32 embeddings (or sqlite-vec / LanceDB file)
+|-- manifest.json        # owned by repo-wiki-index: last commit, model, dim
+`-- skill-config.json    # owned by this skill: tunables like the semantic-skip threshold
 ```
 
 `manifest.json` is written by `repo-wiki-index` and never by this skill. Skill-level tunables go in `skill-config.json`, which the indexer does not read or write. Do NOT store skill state in `manifest.json` - Phase 0 overwrites it on every run.

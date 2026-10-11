@@ -73,7 +73,7 @@ in
         customHosts // globalBlock;
     };
 
-    # Linux — path unit re-fires the service whenever agenix rewrites the secret
+    # Linux - path unit re-fires the service whenever agenix rewrites the secret
     systemd.user.paths.ssh-secret-provision =
       mkIf (pkgs.stdenv.hostPlatform.isLinux && cfg.secretsFile != null)
         {

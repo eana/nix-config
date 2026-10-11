@@ -1,7 +1,7 @@
 ---
 name: flake-parts
 description: >
-  Use when working with flake-parts or dev-flake — structuring flakes, defining
+  Use when working with flake-parts or dev-flake - structuring flakes, defining
   perSystem outputs, writing reusable flake modules, using withSystem or
   moduleWithSystem, exporting flakeModules, setting up dev environments with
   dev-flake, or debugging flake-parts evaluation.
@@ -66,7 +66,7 @@ perSystem = { system, ... }: {
 };
 ```
 
-## withSystem — access per-system config from top level
+## withSystem - access per-system config from top level
 
 Use `withSystem` to reference per-system packages from top-level module scope
 (e.g. when building `nixosConfigurations`):
@@ -82,7 +82,7 @@ Use `withSystem` to reference per-system packages from top-level module scope
 }
 ```
 
-## moduleWithSystem — inject perSystem args into NixOS modules
+## moduleWithSystem - inject perSystem args into NixOS modules
 
 Wrap a NixOS module to receive per-system args. The target system is inferred
 from the module's own `pkgs` or `system` arg:
@@ -118,7 +118,7 @@ Expose reusable flake-parts modules under `flake.flakeModules`:
 }
 ```
 
-Dogfooding pattern — use your own module and export it:
+Dogfooding pattern - use your own module and export it:
 
 ```nix
 let myModule = ./flake-module.nix;
@@ -173,10 +173,10 @@ option surface. All features default to enabled.
 
 ### What it wires up automatically
 
-- `devShells.default` — named devshell with pre-commit installed on entry;
+- `devShells.default` - named devshell with pre-commit installed on entry;
   `treefmt` and `pre-commit` available as shell commands
-- `checks.pre-commit` — all configured pre-commit hooks as a flake check
-- `checks.treefmt` — treefmt check (only when pre-commit is disabled, to avoid
+- `checks.pre-commit` - all configured pre-commit hooks as a flake check
+- `checks.treefmt` - treefmt check (only when pre-commit is disabled, to avoid
   double-checking; otherwise treefmt runs through pre-commit)
 - Default hooks enabled: `deadnix`, `statix`
 
@@ -212,7 +212,7 @@ option surface. All features default to enabled.
       dev.name = "my-project";
 
       perSystem = { config, pkgs, ... }: {
-        # formatter is not set automatically — wire it up explicitly
+        # formatter is not set automatically - wire it up explicitly
         formatter = config.treefmt.programs.nixfmt.package;
         treefmt.programs.nixfmt = {
           enable = true;
@@ -228,7 +228,7 @@ option surface. All features default to enabled.
 Isolate dev dependencies in `./dev/` so they don't pollute the main flake's
 closure. Use flake-parts `partitions` in the root flake to wire it in.
 
-**`./dev/flake.nix`** — inputs only, no outputs:
+**`./dev/flake.nix`** - inputs only, no outputs:
 
 ```nix
 {
@@ -257,7 +257,7 @@ closure. Use flake-parts `partitions` in the root flake to wire it in.
 }
 ```
 
-**Root `flake.nix`** — wire in via partitions:
+**Root `flake.nix`** - wire in via partitions:
 
 ```nix
 imports = [ inputs.flake-parts.flakeModules.partitions ];
