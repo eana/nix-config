@@ -4,7 +4,7 @@ _:
   programs.nixvim.plugins.bufferline = {
     enable = true;
     settings.options = {
-      separatorStyle = "slant"; # “slant”, “padded_slant”, “slope”, “padded_slope”, “thick”, “thin”
+      separatorStyle = "slant"; # "slant", "padded_slant", "slope", "padded_slope", "thick", "thin"
       offsets = [
         {
           filetype = "neo-tree";

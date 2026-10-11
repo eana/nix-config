@@ -111,9 +111,9 @@ let
     set-option -sa terminal-features ',xterm-256color:RGB'
 
     # Make home/end keys to work
-    # ❯ tput khome | cat -v; echo
+    # $ tput khome | cat -v; echo
     # ^[[1~
-    # ❯ tput kend | cat -v; echo
+    # $ tput kend | cat -v; echo
     # ^[[4~
     bind-key -n Home send Escape "[1~"
     bind-key -n End send Escape "[4~"

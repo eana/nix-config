@@ -7,7 +7,7 @@
 let
   cfg = config.module.nixvim;
 
-  # Shared pin — see modules/common/topiary-nushell.nix
+  # Shared pin - see modules/common/topiary-nushell.nix
   nu-scm = pkgs.callPackage ../../topiary-nushell.nix { };
 in
 {

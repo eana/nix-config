@@ -45,7 +45,7 @@ let
       return $rc
     }
 
-    # HACK: home-network detection cannot use SSID — macOS 26+ removed
+    # HACK: home-network detection cannot use SSID - macOS 26+ removed
     #   `networksetup -getairportnetwork` and redacts SSID in `wdutil info`
     #   and `system_profiler` output. Gateway MAC stays readable (root-gated,
     #   and this daemon runs as root). The home-ssid branch below is kept only

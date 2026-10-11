@@ -95,7 +95,7 @@ Steps:
 1. Commit the updated `secrets.nix` and re-encrypted `.age` files, then run
    `sudo darwin-rebuild switch --flake .#macbox`.
 
-**If secrets are still missing after a successful switch**, it is a launchd registration timing issue — the `activate-agenix` daemon was not reloaded on the first boot. Fix it without a full rebuild:
+**If secrets are still missing after a successful switch**, it is a launchd registration timing issue - the `activate-agenix` daemon was not reloaded on the first boot. Fix it without a full rebuild:
 
 ```shell
 sudo launchctl kickstart -k system/org.nixos.activate-agenix

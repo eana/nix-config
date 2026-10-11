@@ -1,6 +1,6 @@
 # Canonical Tokyo Night color palette.
-# hex: raw hex strings (no '#') — used by foot and similar terminals
-# withHash: '#'-prefixed strings — used by kitty and similar terminals
+# hex: raw hex strings (no '#') - used by foot and similar terminals
+# withHash: '#'-prefixed strings - used by kitty and similar terminals
 let
   base = {
     foreground = "c0caf5";
