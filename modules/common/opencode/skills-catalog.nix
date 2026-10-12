@@ -8,8 +8,11 @@
     "nix-coding"
     "nix-config"
     "repo-wiki"
-    "skill-creator"
     "style"
+  ];
+
+  anthropic = [
+    "skill-creator"
   ];
 
   superpowers = [

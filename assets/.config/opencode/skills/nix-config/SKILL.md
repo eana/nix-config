@@ -1,6 +1,6 @@
 ---
 name: nix-config
-description: Coding conventions, module patterns, and repository structure for this Nix config repo
+description: This repo is a NixOS + nix-darwin + home-manager config. Home-manager modules live in modules/common/, modules/linux/, or modules/darwin/; they are wired per user and platform in home/users/<user>/<platform>.nix, exposed through homeModules in flake.nix, and hosts live in hosts/<hostname>/. Formatting and pre-commit tooling live in dev/. Load this skill whenever the task involves this repository's layout: deciding where a new module, host, or user belongs; following the standard module pattern; wiring modules into the flake; adding packages or tools to an environment; or editing the opencode skills wiring under modules/common/opencode/. Use it for questions about this repo's conventions even if the user doesn't say the word 'repo'. Do not use it for general home-manager or NixOS setup, flake-parts patterns, eval/build debugging, or unrelated projects.
 compatibility: opencode
 ---
 

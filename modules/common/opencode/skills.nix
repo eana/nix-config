@@ -20,11 +20,25 @@ let
     hash = "sha256-ba6eKvREZ1a5WPKiXpWUUKD1cpAz7h0OF0hpIyTYXdY=";
   };
 
+  anthropicSkillsSrc = pkgs.fetchFromGitHub {
+    owner = "anthropics";
+    repo = "skills";
+    rev = "dbd4588f9e1033efb41dad4bef2f7947c8993d44";
+    hash = "sha256-+UIqBnzyeIOvJSKYaDaE3GYPEpLw7qQqyUw5S971AfU=";
+  };
+
   localSkills = builtins.listToAttrs (
     map (name: {
       inherit name;
       value = ../../../assets/.config/opencode/skills/${name};
     }) catalog.local
+  );
+
+  anthropicSkills = builtins.listToAttrs (
+    map (name: {
+      name = "skill-creator";
+      value = "${anthropicSkillsSrc}/skills/${name}";
+    }) catalog.anthropic
   );
 
   superpowersSkills = builtins.listToAttrs (
@@ -41,11 +55,12 @@ let
     }) catalog.social
   );
 
-  fullCatalog = localSkills // superpowersSkills // socialSkills;
+  fullCatalog = localSkills // anthropicSkills // superpowersSkills // socialSkills;
 
   groupMembers = {
     superpowers = builtins.attrNames superpowersSkills;
     social = builtins.attrNames socialSkills;
+    anthropic = builtins.attrNames anthropicSkills;
   };
 
   expandedNames = lib.unique (

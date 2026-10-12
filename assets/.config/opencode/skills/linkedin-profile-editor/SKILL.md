@@ -1,6 +1,7 @@
 ---
 name: linkedin-profile-editor
-description: Use this whenever the user asks to edit, update, change, or fix anything on their LinkedIn profile (headline, About/summary, experience entries, education, skills, etc.) via a Playwright-controlled browser. Also use this if the user asks to "update my LinkedIn" or pastes new bio/headline text and wants it reflected on their profile, even if they don't mention Playwright by name. LinkedIn has no undo for profile edits, so this skill enforces confirming the exact field and new value with the user before ever submitting a change, reading the actual page before acting instead of guessing selectors, and verifying the change landed afterward.
+description: Use when editing, updating, or fixing LinkedIn profile fields (headline, About/summary, experience, education, or skills) via Playwright-controlled browser automation, especially when the user asks to update their LinkedIn profile or pastes new bio/headline text.
+compatibility: opencode
 ---
 
 # LinkedIn Profile Editor

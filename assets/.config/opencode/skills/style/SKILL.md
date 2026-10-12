@@ -1,9 +1,7 @@
 ---
 name: style
-description: >
-  Use when writing documentation, READMEs, or code comments - enforces
-  tense consistency, pronoun usage, technical term precision, and
-  structure conventions for this repo
+description: Use for writing or reviewing documentation and prose in any project: READMEs, wiki pages, guides, doc comments, release notes, and code comments. It enforces a consistent house style - verb tense rules (present for descriptions, imperative for commands and steps, past for completed actions), pronoun preference (second person for guidance, third person for system behavior), and precise technical terminology. Load it whenever the user wants new writing to stay consistent with existing docs, a draft reviewed for tone, tense, or terminology, a section rewritten or normalized, or docstrings and comments checked against project conventions. Use it even when the user just says 'make this read like the rest of the docs'. Not for translating, summarizing, ad or social copy, API doc generation, or fixing code.
+compatibility: opencode
 ---
 
 ## Verb tense

@@ -1,6 +1,7 @@
 ---
 name: git-commit
-description: Use when writing commit messages, staging changes for commit, or rebasing - enforces conventional commits format, branch protection, staging hygiene, and atomic commits
+description: Use when writing commit messages, staging changes, or rebasing in a Git repository - enforcing conventional commits format, branch protection, staging hygiene, and atomic commits.
+compatibility: opencode
 ---
 
 ## Branching rules
