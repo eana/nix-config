@@ -19,8 +19,8 @@
 # TODO: replace with pkgs.context-mode once it ships a bundled plugin entry.
 let
   zod = fetchurl {
-    url = "https://registry.npmjs.org/zod/-/zod-4.6.5.tgz";
-    hash = "sha256-p4wMUz3jDcHEr8JZrEOsBuOQyw2o0uMurjVTAbULNvw=";
+    url = "https://registry.npmjs.org/zod/-/zod-4.6.6.tgz";
+    hash = "sha256-MSVTYgrILLsl1QUQD7tBweIZs81pec+Tw6G03Vt54Dk=";
   };
 in
 stdenv.mkDerivation (finalAttrs: {
