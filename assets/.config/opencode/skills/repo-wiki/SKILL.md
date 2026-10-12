@@ -1,6 +1,7 @@
 ---
 name: repo-wiki
 description: Use when the user asks to generate, create, or refresh a wiki/architecture documentation for a repository - covers identifying structural units, parallel exploration, and incremental updates that preserve manually-edited pages.
+compatibility: opencode
 ---
 
 # Repo Wiki

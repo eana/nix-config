@@ -1,6 +1,6 @@
 ---
 name: nix-check
-description: Validate, test, and format changes in this Nix config repo. Quick reference for build, check, and maintenance commands.
+description: Use this before committing, pushing, or opening a PR for changes to this Nix config repo. It defines the validation sequence: nix fmt, then the pre-commit hooks (prek run --all-files), then nix flake check, plus the per-host nix build target to verify (hosts under hosts/, e.g. nixbox). Load it whenever the user asks to run checks, format and lint, validate the build, run pre-commit hooks, verify a host config, or asks 'is my branch ready' or 'what should I verify before I push'. Also when they changed flake.nix, host configs, or modules/ and want assurance everything still evaluates and builds. Do not use it for writing or reviewing Nix code style, debugging why a build failed, explaining how nix flake check works, or questions about repo structure.
 compatibility: opencode
 ---
 

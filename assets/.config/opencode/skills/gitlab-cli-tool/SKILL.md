@@ -4,6 +4,7 @@ description: >
   Use when interacting with GitLab via glab - creating/reviewing merge requests, checking pipeline status,
   tracing CI job logs, managing CI/CD variables, or authenticating with self-hosted GitLab or gitlab.com.
   Trigger on any mention of GitLab, MR, merge request, pipeline, CI/CD job, or glab.
+compatibility: opencode
 ---
 
 # GitLab CLI (glab)
