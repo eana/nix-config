@@ -30,6 +30,13 @@ let
     "${cfg.modifier}-alt-t" =
       "exec-and-forget ${pkgs.telegram-desktop}/Applications/Telegram.app/Contents/MacOS/Telegram";
 
+    # OCR screenshot. Prompt for region selection, pipe PNG to tesseract,
+    # then copy recognized text to clipboard. If exact popup timeout matters
+    # later, Hammerspoon's hs.alert.show is leaner than adding heavier bar/HUD
+    # tooling, but osascript keeps this dependency-free for now.
+    "${cfg.modifier}-shift-t" =
+      "exec-and-forget if /usr/sbin/screencapture -i -t png - | ${pkgs.tesseract}/bin/tesseract - - | /usr/bin/pbcopy; then /usr/bin/osascript -e 'display notification \"OCR text copied to clipboard\" with title \"AeroSpace\"'; else /usr/bin/osascript -e 'display notification \"OCR failed or was cancelled\" with title \"AeroSpace\"'; fi";
+
     # Focus. Arrow keys need cmd+alt: Karabiner remaps Home/End to plain
     # cmd+left/right globally (hosts/macbox/home-manager/karabiner.nix), so
     # cmd+arrows would be swallowed and break Home/End in apps. cmd+alt+arrows
