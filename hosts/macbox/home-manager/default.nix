@@ -15,6 +15,7 @@
         ../../../home/users/jonas/darwin.nix
         inputs.nixvim.homeModules.nixvim
         ../../../modules/darwin/aerospace
+        ./file-associations.nix
         ./karabiner.nix
         ./nightlight.nix
       ]
