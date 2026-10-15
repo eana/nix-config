@@ -50,34 +50,60 @@ _:
       vim.api.nvim_create_user_command("CopilotGitMessage", function()
         vim.cmd("normal! GVgg")
         local prompt = [[
-      You are an expert at writing Git commits. Your job is to write a short clear commit message that summarizes the changes
+      ## Conform file
 
-      The commit message should be structured as follows:
+      At the start of any commit workflow, check for `.conform.yml` or `.conform.yaml` in the repo root. If found, read it and extract the allowed types and scopes defined there - those replace the hardcoded defaults below. Obey whatever the conform file specifies; it is the source of truth for this repo.
 
-          <type>(<optional scope>): <description>
+      ## Commit message structure
 
-          [optional body]
+      ```
+      <type>(<optional scope>): <description>
 
-      Rules:
+      [optional body]
 
-      - Commits MUST be prefixed with a type, which consists of one of the following words: build, chore, ci, docs, feat, fix, perf, refactor, style, test
-      - The type feat MUST be used when a commit adds a new feature
-      - The type fix MUST be used when a commit represents a bug fix
-      - An optional scope MAY be provided after a type. A scope is a phrase describing a section of the codebase enclosed in parenthesis, e.g., fix(parser)
-      - A description MUST immediately follow the type/scope prefix. The description is a short summary of the code changes
-      - The subject line MUST be in imperative mood (e.g., add, fix, update)
-      - Try to limit the subject line to 60 characters
-      - Lowercase the subject line
-      - Do not end the subject line with punctuation
+      [optional footer]
+      ```
 
-      Commit body:
+      ## Types
 
-      - The body MUST begin one blank line after the subject line
-      - If a body is included, it MUST use bullet points starting with a hyphen and space
-      - The first letter of each bullet point MUST be capitalized
-      - Each bullet point MUST be written in imperative mood
+      Default (used when no `.conform.yml` is present):
+
+      `build`, `chore`, `ci`, `docs`, `feat`, `fix`, `perf`, `refactor`, `style`, `test`
+
+      ## Subject line rules
+
+      - Type and description are required; scope is optional
+      - Description must immediately follow the type/scope prefix
+      - Write in imperative mood: `add`, `fix`, `update`, `remove`, `rename`
+      - Limit to 60 characters
+      - Lowercase the entire subject line
+      - Do not end with punctuation
+      - ASCII only: no emdashes, emojis, or other non-ASCII characters. Use hyphens (-) instead of emdashes
+
+      ## Scope rules
+
+      - Use one of the area categories defined in `.conform.yaml`: `module`, `deps`, `devshell`, `configurations`, `home`, `hosts`, `secrets`, `assets`, `flake`
+      - `module` covers changes in `modules/` directory
+      - `deps` covers flake.lock and dependency updates
+      - `devshell` covers dev environment and dev workflows
+      - `configurations` covers per-host flake module configurations
+      - `home` covers home-manager user configurations
+      - `hosts` covers NixOS/darwin system configurations
+      - `secrets` covers secret management
+      - `assets` covers non-config assets
+      - `flake` covers flake.nix structural changes
+      - Omit scope when a change is genuinely cross-cutting (touches three or more unrelated areas)
+      - The conform hook allows substring matching, so `home` accepts `home-manager`, `homebrew`, etc. - prefer canonical names when possible
+
+      ## Body rules
+
+      - Leave one blank line between subject and body
+      - Use bullet points starting with `- `
+      - Capitalise the first letter of each bullet point
+      - Write each bullet in imperative mood
       - Keep bullet points short and clear
-      - Omit the body entirely if it does not add useful detail beyond the subject
+      - ASCII only: no emdashes, emojis, or other non-ASCII characters. Use hyphens (-) instead of emdashes
+      - Omit the body entirely if it adds no useful detail beyond the subject
       ]]
 
         vim.cmd.CopilotChat(prompt)
