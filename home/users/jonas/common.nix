@@ -80,8 +80,13 @@
         "opt+right" = "send_text all \\x1bf";
         "cmd+left" = "send_text all \\x1b[1~";
         "cmd+right" = "send_text all \\x1b[4~";
+        # Alt+d / opt+delete delete the word forward (\ed -> kill-word).
+        "opt+d" = "send_text all \\x1bd";
         "opt+delete" = "send_text all \\x1bd";
-        "opt+backspace" = "send_text all \\x1bd";
+        # Alt+backspace (incl. RCtrl+Backspace via Karabiner) deletes the word
+        # back; send ESC DEL so it maps to zsh '\e^?' and nvim <M-BS> instead
+        # of the standard \ed.
+        "opt+backspace" = "send_text all \\x1b\\x7f";
         # Disable macOS secure keyboard entry toggle (default: opt+cmd+s).
         # Secure input blocks other apps from receiving keystrokes, breaking
         # AeroSpace/Karabiner. no_op unbinds the shortcut.

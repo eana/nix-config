@@ -837,7 +837,8 @@ _:
       # RCtrl+arrows reach nvim as <M-b>/<M-f> via kitty (\x1bb/\x1bf in
       # home/users/jonas/common.nix). Unbound, nvim splits the ESC prefix and runs
       # the plain-letter command ('f' = find) instead of a word motion; explicit
-      # binds stop that fallback. RCtrl+Backspace -> <M-d> (kitty opt+backspace).
+      # binds stop that fallback. Alt+d -> <M-d> deletes the word forward;
+      # RCtrl+Backspace -> <M-BS> (kitty opt+backspace, ESC DEL) deletes it back.
       {
         key = "<M-b>";
         mode = [
@@ -871,7 +872,7 @@ _:
         options.desc = "Move word forward (insert mode)";
       }
       {
-        key = "<M-d>";
+        key = "<M-BS>";
         mode = "n";
         action = "\"_db";
         options = {
@@ -881,10 +882,26 @@ _:
         };
       }
       {
-        key = "<M-d>";
+        key = "<M-BS>";
         mode = "i";
         action = "<C-w>";
         options.desc = "Delete word back (insert mode)";
+      }
+      {
+        key = "<M-d>";
+        mode = "n";
+        action = "\"_dw";
+        options = {
+          noremap = true;
+          silent = true;
+          desc = "Delete word forward without yanking";
+        };
+      }
+      {
+        key = "<M-d>";
+        mode = "i";
+        action = "<C-o>de";
+        options.desc = "Delete word forward (insert mode)";
       }
     ];
   };

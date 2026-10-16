@@ -96,9 +96,10 @@ in
         bindkey '\e[F' end-of-line
         bindkey '\e[7~' beginning-of-line
         bindkey '\e[8~' end-of-line
-        # Bind esc + backspace / esc + d to delete the word before the cursor
+        # Bind esc + backspace to delete the word before the cursor
         bindkey '\e^?' backward-kill-word
-        bindkey '\ed' backward-kill-word
+        # Bind esc + d to delete the word after the cursor
+        bindkey '\ed' kill-word
 
         source ${pkgs.zsh-powerlevel10k}/share/zsh-powerlevel10k/powerlevel10k.zsh-theme
         [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
