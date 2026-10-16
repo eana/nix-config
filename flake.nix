@@ -2,7 +2,7 @@
   description = "Nix flake configuration";
 
   inputs = {
-    nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
+    nixpkgs.url = "tarball+https://channels.nixos.org/nixos-unstable/nixexprs.tar.zst";
 
     dev-flake = {
       url = "github:terlar/dev-flake";
