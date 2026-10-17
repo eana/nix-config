@@ -13,6 +13,7 @@ in
       "firefox"
       "google-chrome"
       "karabiner-elements"
+      "markedit"
       "protonvpn"
       "vlc"
       "xnviewmp"
