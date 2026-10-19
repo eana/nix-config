@@ -132,9 +132,6 @@ in
       nix-tree # Visualize Nix dependencies
       oath-toolkit # OATH one-time password tool
 
-      # Nix Tools
-      cachix # Binary cache client for Nix
-
       # Emulators
       fuse-emulator # ZX Spectrum (Z80) emulator
 

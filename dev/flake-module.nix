@@ -77,13 +77,13 @@
         ];
         packages =
           (with pkgs; [
+            cachix
             deadnix
             nixfmt
             nix-prefetch-github
             python3
             statix
           ])
-          ++ pkgs.lib.optionals (system == "x86_64-linux") [ pkgs.cachix ]
           ++ [
             config.packages.version-check
             config.packages.repo-wiki
