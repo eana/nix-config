@@ -10,8 +10,8 @@ let
   src = fetchFromGitHub {
     owner = "Taxuspt";
     repo = "garmin_mcp";
-    rev = "202913fde53c9d15890d661fc9748dc6d0d5af52";
-    hash = "sha256-BpsTEhD0m1xaUlQExJuzsAdoS2BP9hkf56/zJfvawyI=";
+    rev = "a2ca5fcac34524b83814fe2fcf3d479f8a75983f";
+    hash = "sha256-+feBYmZs6S+xt0YfelHTUQqql2qXHBy9krvNHBajCsc=";
   };
 
   workspace = uv2nix.lib.workspace.loadWorkspace {
