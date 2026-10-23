@@ -84,6 +84,8 @@ in
       enable = true;
       servers = import ./mcp.nix {
         inherit lib pkgs garmin-mcp;
+        codebaseMemory = cfg.codebaseMemory.package;
+        enableCodebaseMemory = cfg.codebaseMemory.enable;
         enablePlaywright = cfg.playwright.enable;
         enableGarmin = cfg.garmin.enable;
       };

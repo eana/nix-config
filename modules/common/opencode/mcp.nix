@@ -2,6 +2,8 @@
   lib,
   pkgs,
   garmin-mcp,
+  codebaseMemory,
+  enableCodebaseMemory,
   enablePlaywright ? false,
   enableGarmin ? false,
 }:
@@ -9,6 +11,11 @@ let
   inherit (lib) filterAttrs optionalAttrs;
 in
 filterAttrs (_n: v: v != { }) {
+  codebase-memory = optionalAttrs enableCodebaseMemory {
+    command = "${codebaseMemory}/bin/codebase-memory-mcp";
+    enabled = true;
+  };
+
   k8s = optionalAttrs (pkgs ? mcp-k8s-go) {
     command = "${pkgs.mcp-k8s-go}/bin/mcp-k8s-go";
     enabled = false;

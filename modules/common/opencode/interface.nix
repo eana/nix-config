@@ -30,6 +30,23 @@ in
       description = "The opencode package to use.";
     };
 
+    codebaseMemory = {
+      enable = mkEnableOption "codebase-memory-mcp MCP server" // {
+        default = true;
+      };
+
+      package = mkOption {
+        type = types.package;
+        default = pkgs.callPackage ./packages/codebase-memory-mcp.nix { };
+        defaultText = literalExpression "callPackage ./packages/codebase-memory-mcp.nix { }";
+        description = ''
+          The codebase-memory-mcp MCP server package. Built locally with
+          mimalloc's global allocator override disabled; glibc 2.44 crashes
+          in mi_free during libstdc++ global init otherwise.
+        '';
+      };
+    };
+
     extraSkills = mkOption {
       type = types.attrsOf types.path;
       default = { };
