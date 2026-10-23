@@ -19,7 +19,7 @@
       '';
       # Same package the opencode HM module installs on hosts; exposed here
       # so the devshell can index this repo without duplicating the scripts.
-      repo-wiki = pkgs.callPackage ../modules/common/opencode/packages/repo-wiki.nix { };
+      repo-wiki = pkgs.callPackage ../modules/common/opencode/packages/repo-wiki { };
     in
     {
       # Must use _module.args.pkgs (not a let binding) so submodules

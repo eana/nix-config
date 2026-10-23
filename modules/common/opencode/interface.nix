@@ -37,8 +37,8 @@ in
 
       package = mkOption {
         type = types.package;
-        default = pkgs.callPackage ./packages/codebase-memory-mcp.nix { };
-        defaultText = literalExpression "callPackage ./packages/codebase-memory-mcp.nix { }";
+        default = pkgs.callPackage ./packages/codebase-memory-mcp { };
+        defaultText = literalExpression "callPackage ./packages/codebase-memory-mcp { }";
         description = ''
           The codebase-memory-mcp MCP server package. Built locally with
           mimalloc's global allocator override disabled; glibc 2.44 crashes
@@ -64,8 +64,8 @@ in
     contextMode = {
       package = mkOption {
         type = types.package;
-        default = pkgs.callPackage ./packages/context-mode.nix { };
-        defaultText = literalExpression "callPackage ./packages/context-mode.nix { }";
+        default = pkgs.callPackage ./packages/context-mode { };
+        defaultText = literalExpression "callPackage ./packages/context-mode { }";
         description = ''
           The context-mode plugin package opencode loads. Built locally from
           the npm tarball, not pkgs.context-mode (pinned to 1.0.143, no

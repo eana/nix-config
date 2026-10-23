@@ -52,17 +52,17 @@ let
 
   baseContext = builtins.readFile ./base-context.md;
   inherit (pkgs) callPackage;
-  garmin-mcp = callPackage ./packages/garmin-mcp.nix {
+  garmin-mcp = callPackage ./packages/garmin-mcp {
     inherit (inputs) uv2nix pyproject-nix pyproject-build-systems;
   };
 
   # Bundles the repo-wiki SKILL.md plus its index/query tools. Installed as a
   # normal package (commands on PATH) and pointed at as the skill directory,
   # so the tools work on any repo, not just inside this flake's devshell.
-  repo-wiki = callPackage ./packages/repo-wiki.nix { };
+  repo-wiki = callPackage ./packages/repo-wiki { };
   repoWikiEnabled = lib.elem "repo-wiki" cfg.skills.enabled;
 
-  codebaseMemoryOpenCode = callPackage ./packages/codebase-memory-opencode.nix {
+  codebaseMemoryOpenCode = callPackage ./packages/codebase-memory-opencode {
     codebase-memory-mcp = cfg.codebaseMemory.package;
   };
 in
