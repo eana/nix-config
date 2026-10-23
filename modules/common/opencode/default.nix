@@ -164,6 +164,7 @@ in
         skillsConfig
         // lib.optionalAttrs cfg.codebaseMemory.enable {
           codebase-memory = "${codebaseMemoryOpenCode}/share/opencode/skills/codebase-memory";
+          cbm-new-project = ../../../assets/.config/opencode/skills/cbm-new-project;
         }
         // lib.optionalAttrs repoWikiEnabled { repo-wiki = "${repo-wiki}"; }
         // lib.optionalAttrs cfg.playwright.enable {
