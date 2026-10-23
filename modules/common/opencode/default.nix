@@ -8,6 +8,8 @@
 let
   inherit (lib)
     mkIf
+    optional
+    optionalString
     ;
   cfg = config.module.opencode;
   custom = config.custom or { };
@@ -59,6 +61,10 @@ let
   # so the tools work on any repo, not just inside this flake's devshell.
   repo-wiki = callPackage ./packages/repo-wiki.nix { };
   repoWikiEnabled = lib.elem "repo-wiki" cfg.skills.enabled;
+
+  codebaseMemoryOpenCode = callPackage ./packages/codebase-memory-opencode.nix {
+    codebase-memory-mcp = cfg.codebaseMemory.package;
+  };
 in
 {
   imports = [ ./interface.nix ];
@@ -76,8 +82,30 @@ in
     ++ lib.optionals cfg.garmin.enable [ garmin-mcp ]
     ++ lib.optional repoWikiEnabled repo-wiki;
 
-    xdg.configFile."snip/config.toml" = mkIf cfg.snip.enable {
-      source = ../../../assets/.config/snip/config.toml;
+    xdg.configFile = {
+      "snip/config.toml" = mkIf cfg.snip.enable {
+        source = ../../../assets/.config/snip/config.toml;
+      };
+
+      # HACK: programs.opencode.agents only treats Nix path values as file
+      # sources; a store path string is written as inline text. Install the
+      # generated profiles through xdg.configFile instead.
+      # TODO: switch to programs.opencode.agents when HM accepts store paths.
+      "opencode/agents/codebase-memory-scout.md" =
+        mkIf (cfg.codebaseMemory.enable && cfg.codebaseMemory.agents.enable)
+          {
+            source = "${codebaseMemoryOpenCode}/share/opencode/agents/codebase-memory-scout.md";
+          };
+      "opencode/agents/codebase-memory.md" =
+        mkIf (cfg.codebaseMemory.enable && cfg.codebaseMemory.agents.enable)
+          {
+            source = "${codebaseMemoryOpenCode}/share/opencode/agents/codebase-memory.md";
+          };
+      "opencode/agents/codebase-memory-auditor.md" =
+        mkIf (cfg.codebaseMemory.enable && cfg.codebaseMemory.agents.enable)
+          {
+            source = "${codebaseMemoryOpenCode}/share/opencode/agents/codebase-memory-auditor.md";
+          };
     };
 
     programs.mcp = {
@@ -106,7 +134,11 @@ in
       }
       // import ./permissions.nix { enableSnip = cfg.snip.enable; }
       // {
-        inherit (pluginConfig) plugin;
+        plugin =
+          pluginConfig.plugin
+          ++ optional (
+            cfg.codebaseMemory.enable && cfg.codebaseMemory.plugin.enable
+          ) "${codebaseMemoryOpenCode}/share/opencode/plugins/cbm-augment.ts";
       };
 
       tui = {
@@ -121,10 +153,18 @@ in
         };
       };
 
-      context = baseContext + cfg.extraContext;
+      # Keep codebase-memory-context.md in sync with agent_instructions_content
+      # in the pinned codebase-memory-mcp source.
+      context =
+        baseContext
+        + optionalString cfg.codebaseMemory.enable (builtins.readFile ./codebase-memory-context.md)
+        + cfg.extraContext;
 
       skills =
         skillsConfig
+        // lib.optionalAttrs cfg.codebaseMemory.enable {
+          codebase-memory = "${codebaseMemoryOpenCode}/share/opencode/skills/codebase-memory";
+        }
         // lib.optionalAttrs repoWikiEnabled { repo-wiki = "${repo-wiki}"; }
         // lib.optionalAttrs cfg.playwright.enable {
           linkedin-profile-editor = ../../../assets/.config/opencode/skills/linkedin-profile-editor;

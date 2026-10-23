@@ -45,6 +45,14 @@ in
           in mi_free during libstdc++ global init otherwise.
         '';
       };
+
+      agents.enable = mkEnableOption "codebase-memory Scout/Verify/Auditor OpenCode subagents" // {
+        default = true;
+      };
+
+      plugin.enable = mkEnableOption "codebase-memory OpenCode augmentation plugin" // {
+        default = true;
+      };
     };
 
     extraSkills = mkOption {
