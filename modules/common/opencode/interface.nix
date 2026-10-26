@@ -90,6 +90,10 @@ in
       enable = mkEnableOption "snip shell-command recording plugin for opencode";
     };
 
+    ponytail = {
+      enable = mkEnableOption "ponytail lazy-senior-dev plugin for opencode";
+    };
+
     playwright = {
       enable = mkEnableOption "Playwright browser-automation MCP server (for LinkedIn profile editing and similar tasks)";
     };

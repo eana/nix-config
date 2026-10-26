@@ -23,6 +23,7 @@ let
     enableSnip = cfg.snip.enable;
     enableCopilotAutoModel = cfg.copilotAutoModel.enable;
     copilotAutoModelAutos = cfg.copilotAutoModel.autos;
+    enablePonytail = cfg.ponytail.enable;
   };
 
   skillsConfig = import ./skills.nix {

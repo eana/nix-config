@@ -4,10 +4,12 @@
   enableSnip ? false,
   enableCopilotAutoModel ? false,
   copilotAutoModelAutos ? [ ],
+  enablePonytail ? false,
 }:
 let
   inherit (pkgs) callPackage;
   opencode-snip = callPackage ./packages/opencode-snip { };
+  ponytail = callPackage ./packages/ponytail { };
   opencode-github-copilot-auto-model = callPackage ./packages/opencode-github-copilot-auto-model { };
   copilotAutoModelEntry =
     if copilotAutoModelAutos != [ ] then
@@ -29,5 +31,8 @@ in
     ]
     ++ lib.optionals enableCopilotAutoModel [
       copilotAutoModelEntry
+    ]
+    ++ lib.optionals enablePonytail [
+      "${ponytail}/.opencode/plugins"
     ];
 }
