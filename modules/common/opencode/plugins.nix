@@ -1,7 +1,6 @@
 {
   pkgs,
   lib,
-  contextMode,
   enableSnip ? false,
   enableCopilotAutoModel ? false,
   copilotAutoModelAutos ? [ ],
@@ -20,18 +19,15 @@ let
       "${opencode-github-copilot-auto-model}/lib/opencode-github-copilot-auto-model";
 in
 {
-  plugin = [
-    # plugin-function.mjs, not plugin.js: opencode's file-path plugin loader is
-    # documented as calling the default export as a function, and
-    # context-mode's is { id, server }. See packages/context-mode/default.nix
-    # for the shims that make the entry importable, and interface.nix for the
-    # runtime option ctx_execute needs on PATH.
-    "${contextMode}/lib/context-mode/build/adapters/opencode/plugin-function.mjs"
-  ]
-  ++ lib.optionals enableSnip [
-    "${opencode-snip}/lib/opencode-snip"
-  ]
-  ++ lib.optionals enableCopilotAutoModel [
-    copilotAutoModelEntry
-  ];
+  # context-mode is not listed here: its plugin uses the V1 API, which
+  # OpenCode V2 does not run. It is wired as an MCP server in mcp.nix instead.
+  # Do not re-add it alongside the MCP entry - context-mode then serves an
+  # empty tool list (upstream #623).
+  plugin =
+    lib.optionals enableSnip [
+      "${opencode-snip}/lib/opencode-snip"
+    ]
+    ++ lib.optionals enableCopilotAutoModel [
+      copilotAutoModelEntry
+    ];
 }

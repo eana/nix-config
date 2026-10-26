@@ -2,6 +2,7 @@
   lib,
   pkgs,
   garmin-mcp,
+  contextMode,
   codebaseMemory,
   enableCodebaseMemory,
   enablePlaywright ? false,
@@ -11,6 +12,12 @@ let
   inherit (lib) filterAttrs optionalAttrs;
 in
 filterAttrs (_n: v: v != { }) {
+  # Bare `context-mode` starts its stdio MCP server, serving the ctx_* tools.
+  context-mode = {
+    command = "${contextMode}/bin/context-mode";
+    enabled = true;
+  };
+
   codebase-memory = optionalAttrs enableCodebaseMemory {
     command = "${codebaseMemory}/bin/codebase-memory-mcp";
     enabled = true;

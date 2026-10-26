@@ -20,7 +20,6 @@ let
 
   pluginConfig = import ./plugins.nix {
     inherit lib pkgs;
-    contextMode = cfg.contextMode.package;
     enableSnip = cfg.snip.enable;
     enableCopilotAutoModel = cfg.copilotAutoModel.enable;
     copilotAutoModelAutos = cfg.copilotAutoModel.autos;
@@ -137,6 +136,7 @@ in
       enable = true;
       servers = import ./mcp.nix {
         inherit lib pkgs garmin-mcp;
+        contextMode = cfg.contextMode.package;
         codebaseMemory = cfg.codebaseMemory.package;
         enableCodebaseMemory = cfg.codebaseMemory.enable;
         enablePlaywright = cfg.playwright.enable;
