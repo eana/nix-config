@@ -9,6 +9,7 @@
     "nix-config"
     "repo-wiki"
     "style"
+    "ticket-plan"
     "ticket-run"
     "ticket-task"
   ];
