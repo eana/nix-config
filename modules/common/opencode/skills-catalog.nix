@@ -9,6 +9,7 @@
     "nix-config"
     "repo-wiki"
     "style"
+    "ticket-task"
   ];
 
   anthropic = [
