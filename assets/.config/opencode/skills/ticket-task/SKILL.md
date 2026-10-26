@@ -67,7 +67,8 @@ Summary, when done:
 
 ## Procedure
 
-1. **Preconditions.** Run `git status --porcelain`. If output is non-empty, or any
+1. **Preconditions.** Run `git status --porcelain --untracked-files=no`. If output
+   is non-empty, or any
    task in `index.md` is `in_progress`, STOP and report what you found. Do not
    clean, stash or reset anything. If the task is not ready (status not `open`
    or a dependency not `done`), STOP and report.
@@ -88,10 +89,12 @@ Summary, when done:
 5. **Checkpoint.** After each meaningful step (test written, test red, green,
    refactor, verification), append one short line under `## Checkpoints`:
    `- <YYYY-MM-DD HH:MM> <what happened>`.
-6. **Scope check.** Compare `git status --porcelain` and `git diff --name-only`
-   against `## Scope` (the task directory itself is always allowed). Any file
-   outside scope: STOP, add a checkpoint listing the files, leave the changes in
-   place, leave status `in_progress`, report. Do not revert.
+6. **Scope check.** The files to commit are the modified tracked files
+   (`git diff --name-only HEAD`) plus the new files you created on purpose. Never
+   commit generated artifacts (caches, build output); leave them untracked. Compare
+   the files to commit against `## Scope` (the task directory itself is always
+   allowed). Any file outside scope: STOP, add a checkpoint listing the files,
+   leave the changes in place, leave status `in_progress`, report. Do not revert.
 7. **Finish.** Write `## Summary`, set status `done` in `index.md`, then make ONE
    commit with the code changes and the task files, using the project's commit
    convention (conventional commits if none is stated).

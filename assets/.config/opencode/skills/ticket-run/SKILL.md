@@ -19,7 +19,8 @@ Invocation: `ticket-run [<slug>]`.
    `Task dir: <path>`.
 2. No slug given: list task directories whose `index.md` has any task not `done`.
    Exactly one: use it. Otherwise ask the user which one.
-3. Run `git status --porcelain`. Non-empty output, or any task `in_progress`:
+3. Run `git status --porcelain --untracked-files=no`. Non-empty output, or any task
+   `in_progress`:
    STOP and report what you found (the last checkpoint of the `in_progress` task
    explains why it stopped). Do not clean, stash or reset anything.
 
