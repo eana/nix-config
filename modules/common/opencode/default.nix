@@ -14,6 +14,7 @@ let
   cfg = config.module.opencode;
   custom = config.custom or { };
   tuiTheme = if (custom.theme or "gruvbox") == "gruvbox" then "gruvbox" else "catppuccin";
+  jsonFormat = pkgs.formats.json { };
 
   catalog = import ./skills-catalog.nix;
 
@@ -87,6 +88,30 @@ in
         source = ../../../assets/.config/snip/config.toml;
       };
 
+      # HACK: home-manager's programs.opencode.tui writes tui.json, which
+      # OpenCode V2 no longer reads - terminal settings moved to one global
+      # cli.json. Install cli.json directly until HM exposes a cli option.
+      # No upstream issue tracked; remove this workaround once HM gains one.
+      "opencode/cli.json".source = jsonFormat.generate "opencode-cli.json" {
+        "$schema" = "https://opencode.ai/v2/cli.json";
+        # Show pasted text instead of a "[Pasted ~N lines]" placeholder.
+        prompt.paste = "full";
+        theme.name = tuiTheme;
+        keybinds = {
+          "session.export" = "none";
+          "session.first" = "ctrl+home";
+          "session.last" = "ctrl+end";
+          "terminal.suspend" = "none";
+        };
+        diffs.wrap = "word";
+        session = {
+          sidebar = "auto";
+          scrollbar = false;
+          thinking = "hide";
+        };
+        animations = true;
+      };
+
       # HACK: programs.opencode.agents only treats Nix path values as file
       # sources; a store path string is written as inline text. Install the
       # generated profiles through xdg.configFile instead.
@@ -128,7 +153,6 @@ in
       settings = {
         autoshare = false;
         autoupdate = false;
-        experimental.disable_paste_summary = true;
         share = "disabled";
         lsp = import ./lsp.nix { inherit lib pkgs; };
       }
@@ -141,17 +165,8 @@ in
           ) "${codebaseMemoryOpenCode}/share/opencode/plugins/cbm-augment.ts";
       };
 
-      tui = {
-        theme = tuiTheme;
-        keybinds = {
-          session_export = "none";
-          session_share = "none";
-          session_unshare = "none";
-          terminal_suspend = "none";
-          messages_first = "ctrl+home";
-          messages_last = "ctrl+end";
-        };
-      };
+      # Terminal settings live in cli.json (see xdg.configFile above), not here.
+      # OpenCode V2 ignores tui.json entirely.
 
       # Keep codebase-memory-context.md in sync with agent_instructions_content
       # in the pinned codebase-memory-mcp source.
