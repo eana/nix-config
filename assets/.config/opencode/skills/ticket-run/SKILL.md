@@ -32,9 +32,8 @@ Invocation: `ticket-run [<slug>]`, run from the project repo.
 
 1. Re-read `index.md`. Pick the first ready task in table order
    (ready = `open` and every `Depends on` ID is `done`).
-2. No ready task: if all tasks are `done`, go to Review (or to Finish if `R01`
-   exists and is `done`). Otherwise STOP and report which tasks are left and what
-   blocks them.
+2. No ready task: if all tasks are `done`, go to Review. Otherwise STOP and report
+   which tasks are left and what blocks them.
 3. Ready task has `Review point` = `yes` and it is not the first task you run in this
    session: STOP before it and report. The user restarts `ticket-run` to continue.
 4. Dispatch ONE fresh subagent with exactly this prompt and nothing else:
@@ -47,7 +46,10 @@ Invocation: `ticket-run [<slug>]`, run from the project repo.
 Run tasks one at a time. Never dispatch in parallel, never implement a task
 yourself, never edit task files except `index.md` rows as described here.
 
-## Review (once per feature, skip if `review.md` exists)
+## Review (mandatory, once per feature)
+
+If `review.md` already exists in the feature folder, the review was done: run `R01`
+if it exists and is not `done`, then go to Finish. Otherwise do all steps below.
 
 1. **Request.** Dispatch a fresh reviewer subagent: "Load the requesting-code-review
    skill (or superpowers-requesting-code-review). Review the project repo range
@@ -72,6 +74,9 @@ yourself, never edit task files except `index.md` rows as described here.
 
 ## Finish
 
+Precondition: `review.md` exists and is committed. If not, go back to Review.
+Never write `pr.md` without a review.
+
 1. Write `<feature folder>/pr.md` from `index.md`, the task summaries and the
    verdict lines:
 
@@ -87,9 +92,12 @@ yourself, never edit task files except `index.md` rows as described here.
    <one line each, or omit the section>
    ```
 
-   Describe the change itself. Never link to or mention the tickets repo, and never
-   mention reviews, tasks or agents.
+   Describe the change itself: Why = the problem it solves, What = behavior
+   added or changed, How = the technical approach in the code. Never link to or
+   mention the tickets repo, and never mention reviews, tasks, TDD, commits per
+   task or agents.
 2. Commit `pr.md` in the tickets repo via the git-commit skill, subject
    `chore(tasks): pr description <slug>`.
-3. Show the `pr.md` content to the user, plus the project commit range. Do not
-   create a PR, do not merge, do not push: the user decides.
+3. Show the `pr.md` content to the user, plus the project commit range
+   `<merge-base>..feat/<slug>`. Do not create a PR, do not merge, do not push: the
+   user decides.
