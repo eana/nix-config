@@ -21,11 +21,18 @@ Invocation: `ticket-task <slug> <ID>`, run from the project repo.
 - **Sync before writing:** in the tickets repo, on `master`, run
   `git pull --ff-only` (skip if it has no upstream). Failure (divergence): STOP and
   report. Never merge, rebase or push; the user pushes.
-- **Feature folder:** `<tickets repo>/<host>/<owner>/<repo>/<YYYY-MM-DD>-<slug>/`.
-  `<host>/<owner>/<repo>` comes from the project's `git remote get-url origin`
-  (`git@github.com:o/r.git` and `https://github.com/o/r` both give
-  `github.com/o/r`); no origin: `local/<project dir name>`. Find an existing
-  feature by globbing `*-<slug>/` in that directory.
+- **Feature folder:** `<tickets repo>/<project path>/<YYYY-MM-DD>-<slug>/`. Compute
+  `<project path>` by running this verbatim in the project repo; do not derive it
+  yourself (`git@github.com:o/r.git` and `https://github.com/o/r` both give
+  `github.com/o/r`; no origin gives `local/<dir name>`):
+
+  ```sh
+  sh -c 'u=$(git remote get-url origin 2>/dev/null) && [ -n "$u" ] &&
+    printf "%s\n" "$u" | sed -E "s#^[a-z+]+://##; s#^[^@/]*@##; s#^([^/:]+):#\1/#; s#\.git\$##" ||
+    echo "local/$(basename "$(git rev-parse --show-toplevel)")"'
+  ```
+
+  Find an existing feature by globbing `*-<slug>/` in `<tickets repo>/<project path>/`.
 - **Commits:** every commit, in either repo, goes through the `git-commit` skill.
   The user has authorized committing directly on `master` of the tickets repo; that
   is the permission the git-commit skill asks for, for this repo only. Tickets
