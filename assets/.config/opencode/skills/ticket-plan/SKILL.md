@@ -18,7 +18,8 @@ Invocation: `ticket-plan [<plan-path>] [straight through]`.
    - Plan path given: use it.
    - Otherwise invoke the writing-plans skill under whichever name exists:
      `writing-plans`, `superpowers-writing-plans` or `superpowers:writing-plans`.
-     Do not modify that skill or its output.
+     Do not modify that skill or its output. When it finishes, note the saved plan
+     path and decline its offer to execute the plan; continue at step 2.
    - None available: ask the user for a plan path. The plan must have one
      `### Task N: <title>` heading per task.
 2. **Review pause.** Unless the user said "straight through", stop and ask the user
@@ -58,7 +59,10 @@ Invocation: `ticket-plan [<plan-path>] [straight through]`.
      no task depends on a later task in plan order.
    Any finding, or a splitter "too large" report: show the user and stop.
    Do not commit.
-7. **Commit.** If on the default branch, `git switch -c feat/<slug>` first. Commit
+7. **Commit.** Default branch = `git symbolic-ref --short refs/remotes/origin/HEAD`
+   without the `origin/` prefix; no remote: `main` if it exists, else `master`.
+   If staged changes exist outside the task directory, stop and ask. If on the
+   default branch, `git switch -c feat/<slug>` first. Commit
    only the task directory: `chore(tasks): add <slug> tasks` (follow the project's
    commit convention if it differs).
 8. **Hand off.** Tell the user the task directory path, that they can edit

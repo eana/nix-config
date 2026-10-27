@@ -19,10 +19,12 @@ Invocation: `ticket-run [<slug>]`.
    `Task dir: <path>`.
 2. No slug given: list task directories whose `index.md` has any task not `done`.
    Exactly one: use it. Otherwise ask the user which one.
-3. Run `git status --porcelain --untracked-files=no`. Non-empty output, or any task
-   `in_progress`:
-   STOP and report what you found (the last checkpoint of the `in_progress` task
-   explains why it stopped). Do not clean, stash or reset anything.
+3. Run `git status --porcelain --untracked-files=no` and read `index.md`.
+   - Exactly one task `in_progress`: it stopped earlier and the user restarted you
+     after dealing with it. Dispatch it first (step 4 of the loop); `ticket-task`
+     resumes it.
+   - More than one `in_progress`, or uncommitted changes with none `in_progress`:
+     STOP and report what you found. Do not clean, stash or reset anything.
 
 ## Loop
 
@@ -39,7 +41,8 @@ Invocation: `ticket-run [<slug>]`.
    - Task is `done`: read only its `## Summary`, note the one-line Why, continue the
      loop.
    - Anything else (reply starts with `STOPPED:`, status not `done`): STOP and relay
-     the subagent's reason and last checkpoint to the user.
+     the subagent's reason, last checkpoint and its `Recover:` line to the user.
+     Reading that task's last checkpoint line is allowed.
 
 Run tasks one at a time. Never dispatch in parallel, never implement a task
 yourself, never edit task files except to read them.

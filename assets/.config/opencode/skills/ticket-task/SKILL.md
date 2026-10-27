@@ -67,11 +67,14 @@ Summary, when done:
 
 ## Procedure
 
-1. **Preconditions.** Run `git status --porcelain --untracked-files=no`. If output
-   is non-empty, or any
-   task in `index.md` is `in_progress`, STOP and report what you found. Do not
-   clean, stash or reset anything. If the task is not ready (status not `open`
-   or a dependency not `done`), STOP and report.
+1. **Preconditions.** Read `index.md` and run
+   `git status --porcelain --untracked-files=no`.
+   - The requested task is `in_progress` and no other task is: this is a RESUME.
+     Uncommitted changes are allowed (they are this task's). Skip step 2, read its
+     `## Checkpoints`, continue from the last one.
+   - Otherwise, non-empty git output or any task `in_progress`: STOP and report what
+     you found. Do not clean, stash or reset anything.
+   - Task not ready (status not `open`, or a dependency not `done`): STOP and report.
 2. **Claim.** Set the task's status to `in_progress` in `index.md`. Commit only
    that file: `chore(tasks): start <slug> <ID>`.
 3. **Read only what you need:** the task file, the plan section it came from
@@ -98,7 +101,8 @@ Summary, when done:
    ```sh
    TASK_FILE=docs/tasks/<slug>/<ID>-<name>.md TASK_DIR=docs/tasks/<slug> sh -fs <<'EOF'
    scope=$(sed -n '/^## Scope/,/^## /{/^## /d;/^[[:space:]]*$/d;p;}' "$TASK_FILE")
-   git diff --cached --name-only | while read -r f; do
+   { git diff HEAD --name-only; git diff --cached --name-only; } | sort -u |
+   while read -r f; do
      ok=out; case $f in "$TASK_DIR"/*) ok=in;; esac
      for p in $scope; do case $f in $p) ok=in;; esac; done
      echo "$ok $f"
@@ -106,14 +110,29 @@ Summary, when done:
    EOF
    ```
 
-   Append a checkpoint `- <time> Scope check: <output, one line>`. Any `out` line:
+   Use the real task file name. The check covers every changed tracked file, staged
+   or not, plus staged new files. Append a checkpoint
+   `- <time> Scope check: <output, one line>`. Any `out` line:
    STOP, unstage nothing, leave the changes in place, leave status `in_progress`,
    report the `out` files. Do not revert, do not edit `## Scope`.
 7. **Finish.** Write `## Summary`, set status `done` in `index.md`, then make ONE
    commit with the code changes and the task files, using the project's commit
-   convention (conventional commits if none is stated).
+   convention (conventional commits if none is stated). Afterwards
+   `git status --porcelain --untracked-files=no` must be empty; if not, STOP.
+
+## Recovering from a STOP
+
+The task stays `in_progress` with its changes in place. The user (or an agent they
+ask) does one of:
+- Fix the cause (answer the question, extend `## Scope`, fix the code), then rerun
+  `ticket-task <slug> <ID>`: it resumes.
+- Drop the attempt: revert the task's changes, set status `open`, commit
+  `chore(tasks): reset <slug> <ID>`, rerun.
+- Park it: revert the changes, set status `blocked`, add a checkpoint with the
+  reason, commit. `ticket-run` skips blocked tasks and reports them.
 
 ## Reply
 
 On success reply with the `## Summary` block only. On any STOP reply with
-`STOPPED: <reason>` followed by the last checkpoint. No other narration.
+`STOPPED: <reason>` followed by the last checkpoint and the line
+`Recover: see "Recovering from a STOP" in the ticket-task skill.` No other narration.
