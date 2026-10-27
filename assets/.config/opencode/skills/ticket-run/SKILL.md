@@ -61,8 +61,9 @@ yourself, never edit task files except `index.md` rows and the verify lines in
 ## Review (mandatory, once per feature)
 
 If `review.md` already exists in the feature folder, the review was done: run `R01`
-if it exists and is not `done`, run step 4, then go to Finish. Otherwise do all steps
-below.
+if it exists and is not `done`, then run step 4 unless `review.md` already holds a
+`Post-review verify:` line, in which case skip straight to Finish. Otherwise do all
+steps below.
 
 1. **Request.** Dispatch a fresh reviewer subagent (agent `ticket-planner` if it
    exists): "Load the requesting-code-review
@@ -89,11 +90,13 @@ below.
 3. Read only the `Verdict:` lines. `R01` added: run it through the Loop (it is
    exempt from the review-point rule). It fails: STOP as in the Loop.
    One review round only; never review again after `R01`.
-4. **Verify the integrated tree.** Run the `Verify:` commands from `index.md` on the
-   project branch HEAD. Non-zero exit, or a command that cannot run: STOP and
-   report. Otherwise append one `Post-review verify: <command> -> <result>` line per
-   command to `review.md` and commit the feature folder via the git-commit skill,
-   subject `chore(tasks): verify <slug>`.
+4. **Verify the integrated tree.** Skip this step if `review.md` already holds a
+   `Post-review verify:` line; go straight to Finish. Otherwise run the `Verify:`
+   commands from `index.md` on the project branch HEAD. Non-zero exit, or a command
+   that cannot run: STOP and report. Otherwise append one
+   `Post-review verify: <command> -> <result>` line per command to `review.md` and
+   commit the feature folder via the git-commit skill, subject
+   `chore(tasks): verify <slug>`.
 
 ## Finish
 
