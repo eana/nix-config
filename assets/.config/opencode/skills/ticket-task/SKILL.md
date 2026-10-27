@@ -54,13 +54,16 @@ Feature folder contents: `index.md`, `plan.md`, `spec.md` (optional), `TNN-*.md`
 - ADR: <project-relative path> | -
 - Verify: `<command>` [, `<command>`]
 
-| ID | Title | Status | Depends on | Review point |
-|----|-------|--------|------------|--------------|
-| T01 | ... | open | - | no |
-| T02 | ... | open | T01 | yes |
+| ID | Title | Status | Depends on | Review point | Complexity |
+|----|-------|--------|------------|--------------|------------|
+| T01 | ... | open | - | no | low |
+| T02 | ... | open | T01 | yes | high |
 ```
 
 - Status values, nothing else: `open`, `in_progress`, `done`, `blocked`.
+- Complexity values: `low` (few files, clear tests, nothing unknown) or `high`
+  (unfamiliar code, external APIs, config, migrations, unclear acceptance, or more
+  than about 3 files). When unsure: `high`. The user may edit it.
 - `Depends on`: comma-separated IDs or `-`.
 - Ready = status `open` and every `Depends on` ID is `done`.
 - `index.md` is the single source of truth for status and dependencies.

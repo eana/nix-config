@@ -59,7 +59,8 @@ Do every step in order. Do not skip or merge steps.
    invent a command.
 7. **Copy plan and spec.** Copy the plan to `<feature folder>/plan.md`. If the plan
    names a spec/design file, copy it to `spec.md`.
-8. **Split.** Dispatch a fresh splitter subagent with this instruction: "Load the
+8. **Split.** Dispatch a fresh splitter subagent (agent `ticket-planner` if it
+   exists, otherwise the default subagent) with this instruction: "Load the
    ticket-task skill and follow its Format section exactly. Split `<feature
    folder>/plan.md` into that folder. Project: `<project path>`, branch
    `feat/<slug>`. Verification commands: `<commands>`." plus these rules:
@@ -73,11 +74,13 @@ Do every step in order. Do not skip or merge steps.
    - `Depends on`: tasks whose output this task consumes (its `Interfaces` /
      `Consumes` block or explicit references); otherwise `-`.
    - `Review point`: `yes` if the task text contains `REVIEW POINT`, else `no`.
+   - `Complexity`: `low` or `high` per the Format's rule; when unsure, `high`.
    - Status `open` for every task. `index.md` header and table exactly as in the
      Format, with `Spec: spec.md` (or `-`), `Plan: plan.md`, `ADR: -`.
    - A task too large for one agent to finish and commit in one pass: write nothing
      for it, return the reason. Do not cut it up.
-9. **Check.** Dispatch a separate fresh checker subagent: "Load the ticket-task
+9. **Check.** Dispatch a separate fresh checker subagent (agent `ticket-planner`
+   if it exists): "Load the ticket-task
    skill. Compare `<feature folder>` against its `plan.md` and report, without
    editing:" 
    - every `### Task N` has exactly one task file and one `index.md` row, IDs
@@ -85,7 +88,7 @@ Do every step in order. Do not skip or merge steps.
    - `index.md` header lines and table columns match the Format exactly;
    - each task file has the Format's sections in order; `## Task` is identical to
      the plan text; `## Acceptance` and `## Scope` are non-empty;
-   - statuses are valid, every `Depends on` ID exists, no dependency cycle,
+   - statuses and complexities are valid, every `Depends on` ID exists, no dependency cycle,
      no task depends on a later task in plan order.
    Any finding, or a splitter "too large" report: show the user and stop.
    Do not commit.

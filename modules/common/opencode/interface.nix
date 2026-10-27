@@ -143,6 +143,24 @@ in
       };
     };
 
+    ticket.models = {
+      planner = mkOption {
+        type = types.str;
+        default = "github-copilot/claude-sonnet-5.5";
+        description = "Model for the ticket-planner subagent (split, check, review, grade).";
+      };
+      builder = mkOption {
+        type = types.str;
+        default = "github-copilot/claude-sonnet-5.5";
+        description = "Model for the ticket-builder subagent (high-complexity tasks, retries, review fixes).";
+      };
+      builderLight = mkOption {
+        type = types.str;
+        default = "github-copilot/claude-haiku-5.5";
+        description = "Model for the ticket-builder-light subagent (low-complexity tasks).";
+      };
+    };
+
     extraContext = mkOption {
       type = types.lines;
       default = "";

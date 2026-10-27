@@ -52,6 +52,16 @@ let
   );
 
   baseContext = builtins.readFile ./base-context.md;
+
+  ticketAgent = model: description: ''
+    ---
+    description: ${description}
+    mode: subagent
+    model: ${model}
+    ---
+
+    Follow the instructions in the prompt exactly. Load the skills it names before acting.
+  '';
   inherit (pkgs) callPackage;
   garmin-mcp = callPackage ./packages/garmin-mcp {
     inherit (inputs) uv2nix pyproject-nix pyproject-build-systems;
@@ -131,6 +141,12 @@ in
           {
             source = "${codebaseMemoryOpenCode}/share/opencode/agents/codebase-memory-auditor.md";
           };
+      "opencode/agents/ticket-planner.md".text =
+        ticketAgent cfg.ticket.models.planner "Plans, splits, checks and reviews work for the ticket-plan and ticket-run skills.";
+      "opencode/agents/ticket-builder.md".text =
+        ticketAgent cfg.ticket.models.builder "Implements one ticket task (high complexity, retries, review fixes) via the ticket-task skill.";
+      "opencode/agents/ticket-builder-light.md".text =
+        ticketAgent cfg.ticket.models.builderLight "Implements one low-complexity ticket task via the ticket-task skill.";
     };
 
     programs.mcp = {
