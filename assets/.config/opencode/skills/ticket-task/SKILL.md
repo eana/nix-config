@@ -128,6 +128,8 @@ Summary, when done:
      and confirm it passes.
    - Otherwise run the verification commands from `## Acceptance` (or `Verify:`
      in `index.md`) and confirm they pass. Never mark done on your own judgment.
+     Copy the command and its real exit status into `Verification`; a command you
+     did not run, or could not run, is not a pass - STOP instead.
    - If the task is unclear or contradicts the code, STOP: add a checkpoint
      describing the question, leave status `in_progress`, report.
 5. **Checkpoint.** After each meaningful step (test written, test red, green,

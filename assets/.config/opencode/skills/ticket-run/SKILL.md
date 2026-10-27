@@ -8,9 +8,10 @@ compatibility: opencode
 
 You are the coordinator. You keep your context small: you read `index.md`, task
 summaries, last checkpoint lines and verdict lines, nothing else. You never read
-code, diffs or test output. Every task runs in a fresh subagent that loads the
-`ticket-task` skill. Locations and format are defined in the `ticket-task` skill;
-load it first.
+code or diffs. The only commands you run yourself are the feature's `Verify:`
+commands, and you read only their exit status. Every task runs in a fresh
+subagent that loads the `ticket-task` skill. Locations and format are defined in
+the `ticket-task` skill; load it first.
 
 Invocation: `ticket-run [<slug>]`, run from the project repo.
 
@@ -50,12 +51,14 @@ Invocation: `ticket-run [<slug>]`, run from the project repo.
      the reason, the task's last checkpoint line and the `Recover:` line.
 
 Run tasks one at a time. Never dispatch in parallel, never implement a task
-yourself, never edit task files except `index.md` rows as described here.
+yourself, never edit task files except `index.md` rows and the verify lines in
+`review.md` as described here.
 
 ## Review (mandatory, once per feature)
 
 If `review.md` already exists in the feature folder, the review was done: run `R01`
-if it exists and is not `done`, then go to Finish. Otherwise do all steps below.
+if it exists and is not `done`, run step 4, then go to Finish. Otherwise do all steps
+below.
 
 1. **Request.** Dispatch a fresh reviewer subagent (agent `ticket-planner` if it
    exists): "Load the requesting-code-review
@@ -79,11 +82,16 @@ if it exists and is not `done`, then go to Finish. Otherwise do all steps below.
 3. Read only the `Verdict:` lines. `R01` added: run it through the Loop (it is
    exempt from the review-point rule). It fails: STOP as in the Loop.
    One review round only; never review again after `R01`.
+4. **Verify the integrated tree.** Run the `Verify:` commands from `index.md` on the
+   project branch HEAD. Non-zero exit, or a command that cannot run: STOP and
+   report. Otherwise append one `Post-review verify: <command> -> <result>` line per
+   command to `review.md` and commit the feature folder via the git-commit skill,
+   subject `chore(tasks): verify <slug>`.
 
 ## Finish
 
-Precondition: `review.md` exists and is committed. If not, go back to Review.
-Never write `pr.md` without a review.
+Precondition: `review.md` is committed and holds a `Post-review verify:` line. If
+not, go back to Review. Never write `pr.md` without a review and that evidence.
 
 1. Write `<feature folder>/pr.md` from `index.md`, the task summaries and the
    verdict lines:
