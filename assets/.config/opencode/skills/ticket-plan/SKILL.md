@@ -89,13 +89,15 @@ Do every step in order. Do not skip or merge steps.
      no task depends on a later task in plan order.
    Any finding, or a splitter "too large" report: show the user and stop.
    Do not commit.
-10. **ADR (only when there is a real decision).** If the spec contains a real choice
-    between alternatives (an approaches/options section with a pick and reasons),
-    write an ADR in the project repo on `feat/<slug>`. Use the project's existing
-    ADR folder and format if it has one; otherwise `docs/adr/NNNN-<kebab-title>.md`
-    (next free number, `0001` if none) with sections `## Context`, `## Decision`,
-    `## Consequences`, taken from the spec. Commit it, and set `ADR: <path>` in
-    `index.md`. No real choice, or no spec: no ADR, keep `ADR: -`.
+10. **ADR (only when there is a real decision).** Trigger, decided mechanically:
+    `spec.md` exists and has a heading containing `Approach`, `Option`,
+    `Alternative` or `Decision` under which two or more alternatives are listed.
+    Trigger met: write an ADR in the project repo on `feat/<slug>`. Use the
+    project's existing ADR folder and format if it has one; otherwise
+    `docs/adr/NNNN-<kebab-title>.md` (next free number, `0001` if none) with
+    sections `## Context`, `## Decision`, `## Consequences`, taken from the spec.
+    Commit it, and set `ADR: <path>` in `index.md`. Trigger not met: no ADR, keep
+    `ADR: -`.
 11. **Commit the feature folder** in the tickets repo, staging only that folder,
     subject `chore(tasks): add <slug>`.
 12. **Hand off.** Tell the user the feature folder path, the project branch, that
