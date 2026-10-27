@@ -75,8 +75,11 @@ below.
    if it exists): "Load the
    receiving-code-review skill (or superpowers-receiving-code-review) and the
    ticket-task skill. Read `<feature folder>/review.md`, verify each finding against
-   the project code, and append under each a line
-   `Verdict: accept | reject - <reason> | minor`. If any finding is accepted, write
+   the project code, and append under each exactly one of
+   `Verdict: accept - <reason>`, `Verdict: reject - <reason>` or
+   `Verdict: minor - <reason>`. `accept` means fix it now, in `R01`; `minor` means
+   accepted but not worth fixing now and never part of `R01`; `reject` needs a
+   concrete reason. If any finding is `accept`, write
    `<feature folder>/R01-review-fixes.md` in the ticket-task format: `## Task` lists
    every accepted finding, `## Acceptance` one failing-then-passing test (or exact
    verification) per finding, `## Scope` the union of affected files; append row
@@ -113,6 +116,10 @@ Precondition: every task is `done` with a `Project commit` that exists and a
    ## Open minor findings
    <one line each, or omit the section>
    ```
+
+   Copy every `Verdict: minor - <reason>` from `review.md` as one bullet under
+   `## Open minor findings`. Before committing, compare the two: any minor verdict
+   missing from the section, or any bullet without a matching verdict, is STOP.
 
    Describe the change itself: Why = the problem it solves, What = behavior
    added or changed, How = the technical approach in the code. Never link to or
