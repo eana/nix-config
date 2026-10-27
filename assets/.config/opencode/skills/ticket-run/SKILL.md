@@ -42,7 +42,11 @@ Invocation: `ticket-run [<slug>]`, run from the project repo.
    Agent: `Complexity` = `low` -> `ticket-builder-light`; `high` (and `R01`) ->
    `ticket-builder`. If the named agent does not exist, use the default subagent.
 5. When it returns, re-read `index.md`.
-   - Task is `done`: read only its `## Summary`, note the one-line Why, continue.
+   - Task is `done`: read only its `## Summary`. It must hold a `Project commit:`
+     line whose SHA exists (`git cat-file -e <sha>`) and a `Verification:` line
+     naming the command that was run and its real result. A missing line, or a SHA
+     that does not exist: STOP and report; never start the next task on it.
+     Otherwise note the one-line Why and continue.
    - It STOPPED, ran on `ticket-builder-light`, and the reason is a failing test or
      verification (not unclear task, not scope): dispatch the same prompt ONCE to
      `ticket-builder`; it resumes the task. Then apply this step again without
@@ -90,8 +94,10 @@ below.
 
 ## Finish
 
-Precondition: `review.md` is committed and holds a `Post-review verify:` line. If
-not, go back to Review. Never write `pr.md` without a review and that evidence.
+Precondition: every task is `done` with a `Project commit` that exists and a
+`Verification:` line, and `review.md` is committed and holds a
+`Post-review verify:` line. If not, go back to the Loop or Review. Never write
+`pr.md` without that evidence.
 
 1. Write `<feature folder>/pr.md` from `index.md`, the task summaries and the
    verdict lines:
