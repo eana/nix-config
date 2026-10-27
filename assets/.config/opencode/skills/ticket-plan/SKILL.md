@@ -89,7 +89,8 @@ Do every step in order. Do not skip or merge steps.
    - each task file has the Format's sections in order; `## Task` is identical to
      the plan text; `## Acceptance` and `## Scope` are non-empty;
    - statuses and complexities are valid, every `Depends on` ID exists, no dependency cycle,
-     no task depends on a later task in plan order.
+     no task depends on a later task in plan order;
+   - every task whose `## Scope` has more than 3 lines is `high`.
    Any finding, or a splitter "too large" report: show the user and stop.
    Do not commit.
 10. **ADR (only when there is a real decision).** Trigger, decided mechanically:

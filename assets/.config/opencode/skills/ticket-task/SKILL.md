@@ -61,9 +61,10 @@ Feature folder contents: `index.md`, `plan.md`, `spec.md` (optional), `TNN-*.md`
 ```
 
 - Status values, nothing else: `open`, `in_progress`, `done`, `blocked`.
-- Complexity values: `low` (few files, clear tests, nothing unknown) or `high`
-  (unfamiliar code, external APIs, config, migrations, unclear acceptance, or more
-  than about 3 files). When unsure: `high`. The user may edit it.
+- Complexity values: `low` or `high`. `high` when ANY holds: `## Scope` has more
+  than 3 lines; the task touches config, environment variables, external APIs,
+  migrations, or code it does not create; acceptance is not a concrete test or
+  command. Otherwise `low`. When unsure: `high`. The user may edit it.
 - `Depends on`: comma-separated IDs or `-`.
 - Ready = status `open` and every `Depends on` ID is `done`.
 - `index.md` is the single source of truth for status and dependencies.
