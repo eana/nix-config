@@ -16,8 +16,10 @@ Invocation: `ticket-run [<slug>]`, run from the project repo.
 
 ## Start
 
+0. Load skills now: call the skill tool for `ticket-task` and `git-commit` before
+   anything else.
 1. Resolve and sync the tickets repo; compute the project's directory in it
-   (`ticket-task`, Locations).
+   (`ticket-task`, Locations, using its path snippet verbatim).
 2. No slug given: list feature folders there whose `index.md` has any task not
    `done`, or that have no `pr.md`. Exactly one: use it. Otherwise ask the user.
 3. Check both repos are clean (`ticket-task`, Procedure step 1) and read `index.md`.

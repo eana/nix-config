@@ -98,6 +98,8 @@ Summary, when done:
 
 ## Procedure
 
+0. **Load skills now:** call the skill tool for `git-commit` (and `ghq-lookup` when
+   the tickets repo is given as `org/repo`) before anything else.
 1. **Preconditions.** Resolve and sync the tickets repo, locate the feature folder,
    read `index.md`. In the project repo run
    `git status --porcelain --untracked-files=no`; in the tickets repo run
