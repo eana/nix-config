@@ -40,13 +40,8 @@ Do every step in order. Do not skip or merge steps.
    `git switch -c feat/<slug>` (slug from step 5).
 5. **Locations.** Slug = plan file name without a leading `YYYY-MM-DD-` date and
    without extension. Resolve and sync the tickets repo (`ticket-task`, Locations).
-   Compute the project path by running, in the project repo, exactly:
-
-   ```sh
-   sh -c 'u=$(git remote get-url origin 2>/dev/null) && [ -n "$u" ] &&
-     printf "%s\n" "$u" | sed -E "s#^[a-z+]+://##; s#^[^@/]*@##; s#^([^/:]+):#\1/#; s#\.git\$##" ||
-     echo "local/$(basename "$(git rev-parse --show-toplevel)")"'
-   ```
+   Compute the project path with the snippet in the `ticket-task` skill (Locations);
+   run it verbatim in the project repo. Do not restate it here.
 
    Feature folder = `<tickets repo>/<output>/<today YYYY-MM-DD>-<slug>/`. The output
    always has at least two path segments; a folder directly under the tickets repo
