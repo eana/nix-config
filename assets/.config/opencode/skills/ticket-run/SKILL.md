@@ -95,7 +95,10 @@ Never write `pr.md` without a review.
    Describe the change itself: Why = the problem it solves, What = behavior
    added or changed, How = the technical approach in the code. Never link to or
    mention the tickets repo, and never mention reviews, tasks, TDD, commits per
-   task or agents.
+   task or agents. Then run
+   `grep -inwE 'tasks?|tdd|test-driven|reviews?|reviewer|agents?|tickets?|T[0-9]{2}|R01' pr.md`
+   (the heading `Open minor findings` is fine): any match, rewrite those lines and
+   run it again until there is none.
 2. Commit `pr.md` in the tickets repo via the git-commit skill, subject
    `chore(tasks): pr description <slug>`.
 3. Show the `pr.md` content to the user, plus the project commit range
