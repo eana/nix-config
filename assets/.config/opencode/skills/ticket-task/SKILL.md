@@ -89,12 +89,26 @@ Summary, when done:
 5. **Checkpoint.** After each meaningful step (test written, test red, green,
    refactor, verification), append one short line under `## Checkpoints`:
    `- <YYYY-MM-DD HH:MM> <what happened>`.
-6. **Scope check.** The files to commit are the modified tracked files
-   (`git diff --name-only HEAD`) plus the new files you created on purpose. Never
-   commit generated artifacts (caches, build output); leave them untracked. Compare
-   the files to commit against `## Scope` (the task directory itself is always
-   allowed). Any file outside scope: STOP, add a checkpoint listing the files,
-   leave the changes in place, leave status `in_progress`, report. Do not revert.
+6. **Scope check (mandatory, before any status change or commit).** Stage exactly
+   the files you intend to commit: modified tracked files plus new files you created
+   on purpose. Never stage generated artifacts (caches, build output). Then run this
+   check verbatim, replacing `TASK_FILE` and `TASK_DIR`; do not judge scope yourself,
+   the output decides:
+
+   ```sh
+   TASK_FILE=docs/tasks/<slug>/<ID>-<name>.md TASK_DIR=docs/tasks/<slug> sh -fs <<'EOF'
+   scope=$(sed -n '/^## Scope/,/^## /{/^## /d;/^[[:space:]]*$/d;p;}' "$TASK_FILE")
+   git diff --cached --name-only | while read -r f; do
+     ok=out; case $f in "$TASK_DIR"/*) ok=in;; esac
+     for p in $scope; do case $f in $p) ok=in;; esac; done
+     echo "$ok $f"
+   done
+   EOF
+   ```
+
+   Append a checkpoint `- <time> Scope check: <output, one line>`. Any `out` line:
+   STOP, unstage nothing, leave the changes in place, leave status `in_progress`,
+   report the `out` files. Do not revert, do not edit `## Scope`.
 7. **Finish.** Write `## Summary`, set status `done` in `index.md`, then make ONE
    commit with the code changes and the task files, using the project's commit
    convention (conventional commits if none is stated).
