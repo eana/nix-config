@@ -68,7 +68,8 @@ Do every step in order. Do not skip or merge steps.
    - `## Task`: the plan's task text copied verbatim, from its heading to the next
      `### Task` heading. Never reword, shorten or merge.
    - `## Acceptance`: the task's own test and verify steps; if it has none, the
-     verification commands.
+     verification commands. When no behavioral test applies (docs, config, skill
+     text), start `## Acceptance` with one line naming why, then the commands.
    - `## Scope`: the project files listed in the task (its `Files:` block or
      equivalent), one per line, plus their test files.
    - `Depends on`: tasks whose output this task consumes (its `Interfaces` /
