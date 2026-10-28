@@ -111,7 +111,9 @@ Precondition: every task is `done` with a `Project commit` that exists and a
    verdict lines:
 
    ```markdown
-   # <Feature title>
+   Title: <PR title>
+
+   Description:
 
    ## Why
    ## What
@@ -121,6 +123,8 @@ Precondition: every task is `done` with a `Project commit` that exists and a
    ## Open minor findings
    <one line each, or omit the section>
    ```
+
+   The title is one line, at most 72 characters, in the project's commit style.
 
    Copy every `Verdict: minor - <reason>` from `review.md` as one bullet under
    `## Open minor findings`. Before committing, compare the two: any minor verdict
