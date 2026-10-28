@@ -16,8 +16,8 @@ stdenv.mkDerivation {
   src = fetchFromGitHub {
     owner = "DeusData";
     repo = "codebase-memory-mcp";
-    rev = "8530c8cd1c1ac8e1e3d2962bc213a8c9025fea0a";
-    hash = "sha256-DtY8viWvn7XrmjXvRRBnldm9TUv9BxOaLSU22iiQXXs=";
+    rev = "dca2a44ef0c514384d297410fd05fd8335a4d5b5";
+    hash = "sha256-z0Og9yRYKCn36Nligl+TXs3xj43kHMOxjnLN8J2O6dI=";
   };
 
   nativeBuildInputs = [ gnumake ];
