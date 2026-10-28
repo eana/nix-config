@@ -8,6 +8,8 @@ compatibility: opencode
 
 Turn a plan into a feature folder that `ticket-run` and `ticket-task` can execute.
 
+Human-facing overview and diagram: `../ticket-task/references/workflow.md`.
+
 Invocation: `ticket-plan [<plan-path>] [straight through]`, run from the project repo.
 
 ## Steps

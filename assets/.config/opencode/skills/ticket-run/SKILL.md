@@ -13,6 +13,8 @@ commands, and you read only their exit status. Every task runs in a fresh
 subagent that loads the `ticket-task` skill. Locations and format are defined in
 the `ticket-task` skill; load it first.
 
+Human-facing overview and diagram: `../ticket-task/references/workflow.md`.
+
 Invocation: `ticket-run [<slug>]`, run from the project repo.
 
 ## Start

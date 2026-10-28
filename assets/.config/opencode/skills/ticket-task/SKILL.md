@@ -9,6 +9,8 @@ compatibility: opencode
 Implement ONE task. Stay inside that task. The files in the feature folder are the
 only memory: what is not written there does not exist for the next agent.
 
+Human-facing overview and diagram: `references/workflow.md`.
+
 Invocation: `ticket-task <slug> <ID>`, run from the project repo.
 
 ## Locations (canonical)
