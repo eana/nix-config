@@ -1,0 +1,97 @@
+direction: right
+
+plan: "ticket-plan" {
+  plan_in: "idea or plan"
+  split: "splitter subagent" {
+    shape: package
+  }
+  check: "checker subagent"
+  adr: "ADR only if spec lists alternatives"
+  folder: "feature folder in tickets repo"
+
+  plan_in -> split
+  split -> check
+  check -> folder
+  check -> adr: "spec lists alternatives" {
+    style.stroke-dash: 3
+  }
+  adr -> folder {
+    style.stroke-dash: 3
+  }
+}
+
+execute: "ticket-run" {
+  pick: "pick first ready task"
+  gate: "review point?" {
+    shape: diamond
+  }
+  dispatch: "fresh subagent: ticket-builder | ticket-builder-light" {
+    shape: package
+  }
+  done: "done with evidence?"
+
+  task: "ticket-task: one task" {
+    claim: "claim in index.md"
+    impl: "TDD or no-test reason"
+    checkpoint: "checkpoint"
+    scope: "mechanical scope check" {
+      shape: diamond
+    }
+    commit: "project commit"
+    summary: "summary + done commit"
+
+    claim -> impl
+    impl -> checkpoint
+    checkpoint -> scope
+    scope -> commit
+    commit -> summary
+    scope -> impl: "out of scope: STOP" {
+      style.stroke-dash: 3
+    }
+  }
+
+  pick -> gate
+  gate -> dispatch: "yes"
+  dispatch -> task
+  task -> done
+}
+
+finish: "ticket-run review and finish" {
+  review: "reviewer + grader"
+  r01: "R01 fixes" {
+    style.stroke-dash: 3
+  }
+  verify: "integrated Verify:"
+  pr: "pr.md" {
+    shape: document
+  }
+
+  review -> r01 {
+    style.stroke-dash: 3
+  }
+  r01 -> verify
+  review -> verify
+  verify -> pr
+}
+
+user: "user pushes and opens the PR"
+
+stop: "STOP: task stays in_progress - recover: fix, reset or park"
+
+plan.folder -> execute.pick: "ticket-run <slug>"
+execute.done -> execute.pick: "next task" {
+  style.stroke-dash: 3
+}
+execute.done -> finish.review: "all tasks done"
+finish.pr -> user {
+  style.stroke-dash: 3
+}
+execute.task.scope -> stop {
+  style.stroke-dash: 3
+}
+execute.gate -> stop {
+  style.stroke-dash: 3
+}
+execute.dispatch -> stop {
+  style.stroke-dash: 3
+}
