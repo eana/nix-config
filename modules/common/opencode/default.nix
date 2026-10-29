@@ -74,6 +74,12 @@ let
   repo-wiki = callPackage ./packages/repo-wiki { };
   repoWikiEnabled = lib.elem "repo-wiki" cfg.skills.enabled;
 
+  ticketAgentsEnabled = lib.any (name: lib.elem name cfg.skills.enabled) [
+    "ticket-plan"
+    "ticket-run"
+    "ticket-task"
+  ];
+
   codebaseMemoryOpenCode = callPackage ./packages/codebase-memory-opencode {
     codebase-memory-mcp = cfg.codebaseMemory.package;
   };
@@ -142,12 +148,15 @@ in
           {
             source = "${codebaseMemoryOpenCode}/share/opencode/agents/codebase-memory-auditor.md";
           };
-      "opencode/agents/ticket-planner.md".text =
-        ticketAgent cfg.ticket.models.planner "Plans, splits, checks and reviews work for the ticket-plan and ticket-run skills.";
-      "opencode/agents/ticket-builder.md".text =
-        ticketAgent cfg.ticket.models.builder "Implements one ticket task (high complexity, retries, review fixes) via the ticket-task skill.";
-      "opencode/agents/ticket-builder-light.md".text =
-        ticketAgent cfg.ticket.models.builderLight "Implements one low-complexity ticket task via the ticket-task skill.";
+      "opencode/agents/ticket-planner.md" = mkIf ticketAgentsEnabled {
+        text = ticketAgent cfg.ticket.models.planner "Plans, splits, checks and reviews work for the ticket-plan and ticket-run skills.";
+      };
+      "opencode/agents/ticket-builder.md" = mkIf ticketAgentsEnabled {
+        text = ticketAgent cfg.ticket.models.builder "Implements one ticket task (high complexity, retries, review fixes) via the ticket-task skill.";
+      };
+      "opencode/agents/ticket-builder-light.md" = mkIf ticketAgentsEnabled {
+        text = ticketAgent cfg.ticket.models.builderLight "Implements one low-complexity ticket task via the ticket-task skill.";
+      };
     };
 
     programs.mcp = {

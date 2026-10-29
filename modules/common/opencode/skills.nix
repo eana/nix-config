@@ -2,23 +2,19 @@
   lib,
   pkgs,
   enabledSkills ? [ ],
-  ticketsRepo ? "eana/agent-tickets",
+  ticketsRepo,
 }:
 let
   catalog = import ./skills-catalog.nix;
 
   ticketTaskSrc = ../../../assets/.config/opencode/skills/ticket-task;
 
-  ticketTaskSkill =
-    if ticketsRepo == "eana/agent-tickets" then
-      ticketTaskSrc
-    else
-      pkgs.runCommand "opencode-skill-ticket-task" { TICKETS_REPO = ticketsRepo; } ''
-        cp -r ${ticketTaskSrc} $out
-        chmod -R u+w $out
-        substituteInPlace $out/SKILL.md $out/references/workflow.md \
-          --replace-fail 'eana/agent-tickets' "$TICKETS_REPO"
-      '';
+  ticketTaskSkill = pkgs.runCommand "opencode-skill-ticket-task" { TICKETS_REPO = ticketsRepo; } ''
+    cp -r ${ticketTaskSrc} $out
+    chmod -R u+w $out
+    substituteInPlace $out/SKILL.md $out/references/workflow.md \
+      --replace-fail 'eana/agent-tickets' "$TICKETS_REPO"
+  '';
 
   superpowersSrc = pkgs.fetchFromGitHub {
     owner = "obra";
