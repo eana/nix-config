@@ -20,7 +20,10 @@ Invocation: `ticket-task <slug> <ID>`, run from the project repo.
   `Tickets repo: <org/repo | absolute path>` in the project's `AGENTS.md` overrides
   it. Resolve an `org/repo` with the `ghq-lookup` skill (find, clone if missing).
   Not found or not clonable: STOP. Never create repositories.
-- **Sync before writing:** in the tickets repo, on `master`, run
+- **Default branch:** `git symbolic-ref --short refs/remotes/origin/HEAD` without the
+  `origin/` prefix; if that fails, `main` if it exists, else `master`. Same rule for
+  both repos.
+- **Sync before writing:** in the tickets repo, on its default branch, run
   `git pull --ff-only` (skip if it has no upstream). Failure (divergence): STOP and
   report. Never merge, rebase or push; the user pushes.
 - **Feature folder:** `<tickets repo>/<project path>/<YYYY-MM-DD>-<slug>/`. Compute
@@ -36,9 +39,9 @@ Invocation: `ticket-task <slug> <ID>`, run from the project repo.
 
   Find an existing feature by globbing `*-<slug>/` in `<tickets repo>/<project path>/`.
 - **Commits:** every commit, in either repo, goes through the `git-commit` skill.
-  The user has authorized committing directly on `master` of the tickets repo; that
-  is the permission the git-commit skill asks for, for this repo only. Tickets
-  commits stage only the feature folder.
+  The user has authorized committing directly on the default branch of the tickets
+  repo; that is the permission the git-commit skill asks for, for this repo only.
+  Tickets commits stage only the feature folder.
 
 ## Format (canonical)
 
@@ -111,10 +114,11 @@ Summary, when done:
    `git status --porcelain --untracked-files=no`; in the tickets repo run
    `git status --porcelain -- <feature folder>`.
    - The requested task is `in_progress` and no other task is: RESUME. Uncommitted
-     changes are allowed (they are this task's). Skip step 2. If its `## Summary`
-     has a `Project commit` that exists (`git cat-file -e <sha>`), the code is
-     committed: go straight to the tickets commit in step 7. Otherwise continue
-     from the last checkpoint.
+     changes are allowed (they are this task's). Skip step 2. Look for a
+     `Project commit:` line, in `## Summary` first and then in `## Checkpoints`,
+     whose SHA exists (`git cat-file -e <sha>`). Found: the code is committed, go
+     straight to the tickets commit in step 7. Otherwise continue from the last
+     checkpoint.
    - Otherwise, any uncommitted change in either place, or any task `in_progress`:
      STOP and report. Do not clean, stash or reset anything.
    - Task not ready (status not `open`, or a dependency not `done`): STOP and report.
@@ -166,6 +170,8 @@ Summary, when done:
    - Project repo: one commit with the staged code. The message describes what the
      change does (for `R01`: what was fixed), never the process ("address review
      comments", "implement task T03" are wrong).
+   - Immediately append a checkpoint `- <YYYY-MM-DD HH:MM> Project commit: <sha>`,
+     before writing anything else, so a restart can find the commit.
    - Write `## Summary` including `Project commit: <sha>`, set status `done` in
      `index.md`, commit the feature folder in the tickets repo, subject
      `chore(tasks): done <slug> <ID>`.

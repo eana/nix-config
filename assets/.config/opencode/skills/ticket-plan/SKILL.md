@@ -35,15 +35,13 @@ Do every step in order. Do not skip or merge steps.
 3. **Write access.** The next steps write files and commit. If your harness
    currently forbids that (for example a plan or read-only mode), STOP and ask the
    user to switch to a mode that allows edits, then continue here.
-4. **Project branch (before any project write).** Default branch =
-   `git symbolic-ref --short refs/remotes/origin/HEAD` without the `origin/` prefix;
-   if that fails, `main` if it exists, else `master`. If staged changes exist in the
-   project repo, stop and ask. If the current branch is the default branch, run
-   `git switch -c feat/<slug>` (slug from step 5).
+4. **Default branch (before any project write).** Default branch per `ticket-task`,
+   Locations. If staged changes exist in the project repo, stop and ask.
 5. **Locations.** Slug = plan file name without a leading `YYYY-MM-DD-` date and
-   without extension. Resolve and sync the tickets repo (`ticket-task`, Locations).
-   Compute the project path with the snippet in the `ticket-task` skill (Locations);
-   run it verbatim in the project repo. Do not restate it here.
+   without extension. If the project repo is on its default branch, run
+   `git switch -c feat/<slug>`. Resolve and sync the tickets repo (`ticket-task`,
+   Locations). Compute the project path with the snippet in the `ticket-task` skill
+   (Locations); run it verbatim in the project repo. Do not restate it here.
 
    Feature folder = `<tickets repo>/<output>/<today YYYY-MM-DD>-<slug>/`. The output
    always has at least two path segments; a folder directly under the tickets repo
@@ -80,7 +78,7 @@ Do every step in order. Do not skip or merge steps.
 9. **Check.** Dispatch a separate fresh checker subagent (agent `ticket-planner`
    if it exists): "Load the ticket-task
    skill. Compare `<feature folder>` against its `plan.md` and report, without
-   editing:" 
+   editing:"
    - every `### Task N` has exactly one task file and one `index.md` row, IDs
      `T01`, `T02`, ... in plan order;
    - `index.md` header lines and table columns match the Format exactly;

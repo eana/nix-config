@@ -24,7 +24,8 @@ Invocation: `ticket-run [<slug>]`, run from the project repo.
 1. Resolve and sync the tickets repo; compute the project's directory in it
    (`ticket-task`, Locations, using its path snippet verbatim).
 2. No slug given: list feature folders there whose `index.md` has any task not
-   `done`, or that have no `pr.md`. Exactly one: use it. Otherwise ask the user.
+   `open` and that are not finished (every task `done` and `pr.md` present). Exactly
+   one: use it. Otherwise ask the user.
 3. Check both repos are clean (`ticket-task`, Procedure step 1) and read `index.md`.
    - Exactly one task `in_progress`: it stopped earlier and the user restarted you
      after dealing with it. Dispatch it first (loop step 4); `ticket-task` resumes it.

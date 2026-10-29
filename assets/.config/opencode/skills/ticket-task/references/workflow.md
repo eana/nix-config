@@ -25,8 +25,8 @@ Two repositories are involved:
 
 The tickets repo defaults to `eana/agent-tickets`. A line
 `Tickets repo: <org/repo | absolute path>` in the project's `AGENTS.md` overrides
-it. It is synced on `master` with `git pull --ff-only` before any write; a failed
-fast-forward is a STOP, never a merge or rebase.
+it. It is synced on its default branch with `git pull --ff-only` before any write; a
+failed fast-forward is a STOP, never a merge or rebase.
 
 The project path inside the tickets repo is computed from the project's `origin`
 remote, never derived by hand:
