@@ -168,6 +168,10 @@ Agent models come from `module.opencode.ticket.models` in
 | `builder` | `github-copilot/claude-sonnet-5` | `ticket-builder` (high complexity, retries, `R01`) |
 | `builderLight` | `github-copilot/claude-haiku-4.5` | `ticket-builder-light` (low complexity) |
 
+The default tickets repo comes from `module.opencode.ticket.ticketsRepo`
+(default `eana/agent-tickets`). A `Tickets repo: <org/repo | absolute path>` line
+in the project's `AGENTS.md` overrides it per project.
+
 The three agents are generated in `modules/common/opencode/default.nix`. Skills are
 installed from `assets/.config/opencode/skills/<name>` through
 `modules/common/opencode/skills.nix` when listed in `skills-catalog.nix`.

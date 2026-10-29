@@ -29,6 +29,7 @@ let
   skillsConfig = import ./skills.nix {
     inherit lib pkgs;
     enabledSkills = cfg.skills.enabled;
+    inherit (cfg.ticket) ticketsRepo;
   };
 
   # Enumerated by name: home-manager's skills option wants an attrset, not

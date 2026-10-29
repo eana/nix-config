@@ -143,6 +143,18 @@ in
       };
     };
 
+    ticket.ticketsRepo = mkOption {
+      type = types.str;
+      default = "eana/agent-tickets";
+      description = ''
+        Default tickets repo for the ticket-plan, ticket-run and ticket-task
+        skills. An `org/repo` value is resolved by the ghq-lookup skill and
+        cloned when missing; an absolute path is used as-is. A
+        `Tickets repo: <value>` line in a project's AGENTS.md overrides it
+        per project.
+      '';
+    };
+
     ticket.models = {
       planner = mkOption {
         type = types.str;
