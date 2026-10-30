@@ -29,6 +29,7 @@ let
   skillsConfig = import ./skills.nix {
     inherit lib pkgs;
     enabledSkills = cfg.skills.enabled;
+    inherit (cfg.ticket) ticketsRepo;
   };
 
   # Enumerated by name: home-manager's skills option wants an attrset, not
@@ -52,6 +53,16 @@ let
   );
 
   baseContext = builtins.readFile ./base-context.md;
+
+  ticketAgent = model: description: ''
+    ---
+    description: ${description}
+    mode: subagent
+    model: ${model}
+    ---
+
+    Follow the instructions in the prompt exactly. Load the skills it names before acting.
+  '';
   inherit (pkgs) callPackage;
   garmin-mcp = callPackage ./packages/garmin-mcp {
     inherit (inputs) uv2nix pyproject-nix pyproject-build-systems;
@@ -62,6 +73,12 @@ let
   # so the tools work on any repo, not just inside this flake's devshell.
   repo-wiki = callPackage ./packages/repo-wiki { };
   repoWikiEnabled = lib.elem "repo-wiki" cfg.skills.enabled;
+
+  ticketAgentsEnabled = lib.any (name: lib.elem name cfg.skills.enabled) [
+    "ticket-plan"
+    "ticket-run"
+    "ticket-task"
+  ];
 
   codebaseMemoryOpenCode = callPackage ./packages/codebase-memory-opencode {
     codebase-memory-mcp = cfg.codebaseMemory.package;
@@ -131,6 +148,15 @@ in
           {
             source = "${codebaseMemoryOpenCode}/share/opencode/agents/codebase-memory-auditor.md";
           };
+      "opencode/agents/ticket-planner.md" = mkIf ticketAgentsEnabled {
+        text = ticketAgent cfg.ticket.models.planner "Plans, splits, checks and reviews work for the ticket-plan and ticket-run skills.";
+      };
+      "opencode/agents/ticket-builder.md" = mkIf ticketAgentsEnabled {
+        text = ticketAgent cfg.ticket.models.builder "Implements one ticket task (high complexity, retries, review fixes) via the ticket-task skill.";
+      };
+      "opencode/agents/ticket-builder-light.md" = mkIf ticketAgentsEnabled {
+        text = ticketAgent cfg.ticket.models.builderLight "Implements one low-complexity ticket task via the ticket-task skill.";
+      };
     };
 
     programs.mcp = {
