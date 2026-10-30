@@ -1,6 +1,6 @@
 ---
-generated_commit: ef4c8823581f45a9dadf2046c37c739f96352523
-generated_at: 2026-10-11T08:44:01Z
+generated_commit: 06cd74bc677d19a9e44814ed8572eab31dbcd7f9
+generated_at: 2026-10-30T09:19:38Z
 source_paths:
   - hosts
 ---
@@ -19,8 +19,8 @@ Per-host assembly. Each host directory has a `default.nix` that lists its module
 - `nix/default.nix` - imports `modules/common/nix-cache.nix`; `trusted-users` = root and
   `userName`, plus `@wheel` on Linux; `extraOptions` from `dev/nix.conf`; GC on Darwin
   `interval.Hour = 3` with `--delete-older-than 14d`, on Linux `dates = "12:12"` with no age
-  option; `allowUnfree`; `doCheckByDefault = false` (marked TEMPORARY/TODO, so package tests
-  are skipped).
+  option; `allowUnfree`. The `doCheckByDefault` hack was dropped here, so package tests run
+  again on nixbox and macbox; nasbox still keeps its own copy (see below).
 - `secrets.nix` - the agenix secrets (see below).
 - `system/environment.nix` - `EDITOR = nvim`.
 - `system/packages.nix` - a list of 10 fonts.
@@ -60,7 +60,8 @@ and `system.stateVersion = "24.05"`.
   `ipv4.dns` from `dnsServers` or `fallbackDns` with `ipv4.ignore-auto-dns yes`).
 - `system/nvidia.nix` - option `hardware.nvidiaPrime.enable`; Prime with
   `nvidiaBusId = "PCI:1:0:0"`, `intelBusId = "PCI:0:2:0"`, `open = false`, modesetting,
-  power management, `videoDrivers = [ "nvidia" ]`.
+  power management, `videoDrivers = [ "nvidia" ]`. The bus ID comment shows a plain
+  `$ nix-shell -p pciutils ...` command instead of a prompt glyph.
 - `system/services.nix` - weekly fstrim, avahi (nssmdns4, openFirewall), blueman, GDM with
   `defaultSession = "sway"`, GNOME desktop manager, printing (`canon-cups-ufr2`), libinput,
   dbus, openssh, logind `HandleLidSwitchExternalPower = "ignore"`, gcr-ssh-agent off,
@@ -99,16 +100,30 @@ and `system.stateVersion = 6`.
   logs. Two `HACK` comments: `wait4path /nix/store` (APFS volume mount race) and the macOS
   26 SSID removal.
 - `system/environment.nix` - `pathsToLink = [ "/Applications" ]` and an activation script
-  aliasing system and Home Manager apps into `/Applications/Nix Apps` with `mkalias`.
+  aliasing apps into `/Applications/Nix Apps` with `mkalias`. System apps are collected with
+  `find -type l` over the `buildEnv` (they are symlinks); Home Manager app bundles are
+  instead scanned as `~/Applications/Home Manager Apps/*.app` because home-manager
+  materializes them as real directories. A `HACK`/`TODO` comment marks that hand-rolled
+  scan for removal once nix-darwin or home-manager provides an equivalent alias farm.
 - `system/homebrew.nix` - nix-homebrew (`user = "jonas"`, `mutableTaps = false`, taps pinned
   from the `homebrew-core`, `homebrew-cask`, `nikitabobko-tap` inputs) and homebrew with casks
-  aerospace, firefox, google-chrome, karabiner-elements, protonvpn, vlc, xnviewmp;
-  `masApps.Bitwarden`; `cleanup = "zap"`; only `nikitabobko/tap` is trusted.
+  aerospace, firefox, google-chrome, karabiner-elements, markedit, protonvpn, vlc, xnviewmp;
+  `masApps.Bitwarden`; only `nikitabobko/tap` is trusted. `onActivation.cleanup` is
+  `"uninstall"`, not `"zap"`: `zap` needs Full Disk Access that the root-chain
+  `sudo --user=jonas ... brew bundle` cannot hold, so it aborted mid-uninstall and left
+  Caskroom receipts. `uninstall` drops the bundle and receipt but keeps user data; a
+  `HACK`/`TODO` says to restore `zap` if brew ever runs outside the root chain.
 - `system/packages.nix` - home-manager, m-cli, mkalias, nightlight, zsh-powerlevel10k.
 - `home-manager/default.nix` - sets the two agenix `_module.args`; imports
-  `home/users/jonas/darwin.nix`, nixvim, `modules/darwin/aerospace`, `./karabiner.nix`,
-  `./nightlight.nix` and all `modules/common`; `home.stateVersion = "26.05"`,
+  `home/users/jonas/darwin.nix`, nixvim, `modules/darwin/aerospace`, `./file-associations.nix`,
+  `./karabiner.nix`, `./nightlight.nix` and all `modules/common`; `home.stateVersion = "26.05"`,
   `home.enableNixpkgsReleaseCheck = false`.
+- `home-manager/file-associations.nix` - adds `pkgs.duti` and writes `~/.duti.conf` binding
+  XnViewMP (`com.xnview.XnView`) as default handler for image UTIs (`public.jpeg`,
+  `public.png`, `public.tiff`, `com.compuserve.gif`, `com.microsoft.bmp`, `public.heic`,
+  `public.webp`, `public.avif`, `public.jpeg-2000`, `com.truevision.tga-image`). Bindings are
+  by UTI so extension casing never diverges. A `writeBoundary`-after activation script runs
+  `duti ~/.duti.conf`.
 - `home-manager/karabiner.nix` - writes `~/.config/karabiner/karabiner.json` (AltGr chords,
   Windows-style Home/End, Right Option / Right Control swap, `ansi` keyboard type).
 - `home-manager/nightlight.nix` - options `eana.nightShift.{start,end}` (defaults `19:00` and
@@ -121,7 +136,8 @@ and `system.stateVersion = 6`.
 
 - `nix/default.nix` - imports `modules/common/nix-cache.nix`; `nix.package = pkgs.nix`;
   `trusted-users = [ "root" ]`; `extraOptions` from `dev/nix.conf`; `allowUnfree`;
-  `doCheckByDefault = false`.
+  `doCheckByDefault = false` (marked TEMPORARY/TODO, so package tests are skipped here
+  only; the shared tree no longer sets it).
 - `home-manager/default.nix` - imports `home/users/root/ds920p.nix`, nixvim and all
   `modules/common` (via a locally imported `lib.nix`); `home.username = "root"`,
   `home.homeDirectory = "/root"`.

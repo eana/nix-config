@@ -1,6 +1,6 @@
 ---
-generated_commit: ef4c8823581f45a9dadf2046c37c739f96352523
-generated_at: 2026-10-11T08:44:01Z
+generated_commit: 06cd74bc677d19a9e44814ed8572eab31dbcd7f9
+generated_at: 2026-10-30T09:19:38Z
 source_paths:
   - configurations
 ---
@@ -19,6 +19,9 @@ configuration as a flake attribute. They contain no host logic; system assembly 
 | `configurations/macbox/flake-module.nix` | `flake.darwinConfigurations.macbox` via `inputs.nix-darwin.lib.darwinSystem`. |
 | `configurations/nasbox/flake-module.nix` | `flake.homeConfigurations.nasbox` via `inputs.home-manager.lib.homeManagerConfiguration`. |
 
+`flake.nix` imports all three explicitly. Only `x86_64-linux` and `aarch64-darwin` are in
+`systems`.
+
 ## nixbox
 
 - Arguments: `{ eanaLib, inputs, ... }`.
@@ -33,6 +36,10 @@ configuration as a flake attribute. They contain no host logic; system assembly 
 
 - Arguments: `{ eanaLib, inputs, ... }`.
 - `pkgs = import inputs.nixpkgs { system = "aarch64-darwin"; config.allowUnfree = true; }`.
+- Adds overlay `workaroundForAtuinDarwinCheck` to that `pkgs` import. It overrides `atuin`
+  with `doCheck = false` because the atuin e2e test hangs on unsandboxed darwin builds.
+  Upstream fix is NixOS/nixpkgs `34f4a531e8fb` (PR #574509), not yet in the pinned
+  channel. Remove the overlay once the pinned nixpkgs contains it.
 - Modules: `../../hosts/macbox/default.nix`, `inputs.agenix.nixosModules.default`,
   `inputs.home-manager.darwinModules.home-manager`,
   `inputs.nix-homebrew.darwinModules.nix-homebrew`, and an inline
@@ -70,6 +77,8 @@ flake modules with `_module.args.eanaLib`. nixbox and macbox pass the extended l
 
 - `allowUnfree`: macbox sets it in the `pkgs` import; nasbox sets it in the `pkgs` import and
   again inline; nixbox sets it through `hosts/shared/nix/default.nix`.
+- macbox is the only configuration with a package overlay: the atuin `doCheck = false`
+  workaround described above. It was added by `fix(configurations): disable atuin checks on macbox`, the only commit touching this directory since the previous wiki run.
 - nasbox is a Home Manager configuration, so its buildable output is `activationPackage`.
 - `nixvimInput = inputs.nixvim` is passed as a special argument on all three hosts (here for
   nasbox, in `hosts/{nixbox,macbox}/home-manager/default.nix` for the others), but no module

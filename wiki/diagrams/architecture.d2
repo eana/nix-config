@@ -3,10 +3,10 @@ direction: down
 flake: "flake.nix (flake-parts)" {
   shape: package
   lib: "lib.nix\nmodulesFromDir"
-  inputs: "inputs\nnixpkgs (unstable) + followers,\ndisko, nixvim, nix-homebrew, taps"
+  inputs: "inputs\nnixpkgs (nixos-unstable-small tarball)\n+ followers (dev-flake, agenix,\nhome-manager, nix-darwin), disko,\nnixvim, nix-homebrew, taps"
 }
 
-dev: "dev/flake-module.nix\ndevshell, treefmt, pre-commit,\nversion-check, host packages"
+dev: "dev/flake-module.nix\ndevshell, treefmt, hooks (prek),\nconform, version-check, d2-render,\nhost + devshell packages"
 
 configurations: "configurations/" {
   cfg_nixbox: "nixbox\nnixosSystem"

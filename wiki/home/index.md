@@ -1,6 +1,6 @@
 ---
-generated_commit: ef4c8823581f45a9dadf2046c37c739f96352523
-generated_at: 2026-10-11T08:44:01Z
+generated_commit: 06cd74bc677d19a9e44814ed8572eab31dbcd7f9
+generated_at: 2026-10-30T09:19:38Z
 source_paths:
   - home
 ---
@@ -19,7 +19,10 @@ that file imports the user's `common.nix`, which imports `home/users/shared.nix`
 | nasbox | `root/ds920p.nix` | `ds920p.nix` -> `root/common.nix` -> `shared.nix` |
 
 The host files also import the nixvim HM module and the module directories (see
-[hosts](../hosts/index.md)). Only nixbox and macbox pass `sshSecretsPath` and
+[hosts](../hosts/index.md)). nixbox imports `modules/common` plus `modules/linux` minus
+`libvirt` (a NixOS module); macbox imports `modules/common`, `modules/darwin/aerospace`,
+`file-associations.nix`, `karabiner.nix` and `nightlight.nix`; nasbox imports only
+`modules/common` and the nixvim module. Only nixbox and macbox pass `sshSecretsPath` and
 `atuinSecretsPath`.
 
 ## shared.nix (every user)
@@ -30,7 +33,9 @@ The host files also import the nixvim HM module and the module directories (see
 - `module.git` (ghq root `~/repos`), `module.gpg-agent`, `module.nixvim`
   (`wrapColumn = 120`), `module.tmux`, `module.zsh`.
 
-`/etc/nixos` only exists on nixbox, but every user inherits the nh setting.
+`/etc/nixos` only exists on nixbox, but every user inherits the nh setting. macbox's own
+`home-manager/default.nix` also sets `home.stateVersion = "26.05"` and
+`home.enableNixpkgsReleaseCheck = false`.
 
 ## jonas
 
@@ -40,8 +45,12 @@ The host files also import the nixvim HM module and the module directories (see
   `TERM = xterm-256color`. `custom.theme = "gruvbox"`. Modules:
   - `atuin` - sync to `https://atuin.eana.win`, `credentialsFile = atuinSecretsPath`,
     `sync_frequency = "10m"`, `search_mode = "fuzzy"`.
-  - `kitty` - font size 14 and PC-style keybindings matching the Karabiner remap.
-  - `opencode` - `package = pkgs.opencode`, `social` skills, playwright, garmin.
+  - `kitty` - font size 14 and PC-style keybindings matching the Karabiner remap:
+    opt+left/right and cmd+left/right send readline start/end sequences, opt+d and
+    opt+delete kill a word forward (`\ed`), opt+backspace sends ESC DEL (word back),
+    opt+cmd+s unbinds the macOS secure keyboard entry toggle.
+  - `opencode` - `package = pkgs.opencode`, `social` skills, playwright, garmin,
+    ponytail plugin enabled.
   - `podman`.
   - `ssh-client` - `secretsFile = sshSecretsPath`, explicit `KexAlgorithms`.
   - A comment documents the Ollama split: CLI plus remote server on Linux, local server on
@@ -49,11 +58,13 @@ The host files also import the nixvim HM module and the module directories (see
 - `jonas/linux.nix` (nixbox) - `systemd.user.startServices = "sd-switch"`; user services
   copyq, telegram, `bluetooth-applet` (blueman), swaynag-battery; GTK theme Yaru
   prussiangreen and dconf font settings; packages including firefox, google-chrome, ollama,
-  awscli2, cachix, proton-vpn, freetube, nix-tree and an inline `aws-export-profile`
-  derivation (pinned `fetchFromGitHub`); `LIBGL_ALWAYS_INDIRECT = 1`,
+  awscli2, proton-vpn, freetube, nix-tree and an inline `aws-export-profile` derivation
+  (pinned `fetchFromGitHub`); `LIBGL_ALWAYS_INDIRECT = 1`,
   `OLLAMA_HOST = "macbox.local:11434"`. Enables the ten Home Manager modules from
   `modules/linux` (mhalo bound to `Mod4+Shift+m`, openra `red-alert`, sway with
   `swaylock.settings.indicator-radius = 45`, waybar `systemdIntegration`).
+  `cachix` is no longer a user package; it comes from the devshell
+  (`dev/flake-module.nix`).
 - `jonas/darwin.nix` (macbox) - `module.aerospace` with `modifier = "cmd"`; Home Manager's
   own `services.ollama` (there is no repo ollama module) with `OLLAMA_FLASH_ATTENTION`,
   `OLLAMA_KV_CACHE_TYPE = q8_0`, `OLLAMA_NUM_PARALLEL = 1` and
@@ -65,8 +76,9 @@ The host files also import the nixvim HM module and the module directories (see
 - `root/ds920p.nix` - `programs.home-manager.enable`; `module.atuin` with sync to
   `https://atuin.eana.win` and credentials at
   `~/.local/share/atuin/atuin-credentials`; `module.git.identities.default` with
-  `sshKey = "~/.ssh/id_ed25519_git"` and `pathPatterns = [ "~/repos/**" ]`; 16 NAS tools
-  (for example iftop, iotop, nethogs, iperf, sysstat, zmap, dnsutils, lsof).
+  `sshKey = "~/.ssh/id_ed25519_git"` and `pathPatterns = [ "~/repos/**" ]`; 15 NAS tools
+  (for example iftop, iotop, nethogs, iperf, sysstat, zmap, dnsutils, lsof). `cachix` is
+  no longer listed here either.
 
 ### atuin login without systemd (HACK)
 

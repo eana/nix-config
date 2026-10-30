@@ -1,6 +1,6 @@
 ---
-generated_commit: ef4c8823581f45a9dadf2046c37c739f96352523
-generated_at: 2026-10-11T08:44:01Z
+generated_commit: 06cd74bc677d19a9e44814ed8572eab31dbcd7f9
+generated_at: 2026-10-30T09:19:38Z
 source_paths:
   - modules/darwin
 ---
@@ -32,6 +32,12 @@ Default keybindings (`<mod>` = `modifier`):
 - `<mod>-enter` - kitty with `--directory ~` (`config.module.kitty.package or pkgs.kitty`).
 - `<mod>-alt-t` - Telegram, launched from the `pkgs.telegram-desktop` binary because apps
   started with `open` are invisible to AeroSpace.
+- `<mod>-ctrl-s` - interactive region screenshot copied to the clipboard
+  (`/usr/sbin/screencapture -i -c`).
+- `<mod>-ctrl-t` - interactive region screenshot, OCR to text, copied to the clipboard:
+  `screencapture -i -c`, then `pkgs.pngpaste` reads the clipboard image, `pkgs.tesseract`
+  OCRs it, and `/usr/bin/pbcopy` stores the text. Uses the clipboard because
+  `screencapture -` is a file name, not stdout.
 - `<mod>-alt-<arrow>` focus, `<mod>-shift-<arrow>` move (plain `<mod>-<arrow>` is left alone
   because Karabiner maps Home/End to cmd+arrows).
 - `<mod>-1..7` workspace, `<mod>-shift-1..7` move window to workspace,
@@ -41,14 +47,17 @@ Default keybindings (`<mod>` = `modifier`):
 Rescue keybindings use fixed keys, independent of `modifier`: `cmd-shift-q` close,
 `alt-tab` workspace back-and-forth, `alt-shift-tab` move workspace to next monitor,
 `alt-c` / `alt-v` horizontal / vertical tiles, `alt-f` fullscreen, `alt-r` resize mode.
+They exist because AeroSpace consumes any combo it binds, so cmd-based versions would
+shadow macOS shortcuts (cmd-q, cmd-tab, cmd-c/v, cmd-f, cmd-r).
 
 ### Generated config (`default.nix`)
 
 - `config-version = 2`, `start-at-login = true`.
-- Tiles layout, `default-root-container-orientation = "auto"`, inner gaps 2, no outer gaps.
+- `default-root-container-layout = "tiles"`, `default-root-container-orientation = "auto"`,
+  inner gaps 2, no outer gaps.
 - Persistent workspaces 1 to 7.
-- `on-window-detected` floats System Settings (`com.apple.SystemSettings` /
-  `com.apple.systempreferences`) and Calculator.
+- `on-window-detected` floats System Settings (`^com\.apple\.(SystemSettings|systempreferences)$`)
+  and Calculator (`^com\.apple\.calculator$`).
 - `mode.main.binding = cfg.keybindings`; resize mode: h/k `-50`, j/l `+50`, arrows resize
   width/height, enter/esc return to main.
 - `recursiveUpdate baseSettings cfg.settings`, written with `pkgs.formats.toml`.
