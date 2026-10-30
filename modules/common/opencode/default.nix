@@ -34,25 +34,38 @@ let
 
   # Enumerated by name: home-manager's skills option wants an attrset, not
   # context-mode's own skills dir. New upstream skills need adding here.
-  contextModeSkills = builtins.listToAttrs (
-    map
-      (name: {
-        inherit name;
-        value = "${cfg.contextMode.package}/share/skills/context-mode/${name}";
-      })
-      [
-        "context-mode"
-        "ctx-doctor"
-        "ctx-index"
-        "ctx-insight"
-        "ctx-purge"
-        "ctx-search"
-        "ctx-stats"
-        "ctx-upgrade"
-      ]
+  contextModeSkills = lib.optionalAttrs cfg.contextMode.enable (
+    builtins.listToAttrs (
+      map
+        (name: {
+          inherit name;
+          value = "${cfg.contextMode.package}/share/skills/context-mode/${name}";
+        })
+        [
+          "context-mode"
+          "ctx-doctor"
+          "ctx-index"
+          "ctx-insight"
+          "ctx-purge"
+          "ctx-search"
+          "ctx-stats"
+          "ctx-upgrade"
+        ]
+    )
   );
 
   baseContext = builtins.readFile ./base-context.md;
+
+  # HACK: switched context-mode from plugin to MCP because OpenCode V2 does
+  # not run its V1-API plugin (see plugins.nix); MCP-only plus this routing
+  # block still does not work (ctx_execute's JS sandbox rejects `require`
+  # for the Node builtins its own docs advertise, so real tasks fall back to
+  # unrouted shell). Disabled (module.opencode.contextMode.enable = false).
+  # TODO: revisit once context-mode ships a working OpenCode V2 plugin (see
+  # mksglu/context-mode; 1.0.169 latest / 2.0.0-next.16 prerelease are both
+  # still V1-shaped on the opencode adapter), then wire it through
+  # plugins.nix instead of mcp.nix.
+  contextModeRouting = builtins.readFile "${cfg.contextMode.package}/lib/context-mode/configs/opencode/AGENTS.md";
 
   ticketAgent = model: description: ''
     ---
@@ -93,12 +106,13 @@ in
     # opt-in (see playwright.enable and skills.enabled = [ "social" ... ]).
     module.opencode.skills.enabled = catalog.local ++ [ "superpowers" ];
 
-    home.packages = [
-      cfg.contextMode.runtime
-    ]
-    ++ lib.optionals cfg.snip.enable [ pkgs.snip ]
-    ++ lib.optionals cfg.garmin.enable [ garmin-mcp ]
-    ++ lib.optional repoWikiEnabled repo-wiki;
+    home.packages =
+      lib.optionals cfg.contextMode.enable [
+        cfg.contextMode.runtime
+      ]
+      ++ lib.optionals cfg.snip.enable [ pkgs.snip ]
+      ++ lib.optionals cfg.garmin.enable [ garmin-mcp ]
+      ++ lib.optional repoWikiEnabled repo-wiki;
 
     xdg.configFile = {
       "snip/config.toml" = mkIf cfg.snip.enable {
@@ -164,6 +178,7 @@ in
       servers = import ./mcp.nix {
         inherit lib pkgs garmin-mcp;
         contextMode = cfg.contextMode.package;
+        enableContextMode = cfg.contextMode.enable;
         codebaseMemory = cfg.codebaseMemory.package;
         enableCodebaseMemory = cfg.codebaseMemory.enable;
         enablePlaywright = cfg.playwright.enable;
@@ -200,6 +215,7 @@ in
       context =
         baseContext
         + optionalString cfg.codebaseMemory.enable (builtins.readFile ./codebase-memory-context.md)
+        + optionalString cfg.contextMode.enable contextModeRouting
         + cfg.extraContext;
 
       skills =

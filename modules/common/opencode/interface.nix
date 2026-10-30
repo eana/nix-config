@@ -62,6 +62,10 @@ in
     };
 
     contextMode = {
+      enable = mkEnableOption "context-mode MCP server and ctx_* tool routing" // {
+        default = false;
+      };
+
       package = mkOption {
         type = types.package;
         default = pkgs.callPackage ./packages/context-mode { };

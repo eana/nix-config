@@ -3,6 +3,7 @@
   pkgs,
   garmin-mcp,
   contextMode,
+  enableContextMode ? false,
   codebaseMemory,
   enableCodebaseMemory,
   enablePlaywright ? false,
@@ -13,7 +14,7 @@ let
 in
 filterAttrs (_n: v: v != { }) {
   # Bare `context-mode` starts its stdio MCP server, serving the ctx_* tools.
-  context-mode = {
+  context-mode = optionalAttrs enableContextMode {
     command = "${contextMode}/bin/context-mode";
     enabled = true;
   };
