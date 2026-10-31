@@ -21,8 +21,6 @@ let
   pluginConfig = import ./plugins.nix {
     inherit lib pkgs;
     enableSnip = cfg.snip.enable;
-    enableCopilotAutoModel = cfg.copilotAutoModel.enable;
-    copilotAutoModelAutos = cfg.copilotAutoModel.autos;
     enablePonytail = cfg.ponytail.enable;
   };
 

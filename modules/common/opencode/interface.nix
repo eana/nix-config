@@ -142,8 +142,13 @@ in
       };
       enable = mkOption {
         type = types.bool;
-        default = true;
-        description = "Enable opencode-github-copilot-auto-model plugin (opt-out).";
+        default = false;
+        description = ''
+          Enable opencode-github-copilot-auto-model plugin. Disabled by default
+          because the plugin exports only the OpenCode v1 API and does not work
+          with OpenCode v2. See github.com/m0wer/opencode-github-copilot-auto-model/issues/10.
+          Re-enable once upstream ships v2 support.
+        '';
       };
     };
 
