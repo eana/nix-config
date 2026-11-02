@@ -155,6 +155,7 @@ in
         enableContextMode = cfg.contextMode.enable;
         enablePlaywright = cfg.playwright.enable;
         enableGarmin = cfg.garmin.enable;
+        enableContext7 = cfg.context7.enable;
       };
     };
 

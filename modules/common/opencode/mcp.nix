@@ -6,6 +6,7 @@
   enableContextMode ? false,
   enablePlaywright ? false,
   enableGarmin ? false,
+  enableContext7 ? false,
 }:
 let
   inherit (lib) filterAttrs optionalAttrs;
@@ -17,16 +18,6 @@ filterAttrs (_n: v: v != { }) {
     enabled = true;
   };
 
-  k8s = optionalAttrs (pkgs ? mcp-k8s-go) {
-    command = "${pkgs.mcp-k8s-go}/bin/mcp-k8s-go";
-    enabled = false;
-  };
-
-  opentofu = optionalAttrs (pkgs ? opentofu-mcp-server) {
-    command = "${pkgs.opentofu-mcp-server}/bin/opentofu-mcp-server";
-    enabled = false;
-  };
-
   playwright = optionalAttrs (enablePlaywright && pkgs ? playwright-mcp) {
     command = "${pkgs.playwright-mcp}/bin/playwright-mcp";
     enabled = false;
@@ -34,12 +25,7 @@ filterAttrs (_n: v: v != { }) {
 
   context7 = optionalAttrs (pkgs ? context7-mcp) {
     command = "${pkgs.context7-mcp}/bin/context7-mcp";
-    enabled = false;
-  };
-
-  sequential-thinking = optionalAttrs (pkgs ? mcp-server-sequential-thinking) {
-    command = "${pkgs.mcp-server-sequential-thinking}/bin/mcp-server-sequential-thinking";
-    enabled = false;
+    enabled = enableContext7;
   };
 
   garmin = optionalAttrs enableGarmin {

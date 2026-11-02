@@ -73,6 +73,10 @@ in
       enable = mkEnableOption "ponytail lazy-senior-dev plugin for opencode";
     };
 
+    context7 = {
+      enable = mkEnableOption "context7 live documentation MCP server";
+    };
+
     playwright = {
       enable = mkEnableOption "Playwright browser-automation MCP server (for LinkedIn profile editing and similar tasks)";
     };
