@@ -8,7 +8,6 @@
 let
   inherit (lib)
     mkIf
-    optional
     optionalString
     ;
   cfg = config.module.opencode;
@@ -90,10 +89,6 @@ let
     "ticket-run"
     "ticket-task"
   ];
-
-  codebaseMemoryOpenCode = callPackage ./packages/codebase-memory-opencode {
-    codebase-memory-mcp = cfg.codebaseMemory.package;
-  };
 in
 {
   imports = [ ./interface.nix ];
@@ -141,25 +136,6 @@ in
         animations = true;
       };
 
-      # HACK: programs.opencode.agents only treats Nix path values as file
-      # sources; a store path string is written as inline text. Install the
-      # generated profiles through xdg.configFile instead.
-      # TODO: switch to programs.opencode.agents when HM accepts store paths.
-      "opencode/agents/codebase-memory-scout.md" =
-        mkIf (cfg.codebaseMemory.enable && cfg.codebaseMemory.agents.enable)
-          {
-            source = "${codebaseMemoryOpenCode}/share/opencode/agents/codebase-memory-scout.md";
-          };
-      "opencode/agents/codebase-memory.md" =
-        mkIf (cfg.codebaseMemory.enable && cfg.codebaseMemory.agents.enable)
-          {
-            source = "${codebaseMemoryOpenCode}/share/opencode/agents/codebase-memory.md";
-          };
-      "opencode/agents/codebase-memory-auditor.md" =
-        mkIf (cfg.codebaseMemory.enable && cfg.codebaseMemory.agents.enable)
-          {
-            source = "${codebaseMemoryOpenCode}/share/opencode/agents/codebase-memory-auditor.md";
-          };
       "opencode/agents/ticket-planner.md" = mkIf ticketAgentsEnabled {
         text = ticketAgent cfg.ticket.models.planner "Plans, splits, checks and reviews work for the ticket-plan and ticket-run skills.";
       };
@@ -177,8 +153,6 @@ in
         inherit lib pkgs garmin-mcp;
         contextMode = cfg.contextMode.package;
         enableContextMode = cfg.contextMode.enable;
-        codebaseMemory = cfg.codebaseMemory.package;
-        enableCodebaseMemory = cfg.codebaseMemory.enable;
         enablePlaywright = cfg.playwright.enable;
         enableGarmin = cfg.garmin.enable;
       };
@@ -198,30 +172,16 @@ in
       }
       // import ./permissions.nix { enableSnip = cfg.snip.enable; }
       // {
-        plugin =
-          pluginConfig.plugin
-          ++ optional (
-            cfg.codebaseMemory.enable && cfg.codebaseMemory.plugin.enable
-          ) "${codebaseMemoryOpenCode}/share/opencode/plugins/cbm-augment.ts";
+        inherit (pluginConfig) plugin;
       };
 
       # Terminal settings live in cli.json (see xdg.configFile above), not here.
       # OpenCode V2 ignores tui.json entirely.
 
-      # Keep codebase-memory-context.md in sync with agent_instructions_content
-      # in the pinned codebase-memory-mcp source.
-      context =
-        baseContext
-        + optionalString cfg.codebaseMemory.enable (builtins.readFile ./codebase-memory-context.md)
-        + optionalString cfg.contextMode.enable contextModeRouting
-        + cfg.extraContext;
+      context = baseContext + optionalString cfg.contextMode.enable contextModeRouting + cfg.extraContext;
 
       skills =
         skillsConfig
-        // lib.optionalAttrs cfg.codebaseMemory.enable {
-          codebase-memory = "${codebaseMemoryOpenCode}/share/opencode/skills/codebase-memory";
-          cbm-new-project = ../../../assets/.config/opencode/skills/cbm-new-project;
-        }
         // lib.optionalAttrs repoWikiEnabled { repo-wiki = "${repo-wiki}"; }
         // lib.optionalAttrs cfg.playwright.enable {
           linkedin-profile-editor = ../../../assets/.config/opencode/skills/linkedin-profile-editor;

@@ -4,8 +4,6 @@
   garmin-mcp,
   contextMode,
   enableContextMode ? false,
-  codebaseMemory,
-  enableCodebaseMemory,
   enablePlaywright ? false,
   enableGarmin ? false,
 }:
@@ -16,11 +14,6 @@ filterAttrs (_n: v: v != { }) {
   # Bare `context-mode` starts its stdio MCP server, serving the ctx_* tools.
   context-mode = optionalAttrs enableContextMode {
     command = "${contextMode}/bin/context-mode";
-    enabled = true;
-  };
-
-  codebase-memory = optionalAttrs enableCodebaseMemory {
-    command = "${codebaseMemory}/bin/codebase-memory-mcp";
     enabled = true;
   };
 
