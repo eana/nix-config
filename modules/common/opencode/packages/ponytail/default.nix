@@ -25,20 +25,26 @@ stdenvNoCC.mkDerivation rec {
     runHook postInstall
   '';
 
-  # HACK: opencode's plugin loader probes server/tui/rpc entrypoints and treats
-  # Bun's ResolveMessage (not instanceof Error) for a missing file as fatal,
-  # breaking the whole config bootstrap.
+  # HACK: opencode's plugin loader (packages/plugin/src/host.ts) probes the
+  # server, tui, rpc and gui-experimental.cjs entrypoints and treats Bun's
+  # ResolveMessage (not instanceof Error) for a missing file as fatal. That
+  # aborts the whole plugin reload, taking built-in provider plugins such as
+  # github-copilot down with it.
   # https://github.com/anomalyco/opencode/issues/48122
   # TODO: remove once a released opencode includes the fix.
   # server.mjs must re-export the real entry (an empty stub would shadow it);
-  # tui/rpc only need valid no-op plugins.
+  # tui/rpc/gui only need valid no-op plugins. The GUI entry is evaluated as
+  # CommonJS, and gui-experimental.cjs stops the gui-experimental.js probe.
   preInstall = ''
     workaroundForOpencodePluginProbe() {
-      echo "export { default } from './index.js'" > $out/.opencode/plugins/server.mjs
+      local dir=$out/.opencode/plugins
+      echo "export { default } from './index.js'" > $dir/server.mjs
       for entrypoint in tui rpc; do
         echo 'export default { id: "ponytail", setup: async () => {} }' \
-          > "$out/.opencode/plugins/$entrypoint.mjs"
+          > "$dir/$entrypoint.mjs"
       done
+      echo 'module.exports = { id: "ponytail", setup: async () => {} }' \
+        > $dir/gui-experimental.cjs
     }
   '';
 
