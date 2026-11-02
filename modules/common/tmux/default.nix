@@ -110,6 +110,9 @@ let
     # This is the value of the TERM environment variable outside tmux
     set-option -sa terminal-features ',xterm-256color:RGB'
 
+    # Let apps (e.g. opencode/OpenTUI) send DCS-wrapped OSC 52 to the outer terminal
+    set-option -g allow-passthrough on
+
     # Make home/end keys to work
     # $ tput khome | cat -v; echo
     # ^[[1~
