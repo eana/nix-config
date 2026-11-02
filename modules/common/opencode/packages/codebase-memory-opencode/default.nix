@@ -20,12 +20,10 @@ stdenv.mkDerivation {
     ${codebase-memory-mcp}/bin/codebase-memory-mcp install \
       -y --force --skip-binary --clients=opencode
 
-    # HACK: upstream always embeds ~/.local/bin in the generated plugin, even
-    # with --skip-binary. Point it at the Nix store binary instead.
-    # TODO: remove when upstream supports an explicit binary path.
-    substituteInPlace "$XDG_CONFIG_HOME/opencode/plugins/cbm-augment.ts" \
-      --replace-fail "$HOME/.local/bin/codebase-memory-mcp" \
-      "${codebase-memory-mcp}/bin/codebase-memory-mcp"
+    # With --skip-binary the installer embeds its own path in the plugin.
+    # Fail if that ever regresses to a path outside the Nix store.
+    grep -qF "'${codebase-memory-mcp}/bin/codebase-memory-mcp'" \
+      "$XDG_CONFIG_HOME/opencode/plugins/cbm-augment.ts"
 
     mkdir -p \
       "$out/share/opencode/skills" \
