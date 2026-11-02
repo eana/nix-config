@@ -1,6 +1,6 @@
 ---
-generated_commit: 06cd74bc677d19a9e44814ed8572eab31dbcd7f9
-generated_at: 2026-10-30T09:19:38Z
+generated_commit: 4737ab0f03ccc9b97f501a410af65c032bf855d4
+generated_at: 2026-11-02T10:50:49Z
 source_paths:
   - assets
 ---
@@ -26,7 +26,7 @@ assets/.local/share/backgrounds/ -> ~/.local/share/backgrounds/
 | `.config/mpv/input.conf` | mpvDLNA bindings (`ctrl+b`, `;`, `:`), `b apply-profile benchmark` | `modules/linux/mpv` (`config.inputConf`) |
 | `.config/snip/config.toml` | `[display] quiet_no_filter = true` | `modules/common/opencode` when `snip.enable` |
 | `.local/share/backgrounds/*.jpg` | six wallpapers (binary) | `modules/linux/sway` (whole directory) |
-| `.config/opencode/skills/<name>/` | fourteen opencode skills (see below) | `modules/common/opencode` |
+| `.config/opencode/skills/<name>/` | thirteen opencode skills (see below) | `modules/common/opencode` |
 
 The sway default background is `hannah-grace-dSqWwzrLJaQ-unsplash.jpg`, set in
 `modules/linux/sway/interface.nix` (`defaultBackground`) and again in
@@ -39,7 +39,6 @@ All text files here are ASCII-only; commit 4133f0f normalized non-ASCII characte
 
 | Skill | Topic |
 | ----- | ----- |
-| cbm-new-project | bootstrapping codebase-memory for a new or unindexed repo (`SKILL.md` + `WORKFLOW.md`) |
 | flake-parts | flake-parts and dev-flake |
 | ghq-lookup | reading source via ghq |
 | git-commit | conventional commits, staging, signing |
@@ -60,16 +59,17 @@ All text files here are ASCII-only; commit 4133f0f normalized non-ASCII characte
   tickets repo `eana/agent-tickets` with `module.opencode.ticket.ticketsRepo` in
   `SKILL.md` and `references/workflow.md`.
 - `local` plus the `superpowers` group is enabled by default in `opencode/default.nix`.
-- `cbm-new-project` is not in the catalog; `opencode/default.nix` adds it when
-  `codebaseMemory.enable` is set (on by default). It also sets
-  `metadata.opencode/slash: "true"`.
 - `linkedin-profile-editor` is not in the catalog; `opencode/default.nix` adds it when
   `playwright.enable` is set.
+- `codebase-memory-mcp` and its `cbm-new-project` skill were removed (commit `603970d`,
+  `chore(module): remove codebase-memory-mcp`); the `module.opencode.codebaseMemory`
+  option, its MCP server entry and the generated skill/agents/plugin are gone along with
+  the `assets/.config/opencode/skills/cbm-new-project` directory.
 - `repo-wiki/SKILL.md` is also copied into the `repo-wiki` package
   (`modules/common/opencode/packages/repo-wiki`), which adds the `repo-wiki-index` and
   `repo-wiki-query` tools. When `repo-wiki` is enabled, opencode points the skill at the
   package output instead of this directory.
-- All fourteen `SKILL.md` files set `compatibility: opencode`.
+- All thirteen `SKILL.md` files set `compatibility: opencode`.
 - The ticket skills also install the `ticket-planner`, `ticket-builder` and
   `ticket-builder-light` agent profiles, using `module.opencode.ticket.models`.
 - `ticket-workflow.d2` renders to the sibling `.svg` through the `d2-render` hook; commit

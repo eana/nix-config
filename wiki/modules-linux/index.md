@@ -1,6 +1,6 @@
 ---
-generated_commit: ef4c8823581f45a9dadf2046c37c739f96352523
-generated_at: 2026-10-11T08:44:01Z
+generated_commit: 4737ab0f03ccc9b97f501a410af65c032bf855d4
+generated_at: 2026-11-02T10:50:49Z
 source_paths:
   - modules/linux
 ---

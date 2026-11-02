@@ -1,6 +1,6 @@
 ---
-generated_commit: 06cd74bc677d19a9e44814ed8572eab31dbcd7f9
-generated_at: 2026-10-30T09:19:38Z
+generated_commit: 4737ab0f03ccc9b97f501a410af65c032bf855d4
+generated_at: 2026-11-02T10:50:49Z
 source_paths:
   - dev
 ---
@@ -77,10 +77,25 @@ and `hosts` (relative to the git root). Pins elsewhere, such as `dev/` and `flak
 are not scanned. `EXCLUDES = [("anomalyco", "opencode")]`.
 
 - `fetchFromGitHub` blocks: `rev` matching `^v[0-9]` or starting with `release-` is a
-  release (latest = reverse string sort of `git ls-remote --tags`, not semver-aware); a
-  40-character hex `rev` is a commit (latest = `git ls-remote <url> HEAD`); other formats
-  and `#` revs are skipped. Block matching tolerates one level of nested braces so Nix
-  interpolations do not truncate the match before the hash.
+  release; a 40-character hex `rev` is a commit (latest = `git ls-remote <url> HEAD`);
+  other formats and `#` revs are skipped. Block matching tolerates one level of nested
+  braces so Nix interpolations do not truncate the match before the hash.
+- Release-tag selection is now semver-aware (commit `77136bf`,
+  `fix(devshell): sort version tags semantically`), not a plain reverse string sort:
+  - `TAG_RE` only accepts `v<dot-separated-numbers>` or `release-<dot-separated-numbers>`,
+    with an optional `-<suffix>` marking a pre-release. A tag that does not match this
+    (for example a `pkg/go/v1.2.3`-style namespaced tag) is dropped entirely, which is
+    how a different tag prefix is ignored.
+  - The current pin's tag is parsed first; candidates are kept only when their prefix
+    (`v` or `release-`) matches the pin's prefix.
+  - A candidate that is a pre-release is skipped unless the current pin is itself a
+    pre-release, so a stable pin is never bumped to a pre-release.
+  - Remaining candidates are compared as numeric tuples (`(1, 10) > (1, 9)`), not as
+    text, with non-pre-release tags preferred over pre-release tags at the same version.
+  - After picking the best candidate, it is compared back against the current pin's own
+    `(numeric_parts, non-prerelease)` tuple; if the candidate is not greater or equal,
+    the function returns the current tag unchanged instead of ever suggesting an older
+    tag.
 - npm pins from `registry.npmjs.org/<pkg>/-/<pkg>-<ver>.tgz` URLs in `fetchurl` blocks.
   `${pname}` / `${version}` interpolation is resolved from the surrounding Nix text;
   latest comes from the registry `latest` endpoint.

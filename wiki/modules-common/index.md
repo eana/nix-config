@@ -1,6 +1,6 @@
 ---
-generated_commit: 06cd74bc677d19a9e44814ed8572eab31dbcd7f9
-generated_at: 2026-10-30T09:19:38Z
+generated_commit: 4737ab0f03ccc9b97f501a410af65c032bf855d4
+generated_at: 2026-11-02T10:50:49Z
 source_paths:
   - modules/common
 ---
@@ -106,24 +106,36 @@ macbox) and `hosts/nasbox/nix/default.nix`.
 
 ### opencode
 
-Options (`interface.nix`): `enable`, `package` (default `pkgs.opencode`),
-`codebaseMemory.enable` / `package` / `agents.enable` / `plugin.enable` (all default true),
-`extraSkills` (`attrsOf path`), `contextMode.package` / `contextMode.runtime` (default
-`pkgs.bun`), `snip.enable`, `ponytail.enable`, `playwright.enable`, `garmin.enable`,
+The `codebaseMemory.*` options and the whole codebase-memory-mcp integration were removed
+in commit `603970d` (`chore(module): remove codebase-memory-mcp`): the MCP server entry,
+the generated skill/agents/plugin, `codebase-memory-context.md` and the
+`packages/codebase-memory-mcp` / `packages/codebase-memory-opencode` package directories
+are all gone.
+
+Options (`interface.nix`): `enable`, `package` (default `pkgs.opencode`), `extraSkills`
+(`attrsOf path`), `contextMode.enable` (default **false**), `contextMode.package` (default
+a locally built `./packages/context-mode`, not `pkgs.context-mode`) / `contextMode.runtime`
+(default `pkgs.bun`), `snip.enable`, `ponytail.enable`, `playwright.enable`, `garmin.enable`,
 `skills.enabled` (list of catalog names and the `superpowers` / `social` group names),
-`copilotAutoModel.enable` (default true) / `copilotAutoModel.autos`,
-`ticket.ticketsRepo` (default `eana/agent-tickets`), `ticket.models.planner` /
-`ticket.models.builder` (default `github-copilot/claude-sonnet-5`) and
-`ticket.models.builderLight` (default `github-copilot/claude-haiku-4.5`), and `extraContext`.
+`copilotAutoModel.enable` (default **false**, currently unwired - see Plugins) /
+`copilotAutoModel.autos` (currently unwired; two entries: "Auto Planning" preferring
+`claude-opus-5.5`/`claude-sonnet-5`, "Auto Building" preferring
+`gpt-5.4`/`gpt-5.4-mini`), `ticket.ticketsRepo` (default `eana/agent-tickets`),
+`ticket.models.planner` / `ticket.models.builder` (default
+`github-copilot/claude-sonnet-5`) and `ticket.models.builderLight` (default
+`github-copilot/claude-haiku-4.5`), and `extraContext`.
+
+Both `contextMode.enable` and `copilotAutoModel.enable` default to false because their
+plugins only export OpenCode's v1 API; see HACK comments below.
 
 `default.nix` imports only `./interface.nix`. `plugins.nix`, `skills.nix`, `mcp.nix`,
 `lsp.nix` and `permissions.nix` are called as functions with `import ./x.nix { ... }`.
 Under `cfg.enable` it sets:
 
 - `module.opencode.skills.enabled` to the opt-out baseline (see Skills).
-- `home.packages`: `cfg.contextMode.runtime`, `pkgs.snip` when snip is enabled, the
-  `garmin-mcp` package when garmin is enabled, and the `repo-wiki` package when `repo-wiki`
-  is in `skills.enabled`.
+- `home.packages`: `cfg.contextMode.runtime` when `contextMode.enable`, `pkgs.snip` when
+  snip is enabled, the `garmin-mcp` package when garmin is enabled, and the `repo-wiki`
+  package when `repo-wiki` is in `skills.enabled`.
 - `xdg.configFile."snip/config.toml"` from `assets/` when snip is enabled.
 - `xdg.configFile."opencode/cli.json"`: a generated JSON v2 config with `prompt.paste = "full"`, `theme.name` = `gruvbox` when `custom.theme` is gruvbox, `catppuccin` otherwise,
   keybinds `session.export` / `terminal.suspend` = `none`, `session.first` = `ctrl+home`,
@@ -133,28 +145,33 @@ Under `cfg.enable` it sets:
 - `programs.mcp.enable = true` with servers from `mcp.nix`.
 - `programs.opencode`: `enable`, `package`, `enableMcpIntegration = true`,
   `settings` (`autoshare = false`, `autoupdate = false`, `share = "disabled"`, the LSP
-  servers, the permission rules, and `plugin` = the plugins from `plugins.nix` plus
-  `${codebaseMemoryOpenCode}/share/opencode/plugins/cbm-augment.ts` when codebase-memory is
-  enabled with its plugin), and `context` = `base-context.md` + `codebase-memory-context.md`
-  (when codebase-memory is enabled) + `extraContext`. Home Manager writes this to
+  servers, the permission rules, and `plugin` = the plugins from `plugins.nix`), and
+  `context` = `base-context.md` + the context-mode routing doc (only when
+  `contextMode.enable`) + `extraContext`. Home Manager writes this to
   `~/.config/opencode/AGENTS.md`, so `base-context.md` becomes the user-level agent
   instruction file on every host.
-- `programs.opencode.skills`: the catalog result plus `codebase-memory` and
-  `cbm-new-project` when codebase-memory is enabled, `repo-wiki` (replaced by the package
+- `programs.opencode.skills`: the catalog result plus `repo-wiki` (replaced by the package
   output) when enabled, `linkedin-profile-editor` when playwright is enabled, the eight
-  context-mode skills, and `extraSkills`.
+  context-mode skills when `contextMode.enable`, and `extraSkills`.
 - Three ticket agents as `xdg.configFile."opencode/agents/ticket-*.md"` (planner, builder,
   builder-light) rendered from `cfg.ticket.models`, installed only when at least one of
   `ticket-plan`, `ticket-run`, `ticket-task` is enabled.
-- Three codebase-memory agents (scout, verify, auditor) installed from the generated package
-  when `codebaseMemory.agents.enable`.
 
 #### Plugins
 
-`plugins.nix` takes `enableSnip`, `enableCopilotAutoModel`, `copilotAutoModelAutos` and
-`enablePonytail` and returns the plugin entries for `programs.opencode.settings.plugin`:
-`opencode-snip`, `opencode-github-copilot-auto-model` (with the autos list) and `ponytail`,
-each only when its flag is set.
+`plugins.nix` takes only `enableSnip` and `enablePonytail` (no codebase-memory,
+context-mode or copilot-auto-model parameters) and returns the plugin entries for
+`programs.opencode.settings.plugin`: `opencode-snip` and `ponytail`, each only when its
+flag is set. By default both flags are false, so by default no plugins are enabled
+(jonas enables ponytail in `home/users/jonas/common.nix`).
+The file documents why `context-mode` and `opencode-github-copilot-auto-model` are not
+listed here even though their packages still exist: both only export OpenCode's v1 plugin
+API, and OpenCode V2 does not run v1-only plugins. `context-mode` is instead wired as an
+MCP server in `mcp.nix` (gated behind `contextMode.enable`); a comment warns against
+re-adding it as a plugin alongside the MCP entry, since having both serves an empty tool
+list (upstream `anomalyco/opencode#623`). `opencode-github-copilot-auto-model` has no
+MCP fallback and stays unwired until upstream PR #13 (v2 port) ships or a working fork is
+adopted (see `github-copilot-auto-model/issues/10`).
 
 #### Skills
 
@@ -179,10 +196,11 @@ each only when its flag is set.
 
 #### MCP servers
 
-`mcp.nix` - eight entries: `context-mode` (`enabled = true`, the bare binary starts its
-stdio MCP server), `codebase-memory` (`enabled = true` when enabled), `k8s` (mcp-k8s-go),
-`opentofu`, `context7`, `sequential-thinking` (each only if the package exists in nixpkgs),
-`playwright` (with `playwright.enable`) and `garmin` (with `garmin.enable`), all `enabled = false`.
+`mcp.nix` - seven entries: `context-mode` (only present when `contextMode.enable`, pointing
+at `cfg.contextMode.package`, `enabled = true`), `k8s` (mcp-k8s-go), `opentofu`, `context7`,
+`sequential-thinking` (each only if the package exists in nixpkgs), `playwright` (with
+`playwright.enable`) and `garmin` (with `garmin.enable`); the others are `enabled = false`
+by default. There is no `codebase-memory` entry.
 
 #### LSP, permissions
 
@@ -199,10 +217,10 @@ stdio MCP server), `codebase-memory` (`enabled = true` when enabled), `k8s` (mcp
 
 One directory per package, each with a `default.nix`: `context-mode`,
 `garmin-mcp` (built with `uv2nix` / `pyproject-nix` / `pyproject-build-systems`),
-`opencode-snip` (3.0.0), `opencode-github-copilot-auto-model` (0.2.0), `ponytail` (5.3.2),
-`codebase-memory-mcp` (0.12.1), `codebase-memory-opencode` (generated skill, agents and
-plugin from the MCP server's own installer) and `repo-wiki` (plus `repo-wiki-index.py` and
-`repo-wiki-query.py`).
+`opencode-snip` (3.0.0), `opencode-github-copilot-auto-model` (0.2.0), `ponytail` (5.3.2)
+and `repo-wiki` (plus `repo-wiki-index.py` and `repo-wiki-query.py`). The
+`codebase-memory-mcp` and `codebase-memory-opencode` packages were removed in commit
+`603970d`.
 
 - `repo-wiki/default.nix` - a `runCommand` that copies
   `assets/.config/opencode/skills/repo-wiki/SKILL.md` to `$out/SKILL.md`, installs the two
@@ -212,9 +230,6 @@ plugin from the MCP server's own installer) and `repo-wiki` (plus `repo-wiki-ind
   `http://localhost:11434`; model `REPO_WIKI_EMBED_MODEL`, default
   `qwen3-embedding:0.6b`) and store the index in `.wiki-cache/`. The same package is in the
   devshell (`dev/flake-module.nix`).
-- `codebase-memory-opencode` runs `codebase-memory-mcp install -y --force --skip-binary --clients=opencode` in a temp HOME and ships only `share/opencode/{skills,agents,plugins}`;
-  the installer's `opencode.json` and `AGENTS.md` are discarded because Home Manager owns
-  them.
 
 ## Non-module files
 
@@ -230,10 +245,18 @@ plugin from the MCP server's own installer) and `repo-wiki` (plus `repo-wiki-ind
   exposes a cli option.
 - `opencode/default.nix` (agents): `programs.opencode.agents` only treats Nix path values as
   file sources, so generated store paths are installed through `xdg.configFile` instead.
-- `opencode/packages/codebase-memory-mcp/default.nix` (0.12.1): mimalloc's global allocator
-  override is disabled because glibc 2.44 crashes in `mi_free` during libstdc++ global init.
-- `opencode/packages/codebase-memory-opencode/default.nix`: the generated plugin hardcodes
-  `~/.local/bin/codebase-memory-mcp`, which is substituted with the store binary.
+- `opencode/default.nix` (context-mode MCP): context-mode's plugin only exports OpenCode's
+  v1 API (`{ server }`), which V2 refuses to load, so it is wired as an MCP server instead
+  (`contextMode.enable`, default false). Even as an MCP server `ctx_execute`'s JS sandbox
+  rejects `require` for Node builtins its own docs advertise, so real tasks still fall back
+  to unrouted shell. TODO: revisit once context-mode ships a working OpenCode V2 plugin;
+  both the 1.0.169 release and the 2.0.0-next.16 prerelease are still V1-shaped.
+- `opencode/plugins.nix` (copilotAutoModel, default false): the
+  `opencode-github-copilot-auto-model` plugin exports only OpenCode's v1 API (`{ server }`)
+  instead of v2's `{ setup }`, so OpenCode V2 rejects it at load time; see
+  `github.com/m0wer/opencode-github-copilot-auto-model/issues/10` and the open, unmerged
+  v2-port PR #13. TODO: re-enable once upstream ships v2 support or a working fork is
+  adopted.
 - `opencode/packages/context-mode/default.nix` (1.0.169): built locally because the nixpkgs
   build (1.0.143) lacks the `build/` adapter entry; zod pin (4.6.7) must track upstream
   `package.json`; `dontInstallAgentSkills=1` because duplicate `**/SKILL.md` breaks the
@@ -248,6 +271,10 @@ plugin from the MCP server's own installer) and `repo-wiki` (plus `repo-wiki-ind
 - `opencode/packages/garmin-mcp/default.nix`: upstream `uv.lock` only has a fitparse sdist, so
   setuptools is declared as a build-system requirement; wheel `sourcePreference` keeps
   pydantic-core and cryptography from building from sdist.
+
+The `codebase-memory-mcp`/`codebase-memory-opencode` HACKs (mimalloc allocator crash,
+hardcoded plugin path substitution) no longer apply; both packages were deleted with the
+rest of the codebase-memory-mcp integration in commit `603970d`.
 
 ## Related pages
 

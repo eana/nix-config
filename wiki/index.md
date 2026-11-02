@@ -1,6 +1,6 @@
 ---
-generated_commit: 06cd74bc677d19a9e44814ed8572eab31dbcd7f9
-generated_at: 2026-10-30T09:19:38Z
+generated_commit: 4737ab0f03ccc9b97f501a410af65c032bf855d4
+generated_at: 2026-11-02T10:50:49Z
 source_paths:
   - flake.nix
   - flake.lock
