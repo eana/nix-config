@@ -114,8 +114,39 @@ def _git_ls_remote(url: str, ref: str = "") -> str:
     return ""
 
 
+TAG_RE = re.compile(r"^(v|release-)(\d+(?:\.\d+)*)(?:-(.+))?$")
+
+
+def _tag_key(tag: str) -> tuple[str, tuple[int, ...], bool] | None:
+    """Parse a tag into (prefix, numeric parts, is_prerelease), or None."""
+    if not (m := TAG_RE.match(tag)):
+        return None
+    return m.group(1), tuple(int(p) for p in m.group(2).split(".")), m.group(3) is not None
+
+
+def _latest_tag(tags: list[str], current: str) -> str | None:
+    """Pick the newest tag matching the current tag's prefix.
+
+    Sorts numerically, skips pre-releases unless the current pin is one,
+    and never returns a tag older than the current pin.
+    """
+    if not (cur := _tag_key(current)):
+        return None
+    candidates = []
+    for tag in tags:
+        if not (key := _tag_key(tag)) or key[0] != cur[0]:
+            continue
+        if key[2] and not cur[2]:
+            continue
+        candidates.append((key[1], not key[2], tag))
+    if not candidates:
+        return None
+    best = max(candidates)
+    return best[2] if best[:2] >= (cur[1], not cur[2]) else current
+
+
 def _git_ls_remote_tags(url: str) -> list[str]:
-    """Run git ls-remote --tags, return list of tag names sorted by version."""
+    """Run git ls-remote --tags, return list of tag names (unsorted)."""
     try:
         out = subprocess.check_output(
             ["git", "ls-remote", "--tags", url],
@@ -129,7 +160,6 @@ def _git_ls_remote_tags(url: str) -> list[str]:
         tag = ref.removeprefix("refs/tags/").removesuffix("^{}")
         if tag and "^{}" not in ref:
             tags.append(tag)
-    tags.sort(reverse=True)
     return tags
 
 
@@ -204,7 +234,8 @@ def check_source(src: Source) -> CheckResult:
         case "github-release":
             if not (tags := _git_ls_remote_tags(url)):
                 return CheckResult(src, status="error", error="no tags found")
-            latest = tags[0]
+            if not (latest := _latest_tag(tags, src.current)):
+                return CheckResult(src, status="error", error="no matching tags found")
         case "github-commit":
             if not (latest := _git_ls_remote(url, "HEAD")):
                 return CheckResult(src, status="error", error="no commits found")
