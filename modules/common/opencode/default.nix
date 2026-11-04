@@ -18,6 +18,8 @@ let
 
   pluginConfig = import ./plugins.nix {
     inherit lib pkgs;
+    contextMode = cfg.contextMode.package;
+    enableContextMode = cfg.contextMode.enable;
     enableSnip = cfg.snip.enable;
     enablePonytail = cfg.ponytail.enable;
   };
@@ -134,8 +136,6 @@ in
       enable = true;
       servers = import ./mcp.nix {
         inherit lib pkgs garmin-mcp;
-        contextMode = cfg.contextMode.package;
-        enableContextMode = cfg.contextMode.enable;
         enablePlaywright = cfg.playwright.enable;
         enableGarmin = cfg.garmin.enable;
         enableContext7 = cfg.context7.enable;
