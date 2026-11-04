@@ -67,6 +67,8 @@ All text files here are ASCII-only; commit 4133f0f normalized non-ASCII characte
   the `assets/.config/opencode/skills/cbm-new-project` directory.
 - `repo-wiki/SKILL.md` is also copied into the `repo-wiki` package
   (`modules/common/opencode/packages/repo-wiki`), which adds the `repo-wiki-index` and
+  `repo-wiki-query` tools. When `repo-wiki` is enabled, opencode points the skill at the
+  package output instead of this directory.
 - All thirteen `SKILL.md` files set `compatibility: opencode`.
 - The ticket skills also install the `ticket-planner`, `ticket-builder` and
   `ticket-builder-light` agent profiles, using `module.opencode.ticket.models`.
