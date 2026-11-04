@@ -37,8 +37,8 @@ in
     };
 
     contextMode = {
-      enable = mkEnableOption "context-mode MCP server and ctx_* tool routing" // {
-        default = false;
+      enable = mkEnableOption "context-mode plugin and ctx_* tools" // {
+        default = true;
       };
 
       package = mkOption {

@@ -67,16 +67,14 @@ All text files here are ASCII-only; commit 4133f0f normalized non-ASCII characte
   the `assets/.config/opencode/skills/cbm-new-project` directory.
 - `repo-wiki/SKILL.md` is also copied into the `repo-wiki` package
   (`modules/common/opencode/packages/repo-wiki`), which adds the `repo-wiki-index` and
-  `repo-wiki-query` tools. When `repo-wiki` is enabled, opencode points the skill at the
-  package output instead of this directory.
 - All thirteen `SKILL.md` files set `compatibility: opencode`.
 - The ticket skills also install the `ticket-planner`, `ticket-builder` and
   `ticket-builder-light` agent profiles, using `module.opencode.ticket.models`.
 - `ticket-workflow.d2` renders to the sibling `.svg` through the `d2-render` hook; commit
   both files.
 - Not in `assets/`: `skill-creator` comes from `anthropics/skills`, `superpowers-*` from
-  `obra/superpowers`, `social-*` from `inklate/social-skills`, and `context-mode` skills
-  from the context-mode package. All are fetched or built in `skills.nix` and
+  `obra/superpowers`, `social-*` from `inklate/social-skills`, and three context-mode skills
+  (ctx-doctor, ctx-stats, ctx-upgrade) from the context-mode package. All are fetched or built in `skills.nix` and
   `default.nix`.
 - Adding a local skill means adding `<name>/SKILL.md` here and the name to the catalog's
   `local` list. Adding an external skill means adding it to the matching catalog group.

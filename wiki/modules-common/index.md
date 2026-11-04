@@ -113,7 +113,7 @@ the generated skill/agents/plugin, `codebase-memory-context.md` and the
 are all gone.
 
 Options (`interface.nix`): `enable`, `package` (default `pkgs.opencode`), `extraSkills`
-(`attrsOf path`), `contextMode.enable` (default **false**), `contextMode.package` (default
+(`attrsOf path`), `contextMode.enable` (default **true**), `contextMode.package` (default
 a locally built `./packages/context-mode`, not `pkgs.context-mode`) / `contextMode.runtime`
 (default `pkgs.bun`), `snip.enable`, `ponytail.enable`, `playwright.enable`, `garmin.enable`,
 `skills.enabled` (list of catalog names and the `superpowers` / `social` group names),
@@ -145,12 +145,11 @@ Under `cfg.enable` it sets:
 - `programs.opencode`: `enable`, `package`, `enableMcpIntegration = true`,
   `settings` (`autoshare = false`, `autoupdate = false`, `share = "disabled"`, the LSP
   servers, the permission rules, and `plugin` = the plugins from `plugins.nix`), and
-  `context` = `base-context.md` + the context-mode routing doc (only when
-  `contextMode.enable`) + `extraContext`. Home Manager writes this to
+  `context` = `base-context.md` + `extraContext`. Home Manager writes this to
   `~/.config/opencode/AGENTS.md`, so `base-context.md` becomes the user-level agent
   instruction file on every host.
 - `programs.opencode.skills`: the catalog result plus `repo-wiki` (replaced by the package
-  output) when enabled, `linkedin-profile-editor` when playwright is enabled, the eight
+  output) when enabled, `linkedin-profile-editor` when playwright is enabled, the three
   context-mode skills when `contextMode.enable`, and `extraSkills`.
 - Three ticket agents as `xdg.configFile."opencode/agents/ticket-*.md"` (planner, builder,
   builder-light) rendered from `cfg.ticket.models`, installed only when at least one of
@@ -158,18 +157,14 @@ Under `cfg.enable` it sets:
 
 #### Plugins
 
-`plugins.nix` takes only `enableSnip` and `enablePonytail` (no codebase-memory,
-context-mode or copilot-auto-model parameters) and returns the plugin entries for
-`programs.opencode.settings.plugin`: `opencode-snip` and `ponytail`, each only when its
-flag is set. By default both flags are false, so by default no plugins are enabled
-(jonas enables ponytail in `home/users/jonas/common.nix`).
-The file documents why `context-mode` and `opencode-github-copilot-auto-model` are not
-listed here even though their packages still exist: both only export OpenCode's v1 plugin
-API, and OpenCode V2 does not run v1-only plugins. `context-mode` is instead wired as an
-MCP server in `mcp.nix` (gated behind `contextMode.enable`); a comment warns against
-re-adding it as a plugin alongside the MCP entry, since having both serves an empty tool
-list (upstream `anomalyco/opencode#623`). `opencode-github-copilot-auto-model` has no
-MCP fallback and stays unwired until upstream PR #13 (v2 port) ships or a working fork is
+`plugins.nix` takes only `enableSnip` and `enablePonytail` and returns the plugin entries for
+`programs.opencode.settings.plugin`: `opencode-snip`, `ponytail`, and context-mode plugin (when
+`enableContextMode` is true), each only when its flag is set. By default both flags are false, so by default no plugins are enabled
+(jonas enables ponytail in `home/users/jonas/common.nix`, and context-mode is enabled by default).
+The file documents why `opencode-github-copilot-auto-model` is not
+listed here even though its package still exists: it only exports OpenCode's v1 plugin
+API, and OpenCode V2 does not run v1-only plugins. `opencode-github-copilot-auto-model` has no
+plugin alternative and stays unwired until upstream PR #13 (v2 port) ships or a working fork is
 adopted (see `github-copilot-auto-model/issues/10`).
 
 #### Skills
@@ -195,11 +190,10 @@ adopted (see `github-copilot-auto-model/issues/10`).
 
 #### MCP servers
 
-`mcp.nix` - seven entries: `context-mode` (only present when `contextMode.enable`, pointing
-at `cfg.contextMode.package`, `enabled = true`), `k8s` (mcp-k8s-go), `opentofu`, `context7`,
+`mcp.nix` - six entries: `k8s` (mcp-k8s-go), `opentofu`, `context7`,
 `sequential-thinking` (each only if the package exists in nixpkgs), `playwright` (with
 `playwright.enable`) and `garmin` (with `garmin.enable`); the others are `enabled = false`
-by default. There is no `codebase-memory` entry.
+by default. There is no `context-mode` or `codebase-memory` entry.
 
 #### LSP, permissions
 
@@ -244,23 +238,15 @@ and `repo-wiki` (plus `repo-wiki-index.py` and `repo-wiki-query.py`). The
   exposes a cli option.
 - `opencode/default.nix` (agents): `programs.opencode.agents` only treats Nix path values as
   file sources, so generated store paths are installed through `xdg.configFile` instead.
-- `opencode/default.nix` (context-mode MCP): context-mode's plugin only exports OpenCode's
-  v1 API (`{ server }`), which V2 refuses to load, so it is wired as an MCP server instead
-  (`contextMode.enable`, default false). Even as an MCP server `ctx_execute`'s JS sandbox
-  rejects `require` for Node builtins its own docs advertise, so real tasks still fall back
-  to unrouted shell. TODO: revisit once context-mode ships a working OpenCode V2 plugin;
-  both the 1.0.169 release and the 2.0.0-next.16 prerelease are still V1-shaped.
 - `opencode/plugins.nix` (copilotAutoModel, default false): the
   `opencode-github-copilot-auto-model` plugin exports only OpenCode's v1 API (`{ server }`)
   instead of v2's `{ setup }`, so OpenCode V2 rejects it at load time; see
   `github.com/m0wer/opencode-github-copilot-auto-model/issues/10` and the open, unmerged
   v2-port PR #13. TODO: re-enable once upstream ships v2 support or a working fork is
   adopted.
-- `opencode/packages/context-mode/default.nix` (1.0.169): built locally because the nixpkgs
-  build (1.0.143) lacks the `build/` adapter entry; zod pin (4.6.7) must track upstream
-  `package.json`; `dontInstallAgentSkills=1` because duplicate `**/SKILL.md` breaks the
-  build; `build/server.js` re-exports `server.bundle.mjs`; a `plugin-function.mjs` shim
-  because opencode may call the default export as a function.
+- `opencode/packages/context-mode/default.nix` (2.0.0): built locally because nixpkgs has not
+  yet picked up the 2.0.0 release; the package is a plain copy (no bundler or build step) plus
+  three vendored skills (`ctx-doctor`, `ctx-stats`, `ctx-upgrade`).
 - `opencode/packages/opencode-github-copilot-auto-model/default.nix`:
   `workaroundForOpenCodeOptionalHookLoader` adds `server.mjs`, `tui.mjs` and `rpc.mjs` stubs
   for opencode's optional-entrypoint probe (anomalyco/opencode#48122).
