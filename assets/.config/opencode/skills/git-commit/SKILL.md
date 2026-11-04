@@ -10,6 +10,33 @@ compatibility: opencode
 - **Protect main/master:** If the current branch is `main` or `master`, halt and explicitly ask the user for permission before proceeding.
 - **Prefer feature branches:** When asked to commit on `main` or `master`, actively suggest creating a new feature branch (`git checkout -b <type>/<brief-description>`).
 
+## Non-interactive git
+
+Every git command must run without opening an editor, prompt, or interactive UI - you must be able to complete the operation unattended. This applies to all git operations, not only rebase.
+
+Prefer explicit non-interactive flags first, and use a no-op editor as the fallback for anything that could still spawn one:
+
+```bash
+GIT_EDITOR=true GIT_SEQUENCE_EDITOR=true git <command>
+# equivalent: git -c core.editor=true -c sequence.editor=true <command>
+```
+
+`true` is the Unix no-op binary: git accepts the pre-filled message or todo list unchanged instead of blocking.
+
+| Operation                     | Non-interactive form                                 |
+| ----------------------------- | ---------------------------------------------------- |
+| commit                        | `git commit -m "<message>"`                          |
+| amend                         | `git commit --amend --no-edit` (or `-m "<message>"`) |
+| merge                         | `git merge --no-edit` (or `GIT_MERGE_AUTOEDIT=no`)   |
+| revert                        | `git revert --no-edit`                               |
+| annotated tag                 | `git tag -a <tag> -m "<message>"`                    |
+| cherry-pick / revert continue | `GIT_EDITOR=true git <command> --continue`           |
+| rebase                        | see [Rebase rules](#rebase-rules)                    |
+
+Never run interactive-only commands on your own initiative: `git add -i`, `git add -p`, `git rebase -i`, `git commit --interactive`, `git config -e`. If the user explicitly asks for one, let them drive it.
+
+If a message must differ from the auto-filled one, pass it explicitly with `-m` or `-c`. Never open an editor to change it.
+
 ## Conform file
 
 At the start of any commit workflow, check for `.conform.yml` or `.conform.yaml` in the repo root. If found, read it and extract the allowed types and scopes defined there - those replace the hardcoded defaults below. Obey whatever the conform file specifies; it is the source of truth for this repo.
@@ -42,18 +69,13 @@ Default (used when no `.conform.yml` is present):
 
 ## Scope rules
 
-- Use one of the area categories defined in `.conform.yaml`: `module`, `deps`, `devshell`, `configurations`, `home`, `hosts`, `secrets`, `assets`, `flake`
-- `module` covers changes in `modules/` directory
-- `deps` covers flake.lock and dependency updates
-- `devshell` covers dev environment and dev workflows
-- `configurations` covers per-host flake module configurations
-- `home` covers home-manager user configurations
-- `hosts` covers NixOS/darwin system configurations
-- `secrets` covers secret management
-- `assets` covers non-config assets
-- `flake` covers flake.nix structural changes
-- Omit scope when a change is genuinely cross-cutting (touches three or more unrelated areas)
-- The conform hook allows substring matching, so `home` accepts `home-manager`, `homebrew`, etc. - prefer canonical names when possible
+Determine the scope from the repo, never from a fixed list baked into this skill:
+
+1. If the repo defines scopes (`.conform.yaml`, `.conform.yml`, `commitlint.config.*`, `.commitlintrc*`, `CONTRIBUTING*`), use those verbatim - for example `.conform` policies define an explicit scope list.
+2. Otherwise derive the scope from the repo itself: the dominant scope vocabulary in `git log`, or the top-level directory, package, or module the change lives in.
+3. Use one scope per commit, matching the area the change touches. Keep it short, lowercase, and matching `[a-z0-9-]+`.
+4. Omit the scope when the change is genuinely cross-cutting (touches three or more unrelated areas) or when the repo has no scope convention and no obvious area. Omission is always valid; inventing a scope is not.
+5. When the repo's commit linter matches scopes as substrings, a shorter canonical name is accepted for longer variants - prefer the canonical one.
 
 ## Body rules
 
@@ -103,13 +125,15 @@ Always sign commits with `-S`. This applies to every `git commit` and `git commi
 
 ## Rebase rules
 
-Rebase can invoke `$EDITOR` for commit messages and the todo list, which may open vim/nvim and block. Prevent this by setting both editor env vars to `true` (the Unix no-op binary) for every rebase command:
+All rebase commands are non-interactive. Prefix every rebase invocation - start, `--continue`, `--skip`, `--abort` - with both editor variables so git never blocks on vim/nvim:
 
 ```bash
 GIT_EDITOR=true GIT_SEQUENCE_EDITOR=true git rebase --committer-date-is-author-date <target>
 ```
 
-Always pass `--committer-date-is-author-date` to preserve original author timestamps.
+`--committer-date-is-author-date` is **mandatory on every rebase start** - never omit it. It preserves the original author timestamps; a rebase without it silently rewrites commit dates. Do not run a bare `git rebase <target>`.
+
+Never use `--interactive` on your own initiative. With `GIT_SEQUENCE_EDITOR=true` the proposed todo list is accepted as-is, so `-i` gives no editing power - only the user can drive an interactive rebase.
 
 ### Pre-commit hooks during rebase
 
@@ -117,24 +141,15 @@ Run pre-commit hooks after each replayed commit using `--exec`. Only check files
 
 ```bash
 GIT_EDITOR=true GIT_SEQUENCE_EDITOR=true git rebase --committer-date-is-author-date \
-  --exec 'files=$(git diff-tree --no-commit-id -r --name-only HEAD | tr "\n" " "); [ -z "$files" ] || prek run --files $files' \
+  --exec 'files=$(git diff-tree --no-commit-id -r --name-only HEAD | tr "\n" " "); [ -z "$files" ] || <hook-runner> run --files $files' \
   <target>
 ```
 
+Replace `<hook-runner>` with the repo's hook runner: `prek` or `pre-commit` when present, otherwise the command the repo documents (for example `lefthook run pre-commit`).
+
 The guard `[ -z "$files" ]` skips hook execution when a commit touches no files (e.g., empty or merge commits).
 
-If hooks fail mid-rebase, fix the issues, re-stage, then run `git rebase --continue`.
-
-### Nix repos and hook regeneration
-
-In repos with `flake.nix`, regenerate pre-commit hooks before starting the rebase:
-
-```bash
-nix run .#pre-commit-install
-# or: nix develop (hooks install via prek)
-```
-
-Then proceed with the rebase command above.
+If hooks fail mid-rebase, fix the issues, re-stage, then run `GIT_EDITOR=true git rebase --continue`.
 
 ## Examples
 
