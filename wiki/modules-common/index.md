@@ -125,8 +125,7 @@ a locally built `./packages/context-mode`, not `pkgs.context-mode`) / `contextMo
 `github-copilot/claude-sonnet-5`) and `ticket.models.builderLight` (default
 `github-copilot/claude-haiku-4.5`), and `extraContext`.
 
-Both `contextMode.enable` and `copilotAutoModel.enable` default to false because their
-plugins only export OpenCode's v1 API; see HACK comments below.
+`copilotAutoModel.enable` defaults to false because its plugin only exports OpenCode's v1 API; see HACK comments below. `contextMode.enable` is now true by default (context-mode 2.0.0 exports v2 API).
 
 `default.nix` imports only `./interface.nix`. `plugins.nix`, `skills.nix`, `mcp.nix`,
 `lsp.nix` and `permissions.nix` are called as functions with `import ./x.nix { ... }`.
