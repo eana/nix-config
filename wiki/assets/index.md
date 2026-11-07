@@ -75,8 +75,8 @@ All text files here are ASCII-only; commit 4133f0f normalized non-ASCII characte
 - `ticket-workflow.d2` renders to the sibling `.svg` through the `d2-render` hook; commit
   both files.
 - Not in `assets/`: `skill-creator` comes from `anthropics/skills`, `superpowers-*` from
-  `obra/superpowers`, `social-*` from `inklate/social-skills`, and `context-mode` skills
-  from the context-mode package. All are fetched or built in `skills.nix` and
+  `obra/superpowers`, `social-*` from `inklate/social-skills`, and three context-mode skills
+  (ctx-doctor, ctx-stats, ctx-upgrade) from the context-mode package. All are fetched or built in `skills.nix` and
   `default.nix`.
 - Adding a local skill means adding `<name>/SKILL.md` here and the name to the catalog's
   `local` list. Adding an external skill means adding it to the matching catalog group.

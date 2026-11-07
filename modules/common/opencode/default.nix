@@ -8,7 +8,6 @@
 let
   inherit (lib)
     mkIf
-    optionalString
     ;
   cfg = config.module.opencode;
   custom = config.custom or { };
@@ -19,6 +18,8 @@ let
 
   pluginConfig = import ./plugins.nix {
     inherit lib pkgs;
+    contextMode = cfg.contextMode.package;
+    enableContextMode = cfg.contextMode.enable;
     enableSnip = cfg.snip.enable;
     enablePonytail = cfg.ponytail.enable;
   };
@@ -39,12 +40,7 @@ let
           value = "${cfg.contextMode.package}/share/skills/context-mode/${name}";
         })
         [
-          "context-mode"
           "ctx-doctor"
-          "ctx-index"
-          "ctx-insight"
-          "ctx-purge"
-          "ctx-search"
           "ctx-stats"
           "ctx-upgrade"
         ]
@@ -52,17 +48,6 @@ let
   );
 
   baseContext = builtins.readFile ./base-context.md;
-
-  # HACK: switched context-mode from plugin to MCP because OpenCode V2 does
-  # not run its V1-API plugin (see plugins.nix); MCP-only plus this routing
-  # block still does not work (ctx_execute's JS sandbox rejects `require`
-  # for the Node builtins its own docs advertise, so real tasks fall back to
-  # unrouted shell). Disabled (module.opencode.contextMode.enable = false).
-  # TODO: revisit once context-mode ships a working OpenCode V2 plugin (see
-  # mksglu/context-mode; 1.0.169 latest / 2.0.0-next.16 prerelease are both
-  # still V1-shaped on the opencode adapter), then wire it through
-  # plugins.nix instead of mcp.nix.
-  contextModeRouting = builtins.readFile "${cfg.contextMode.package}/lib/context-mode/configs/opencode/AGENTS.md";
 
   ticketAgent = model: description: ''
     ---
@@ -151,8 +136,6 @@ in
       enable = true;
       servers = import ./mcp.nix {
         inherit lib pkgs garmin-mcp;
-        contextMode = cfg.contextMode.package;
-        enableContextMode = cfg.contextMode.enable;
         enablePlaywright = cfg.playwright.enable;
         enableGarmin = cfg.garmin.enable;
         enableContext7 = cfg.context7.enable;
@@ -179,7 +162,7 @@ in
       # Terminal settings live in cli.json (see xdg.configFile above), not here.
       # OpenCode V2 ignores tui.json entirely.
 
-      context = baseContext + optionalString cfg.contextMode.enable contextModeRouting + cfg.extraContext;
+      context = baseContext + cfg.extraContext;
 
       skills =
         skillsConfig

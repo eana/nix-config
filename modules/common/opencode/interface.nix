@@ -37,8 +37,8 @@ in
     };
 
     contextMode = {
-      enable = mkEnableOption "context-mode MCP server and ctx_* tool routing" // {
-        default = false;
+      enable = mkEnableOption "context-mode plugin and ctx_* tools" // {
+        default = true;
       };
 
       package = mkOption {
@@ -47,8 +47,8 @@ in
         defaultText = literalExpression "callPackage ./packages/context-mode { }";
         description = ''
           The context-mode plugin package opencode loads. Built locally from
-          the npm tarball, not pkgs.context-mode (pinned to 1.0.143, no
-          build/ directory - no plugin entry, no ctx_* tools).
+          the npm tarball, not pkgs.context-mode (pinned to 1.0.143 - no
+          plugin entry, no ctx_* tools).
         '';
       };
 
