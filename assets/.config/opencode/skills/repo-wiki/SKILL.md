@@ -78,7 +78,16 @@ repo-wiki-query --list-units --repo .
 repo-wiki-query --unit <unit> --top-k 30 "<query>" --repo .
 ```
 
-The tools talk to an Ollama endpoint (default `http://localhost:11434`, override with `OLLAMA_URL`) serving the embedding model (default `qwen3-embedding:0.6b`, override with `REPO_WIKI_EMBED_MODEL`). If the tools are not on PATH, or Ollama is unreachable, skip the semantic index and run the skill without it - Phases 1-4 still work.
+The bundled tools support two embedding backends:
+
+- `ollama` (default): `REPO_WIKI_EMBED_MODEL` defaults to `qwen3-embedding:0.6b`
+  and `OLLAMA_URL` defaults to `http://localhost:11434`.
+- `gemini`: set `REPO_WIKI_EMBED_BACKEND=gemini`,
+  `REPO_WIKI_EMBED_MODEL=gemini-embedding-2`, and `GEMINI_API_KEY`. Optional
+  `REPO_WIKI_EMBED_DIM` sets `outputDimensionality`.
+
+The backend is recorded in `index.json`. A cache from a different backend,
+model, or dimension is ignored and rebuilt.
 
 ## Phase 0: Optional Semantic Index
 
@@ -199,6 +208,10 @@ Default behavior when `wiki/` already exists - do not blindly regenerate everyth
 1. For each existing page, read `source_paths`, `generated_commit`, and `generated_dirty` from frontmatter. If `generated_dirty: true`, skip the git-log check and regenerate the page unconditionally - the previous run captured a working tree that no longer corresponds to any commit, so `git log` cannot tell you whether the page is stale.
 2. Otherwise run `git log <generated_commit>..HEAD -- <source_paths>` - if empty, the unit is unchanged, **leave the page untouched** (preserves any manual edits the user made after review)
 3. If non-empty AND `.wiki-cache/` exists, apply the semantic skip: re-embed the changed unit's current content, compare to its cached embedding, and if cosine similarity to the previous version is above the semantic-skip threshold, treat the change as cosmetic and skip regeneration. Log skipped units in a "Cosmetic changes ignored" section at the end of the refresh output.
+
+The bundled indexer does not retain previous vectors for changed chunks. When
+it cannot supply a previous embedding for a unit, skip the semantic check and
+regenerate that unit from the git diff.
 4. If non-empty and the semantic skip did not fire (or the index is unavailable), re-dispatch the explore subagent for that unit only and resynthesize that page
 5. Re-run Phase 1 unit detection against current repo state:
    - New unit, no matching page -> generate it
