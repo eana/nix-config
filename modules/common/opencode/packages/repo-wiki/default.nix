@@ -19,6 +19,9 @@ let
   );
 
   build = ''
+    REPO_WIKI_INDEX=${./repo-wiki-index.py} \
+      ${pythonEnv}/bin/python3 -m unittest discover -s ${./tests} -v
+
     mkdir -p $out/bin $out/share/repo-wiki
 
     cp ${./repo-wiki-index.py} $out/share/repo-wiki/repo-wiki-index.py
@@ -32,7 +35,10 @@ let
   '';
 in
 runCommand "repo-wiki" {
-  nativeBuildInputs = [ makeWrapper ];
+  nativeBuildInputs = [
+    makeWrapper
+    pythonEnv
+  ];
   meta = {
     description = "repo-wiki semantic index/query tools bundled with the opencode repo-wiki skill";
     mainProgram = "repo-wiki-index";

@@ -31,6 +31,7 @@ import requests
 
 OLLAMA_URL = os.environ.get("OLLAMA_URL", "http://localhost:11434")
 EMBED_MODEL = os.environ.get("REPO_WIKI_EMBED_MODEL", "qwen3-embedding:0.6b")
+EMBED_BACKEND = os.environ.get("REPO_WIKI_EMBED_BACKEND", "ollama")
 CACHE_DIR = Path(".wiki-cache")
 BATCH_SIZE = 32          # chunks per /api/embed request
 MAX_CHUNK_CHARS = 8000   # ~2K tokens, well within 32K context
