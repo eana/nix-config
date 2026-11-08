@@ -22,8 +22,9 @@ assets/.local/share/backgrounds/ -> ~/.local/share/backgrounds/
 | ---- | -------- | ------------ |
 | `.p10k.zsh` | powerlevel10k config from the wizard (lean, nerdfont-v3, one line, transient prompt, custom `my_git_formatter`) | `modules/common/zsh` (`p10kConfigFile` default) |
 | `.config/mimeapps.list` | default apps: firefox for http/https/html; added associations list opera first for web, plus gedit, evince, libreoffice, gthumb, code-oss; chromium for `about`/`unknown` | `modules/linux/sway` |
-| `.config/mpv/mpv.conf` | `hwdec=auto`, `audio-device=pipewire`, `ao=pulse`, `save-position-on-quit`, `[benchmark]` profile | `modules/linux/mpv` (`config.mpvConf`) |
-| `.config/mpv/input.conf` | mpvDLNA bindings (`ctrl+b`, `;`, `:`), `b apply-profile benchmark` | `modules/linux/mpv` (`config.inputConf`) |
+| `.config/mpv/mpv.conf` | `hwdec=auto`, `audio-device=pipewire`, `ao=pulse`, `save-position-on-quit`, `[benchmark]` profile | `modules/common/mpv` (`config.mpvConf`) |
+| `.config/mpv/input.conf` | mpvDLNA bindings (`ctrl+b`, `;`, `:`), `b apply-profile benchmark` | `modules/common/mpv` (`config.inputConf`) |
+| `.config/mpv/mpv-darwin.conf` | darwin variant without PulseAudio/PipeWire audio lines, no vulkan-swap-mode/opengl-swapinterval | `modules/common/mpv` (`config.mpvConf` default on darwin) |
 | `.config/snip/config.toml` | `[display] quiet_no_filter = true` | `modules/common/opencode` when `snip.enable` |
 | `.local/share/backgrounds/*.jpg` | six wallpapers (binary) | `modules/linux/sway` (whole directory) |
 | `.config/opencode/skills/<name>/` | thirteen opencode skills (see below) | `modules/common/opencode` |

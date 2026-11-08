@@ -1,6 +1,6 @@
 ---
-generated_commit: 06cd74bc677d19a9e44814ed8572eab31dbcd7f9
-generated_at: 2026-10-30T09:19:38Z
+generated_commit: 62c9eb852c2c83a3be22bcf877b1b126e02bac91
+generated_at: 2026-11-08T09:58:37Z
 source_paths:
   - home
 ---
@@ -60,12 +60,14 @@ The host files also import the nixvim HM module and the module directories (see
   prussiangreen and dconf font settings; packages including firefox, google-chrome, ollama,
   awscli2, proton-vpn, freetube, nix-tree and an inline `aws-export-profile` derivation
   (pinned `fetchFromGitHub`); `LIBGL_ALWAYS_INDIRECT = 1`,
-  `OLLAMA_HOST = "macbox.local:11434"`. Enables the ten Home Manager modules from
+  `OLLAMA_HOST = "macbox.local:11434"`. Enables the nine Home Manager modules from
   `modules/linux` (mhalo bound to `Mod4+Shift+m`, openra `red-alert`, sway with
-  `swaylock.settings.indicator-radius = 45`, waybar `systemdIntegration`).
+  `swaylock.settings.indicator-radius = 45`, waybar `systemdIntegration`) plus
+  `module.mpv` from `modules/common`.
   `cachix` is no longer a user package; it comes from the devshell
   (`dev/flake-module.nix`).
-- `jonas/darwin.nix` (macbox) - `module.aerospace` with `modifier = "cmd"`; Home Manager's
+- `jonas/darwin.nix` (macbox) - `module.aerospace` with `modifier = "cmd"` and
+  `module.mpv.enable = true` (the mpv module lives in `modules/common`); Home Manager's
   own `services.ollama` (there is no repo ollama module) with `OLLAMA_FLASH_ATTENTION`,
   `OLLAMA_KV_CACHE_TYPE = q8_0`, `OLLAMA_NUM_PARALLEL = 1` and
   `OLLAMA_MAX_LOADED_MODELS = 1`; packages cmake, mas, maccy, procps, iproute2mac.

@@ -9,7 +9,7 @@ source_paths:
 
 Home Manager modules imported on all three hosts through `modulesFromDir`, and exported as
 `flake.homeModules.<camelCaseName>` from `flake.nix`. The collected modules are atuin,
-custom, git, gpg-agent, kitty, nixvim, opencode, podman, ssh-client, tmux and zsh (11
+custom, git, gpg-agent, kitty, mpv, nixvim, opencode, podman, ssh-client, tmux and zsh (12
 directories with a `default.nix`). `modulesFromDir` camel-cases the directory name, so the
 exports are `gpgAgent` and `sshClient` while the options stay `module.gpg-agent` and
 `module.ssh-client`.
@@ -72,6 +72,16 @@ macbox) and `hosts/nasbox/nix/default.nix`.
   `docker-compose` aliases. On every Linux host it enables the `systemd.user.sockets.podman`
   socket; only the `DOCKER_HOST` session variable depends on `dockerCompat` (default true,
   Linux only).
+
+### Media
+
+- `mpv/` - the interface builds a wrapper that puts a `python3.withPackages` (python-dateutil,
+  ifaddr, lxml, requests, upnpclient) on `PATH`/`PYTHONPATH` and execs mpv. The default
+  installs it, writes `mpv/input.conf` and `mpv/mpv.conf` (defaults from
+  `assets/.config/mpv/mpv-darwin.conf` on darwin, `assets/.config/mpv/mpv.conf` elsewhere),
+  installs the mpvDLNA script (`chachmu/mpvDLNA` v3.4.1) and generates
+  `script-settings/mpvDLNA.conf` (`dlnaTimeout` default 5, optional server names/addresses).
+  Enabled on nixbox (`linux.nix`) and macbox (`darwin.nix`).
 
 ### custom and colors
 
