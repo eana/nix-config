@@ -89,6 +89,12 @@ The bundled tools support two embedding backends:
 The backend is recorded in `index.json`. A cache from a different backend,
 model, or dimension is ignored and rebuilt.
 
+Request pacing (both backends, mainly relevant for Gemini's free tier) is
+configurable: `REPO_WIKI_BATCH_SIZE` (default 8) chunks per embedding
+request, `REPO_WIKI_MAX_RETRIES` (default 5) retries on HTTP 429 with
+exponential backoff, `REPO_WIKI_BATCH_DELAY` (default 6) seconds between
+batches.
+
 ## Phase 0: Optional Semantic Index
 
 Before Phase 1, check whether the indexing tools are available (see "Running the Tooling" above).
