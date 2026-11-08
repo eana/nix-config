@@ -20,6 +20,7 @@ let
 
   build = ''
     REPO_WIKI_INDEX=${./repo-wiki-index.py} \
+    REPO_WIKI_QUERY=${./repo-wiki-query.py} \
       ${pythonEnv}/bin/python3 -m unittest discover -s ${./tests} -v
 
     mkdir -p $out/bin $out/share/repo-wiki

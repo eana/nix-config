@@ -106,3 +106,40 @@ class CacheValidationTests(unittest.TestCase):
                 self._write_cache(cache, "ollama", "gemini-embedding-2")
                 mod.CACHE_DIR = cache
                 self.assertEqual(mod.load_previous_index(), {})
+
+
+QUERY_PY = Path(os.environ["REPO_WIKI_QUERY"])
+
+
+def load_query_module():
+    spec = importlib.util.spec_from_file_location("repo_wiki_query", QUERY_PY)
+    mod = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(mod)
+    return mod
+
+
+class GeminiQueryTests(unittest.TestCase):
+    def test_gemini_query_request_shape(self):
+        with mock.patch.dict(os.environ, {"GEMINI_API_KEY": "test-key"}):
+            mod = load_query_module()
+            captured = {}
+
+            class Resp:
+                def raise_for_status(self):
+                    pass
+
+                def json(self):
+                    return {"embedding": {"values": [0.1, 0.2]}}
+
+            def fake_post(url, json=None, headers=None, timeout=None):
+                captured.update(url=url, json=json, headers=headers)
+                return Resp()
+
+            with mock.patch.object(mod.requests, "post", fake_post):
+                out = mod.embed_query("purpose", "gemini-embedding-2", "gemini")
+
+        self.assertEqual(out.tolist(), [0.1, 0.2])
+        self.assertTrue(captured["url"].endswith(":embedContent"))
+        self.assertEqual(captured["headers"]["x-goog-api-key"], "test-key")
+        self.assertEqual(captured["json"]["taskType"], "RETRIEVAL_QUERY")
+        self.assertEqual(captured["json"]["content"]["parts"][0]["text"], "purpose")

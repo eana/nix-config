@@ -26,6 +26,10 @@ import numpy as np
 import requests
 
 OLLAMA_URL = os.environ.get("OLLAMA_URL", "http://localhost:11434")
+GEMINI_API_BASE = os.environ.get(
+    "GEMINI_API_BASE", "https://generativelanguage.googleapis.com/v1beta"
+)
+GEMINI_API_KEY = os.environ.get("GEMINI_API_KEY", "")
 DEFAULT_CACHE_DIR = ".wiki-cache"
 DEFAULT_TOP_K = 10
 DEFAULT_MAX_CHARS = 2000
@@ -47,7 +51,27 @@ def load_index(cache_dir: Path):
     return index, chunks, vecs
 
 
-def embed_query(query: str, model: str) -> np.ndarray:
+def embed_query(query: str, model: str, backend: str = "ollama") -> np.ndarray:
+    if backend == "gemini":
+        if not GEMINI_API_KEY:
+            raise RuntimeError("GEMINI_API_KEY is required for the gemini backend")
+        try:
+            resp = requests.post(
+                f"{GEMINI_API_BASE}/models/{model}:embedContent",
+                json={
+                    "model": f"models/{model}",
+                    "content": {"parts": [{"text": query}]},
+                    "taskType": "RETRIEVAL_QUERY",
+                },
+                headers={"x-goog-api-key": GEMINI_API_KEY},
+                timeout=60,
+            )
+            resp.raise_for_status()
+        except requests.RequestException as e:
+            sys.exit(f"embedding failed: {e}")
+        data = resp.json()
+        return np.array(data["embedding"]["values"])
+
     try:
         resp = requests.post(
             f"{OLLAMA_URL}/api/embed",
@@ -122,10 +146,11 @@ def main():
 
     index, chunks, vecs = load_index(cache_dir)
     model = index["model"]
+    backend = index.get("backend", "ollama")
     print(f"# cache={cache_dir} model={model} chunks={len(chunks)}",
           file=sys.stderr)
 
-    q = embed_query(args.query, model)
+    q = embed_query(args.query, model, backend)
 
     # Cosine similarity. Guard against zero norms.
     vec_norms = np.linalg.norm(vecs, axis=1, keepdims=True)
