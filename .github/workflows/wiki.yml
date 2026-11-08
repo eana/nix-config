@@ -49,9 +49,9 @@ jobs:
       - uses: actions/cache/restore@0057852bfaa89a56745cba8c7296529d2fc39830 # v4
         with:
           path: .wiki-cache
-          key: wiki-cache-gemini-embedding-2-${{ github.run_id }}
+          key: wiki-cache-${{ env.REPO_WIKI_EMBED_MODEL }}-${{ github.run_id }}
           restore-keys: |
-            wiki-cache-gemini-embedding-2-
+            wiki-cache-${{ env.REPO_WIKI_EMBED_MODEL }}-
 
       - name: Refresh wiki
         run: |
@@ -63,12 +63,12 @@ jobs:
         if: always()
         with:
           path: .wiki-cache
-          key: wiki-cache-gemini-embedding-2-${{ github.run_id }}
+          key: wiki-cache-${{ env.REPO_WIKI_EMBED_MODEL }}-${{ github.run_id }}
 
       - name: Guardrails
         run: |
           find wiki -name '*.svg' -exec chmod 644 {} +
-          if rg -n '[^\x00-\x7F]' wiki; then
+          if LC_ALL=C grep -rlP '[^\x00-\x7F]' wiki; then
             echo "non-ASCII characters found in wiki/" >&2
             exit 1
           fi
