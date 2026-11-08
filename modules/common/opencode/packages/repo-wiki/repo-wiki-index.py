@@ -21,6 +21,7 @@ import json
 import os
 import subprocess
 import sys
+import time
 from dataclasses import dataclass
 from pathlib import Path
 
@@ -38,7 +39,9 @@ GEMINI_API_BASE = os.environ.get(
 )
 GEMINI_API_KEY = os.environ.get("GEMINI_API_KEY", "")
 CACHE_DIR = Path(".wiki-cache")
-BATCH_SIZE = 32          # chunks per /api/embed request
+BATCH_SIZE = 8           # chunks per /api/embed request, kept low for Gemini's free-tier rate limit
+MAX_RETRIES = 5          # retries on HTTP 429 before giving up
+EMBED_BATCH_DELAY = 6    # seconds between Gemini batches, to stay under free-tier RPM
 MAX_CHUNK_CHARS = 8000   # ~2K tokens, well within 32K context
 MIN_CHUNK_CHARS = 40     # skip tiny chunks
 
@@ -237,6 +240,23 @@ def _chunk_with_tree_sitter(path, unit, lang_name, text, lines):
 
 # ---------- embedding ----------
 
+def _post_with_retry(url: str, **kwargs) -> requests.Response:
+    """POST with exponential backoff on HTTP 429, up to MAX_RETRIES retries."""
+    for attempt in range(MAX_RETRIES + 1):
+        resp = requests.post(url, **kwargs)
+        if resp.status_code == 429 and attempt < MAX_RETRIES:
+            wait = int(resp.headers.get("Retry-After", 2**attempt))
+            print(
+                f"  429 rate limited, retrying in {wait}s "
+                f"(attempt {attempt + 1}/{MAX_RETRIES})",
+                file=sys.stderr,
+            )
+            time.sleep(wait)
+            continue
+        resp.raise_for_status()
+        return resp
+
+
 def embed_batch(texts: list[str]) -> np.ndarray:
     """Embed texts via the configured backend. Returns (N, D) float32 array."""
     if EMBED_BACKEND == "gemini":
@@ -269,13 +289,12 @@ def _embed_batch_gemini(texts: list[str]) -> np.ndarray:
             entry["outputDimensionality"] = int(EMBED_DIM)
         requests_body.append(entry)
 
-    resp = requests.post(
+    resp = _post_with_retry(
         f"{GEMINI_API_BASE}/models/{EMBED_MODEL}:batchEmbedContents",
         json={"requests": requests_body},
         headers={"x-goog-api-key": GEMINI_API_KEY},
         timeout=300,
     )
-    resp.raise_for_status()
     data = resp.json()
     return np.array([e["values"] for e in data["embeddings"]], dtype=np.float32)
 
@@ -340,12 +359,15 @@ def build_index(units: dict[str, list[str]]):
 
     # Embed new chunks in batches.
     new_vectors = []
-    for i in range(0, len(new_chunks), BATCH_SIZE):
+    num_batches = (len(new_chunks) + BATCH_SIZE - 1) // BATCH_SIZE
+    for batch_idx, i in enumerate(range(0, len(new_chunks), BATCH_SIZE)):
         batch = new_chunks[i:i + BATCH_SIZE]
         texts = [c.text[:MAX_CHUNK_CHARS] for c in batch]
         vecs = embed_batch(texts)
         new_vectors.append(vecs)
         print(f"  embedded {i + len(batch)}/{len(new_chunks)}")
+        if EMBED_BACKEND == "gemini" and batch_idx + 1 < num_batches:
+            time.sleep(EMBED_BATCH_DELAY)
 
     # Assemble final ordering: cached first, then new.
     all_meta = cached_meta + new_chunks

@@ -40,6 +40,8 @@ class GeminiIndexTests(unittest.TestCase):
         captured = {}
 
         class Resp:
+            status_code = 200
+
             def raise_for_status(self):
                 pass
 
@@ -66,6 +68,54 @@ class GeminiIndexTests(unittest.TestCase):
         mod = load_index_module()
         with self.assertRaises(RuntimeError):
             mod.embed_batch(["alpha"])
+
+    def test_gemini_retries_on_429_then_succeeds(self):
+        mod = load_index_module()
+
+        class RateLimited:
+            status_code = 429
+            headers = {}
+
+            def raise_for_status(self):
+                raise mod.requests.HTTPError("429")
+
+        class Ok:
+            status_code = 200
+
+            def raise_for_status(self):
+                pass
+
+            def json(self):
+                return {"embeddings": [{"values": [0.1, 0.2]}]}
+
+        responses = iter([RateLimited(), RateLimited(), Ok()])
+
+        def fake_post(url, json=None, headers=None, timeout=None):
+            return next(responses)
+
+        with mock.patch.object(mod.requests, "post", fake_post), \
+             mock.patch.object(mod.time, "sleep"):
+            out = mod.embed_batch(["alpha"])
+
+        self.assertEqual(out.shape, (1, 2))
+
+    def test_gemini_gives_up_after_max_retries(self):
+        mod = load_index_module()
+
+        class RateLimited:
+            status_code = 429
+            headers = {}
+
+            def raise_for_status(self):
+                raise mod.requests.HTTPError("429")
+
+        def fake_post(url, json=None, headers=None, timeout=None):
+            return RateLimited()
+
+        with mock.patch.object(mod.requests, "post", fake_post), \
+             mock.patch.object(mod.time, "sleep"):
+            with self.assertRaises(mod.requests.HTTPError):
+                mod.embed_batch(["alpha"])
 
 
 import json
@@ -125,6 +175,8 @@ class GeminiQueryTests(unittest.TestCase):
             captured = {}
 
             class Resp:
+                status_code = 200
+
                 def raise_for_status(self):
                     pass
 

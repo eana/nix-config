@@ -20,6 +20,7 @@ import argparse
 import json
 import os
 import sys
+import time
 from pathlib import Path
 
 import numpy as np
@@ -33,6 +34,24 @@ GEMINI_API_KEY = os.environ.get("GEMINI_API_KEY", "")
 DEFAULT_CACHE_DIR = ".wiki-cache"
 DEFAULT_TOP_K = 10
 DEFAULT_MAX_CHARS = 2000
+MAX_RETRIES = 5  # retries on HTTP 429 before giving up
+
+
+def _post_with_retry(url: str, **kwargs) -> requests.Response:
+    """POST with exponential backoff on HTTP 429, up to MAX_RETRIES retries."""
+    for attempt in range(MAX_RETRIES + 1):
+        resp = requests.post(url, **kwargs)
+        if resp.status_code == 429 and attempt < MAX_RETRIES:
+            wait = int(resp.headers.get("Retry-After", 2**attempt))
+            print(
+                f"429 rate limited, retrying in {wait}s "
+                f"(attempt {attempt + 1}/{MAX_RETRIES})",
+                file=sys.stderr,
+            )
+            time.sleep(wait)
+            continue
+        resp.raise_for_status()
+        return resp
 
 
 def load_index(cache_dir: Path):
@@ -56,7 +75,7 @@ def embed_query(query: str, model: str, backend: str = "ollama") -> np.ndarray:
         if not GEMINI_API_KEY:
             raise RuntimeError("GEMINI_API_KEY is required for the gemini backend")
         try:
-            resp = requests.post(
+            resp = _post_with_retry(
                 f"{GEMINI_API_BASE}/models/{model}:embedContent",
                 json={
                     "model": f"models/{model}",
@@ -66,7 +85,6 @@ def embed_query(query: str, model: str, backend: str = "ollama") -> np.ndarray:
                 headers={"x-goog-api-key": GEMINI_API_KEY},
                 timeout=60,
             )
-            resp.raise_for_status()
         except requests.RequestException as e:
             sys.exit(f"embedding failed: {e}")
         data = resp.json()
