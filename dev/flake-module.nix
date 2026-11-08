@@ -43,6 +43,7 @@
           ${pkgs.prek}/bin/prek install -f --hook-type pre-commit --hook-type pre-push --hook-type commit-msg
         '';
         inherit version-check repo-wiki;
+        inherit (pkgs) opencode d2;
       }
       // (
         if system == "x86_64-linux" then
