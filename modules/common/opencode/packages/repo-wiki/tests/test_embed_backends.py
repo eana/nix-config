@@ -66,3 +66,43 @@ class GeminiIndexTests(unittest.TestCase):
         mod = load_index_module()
         with self.assertRaises(RuntimeError):
             mod.embed_batch(["alpha"])
+
+
+import json
+import tempfile
+
+
+class CacheValidationTests(unittest.TestCase):
+    def _write_cache(self, cache, backend, model):
+        (cache / "index.json").write_text(json.dumps({
+            "backend": backend, "model": model, "dim": 2,
+            "chunks": [{"unit": "u", "file": "f", "start_line": 1,
+                        "end_line": 1, "content_hash": "h"}],
+        }))
+        np.array([[1.0, 0.0]], dtype=np.float32).tofile(cache / "vectors.bin")
+
+    def test_cache_rejected_on_model_mismatch(self):
+        with mock.patch.dict(os.environ, {
+            "REPO_WIKI_EMBED_BACKEND": "gemini",
+            "REPO_WIKI_EMBED_MODEL": "new-model",
+            "GEMINI_API_KEY": "test-key",
+        }):
+            mod = load_index_module()
+            with tempfile.TemporaryDirectory() as tmp:
+                cache = Path(tmp)
+                self._write_cache(cache, "gemini", "old-model")
+                mod.CACHE_DIR = cache
+                self.assertEqual(mod.load_previous_index(), {})
+
+    def test_cache_rejected_on_backend_mismatch(self):
+        with mock.patch.dict(os.environ, {
+            "REPO_WIKI_EMBED_BACKEND": "gemini",
+            "REPO_WIKI_EMBED_MODEL": "gemini-embedding-2",
+            "GEMINI_API_KEY": "test-key",
+        }):
+            mod = load_index_module()
+            with tempfile.TemporaryDirectory() as tmp:
+                cache = Path(tmp)
+                self._write_cache(cache, "ollama", "gemini-embedding-2")
+                mod.CACHE_DIR = cache
+                self.assertEqual(mod.load_previous_index(), {})

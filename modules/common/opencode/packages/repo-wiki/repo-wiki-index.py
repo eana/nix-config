@@ -294,6 +294,12 @@ def load_previous_index() -> dict[str, np.ndarray]:
     dim = int(index.get("dim", 0))
     if not chunks or dim == 0:
         return {}
+    if index.get("backend", "ollama") != EMBED_BACKEND:
+        return {}
+    if index.get("model") != EMBED_MODEL:
+        return {}
+    if EMBED_DIM and int(index.get("dim", 0)) != int(EMBED_DIM):
+        return {}
 
     vecs = np.fromfile(vec_path, dtype=np.float32).reshape(len(chunks), dim)
     return {c["content_hash"]: vecs[i] for i, c in enumerate(chunks)}
@@ -358,6 +364,7 @@ def build_index(units: dict[str, list[str]]):
     dim = int(all_vecs.shape[1]) if all_vecs.size else 0
     index = {
         "model": EMBED_MODEL,
+        "backend": EMBED_BACKEND,
         "dim": dim,
         "chunks": [
             {
@@ -382,7 +389,9 @@ def build_index(units: dict[str, list[str]]):
     manifest = {
         "indexed_commit": head,
         "model": EMBED_MODEL,
+        "backend": EMBED_BACKEND,
         "dim": dim,
+        "output_dim": EMBED_DIM,
         "chunk_count": len(all_meta),
         "manifests": MANIFESTS,
     }
