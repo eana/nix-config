@@ -22,6 +22,28 @@ class BackendDefaults(unittest.TestCase):
 
 from unittest import mock
 
+
+class TunableDefaults(unittest.TestCase):
+    def test_defaults(self):
+        for var in ("REPO_WIKI_BATCH_SIZE", "REPO_WIKI_MAX_RETRIES", "REPO_WIKI_BATCH_DELAY"):
+            os.environ.pop(var, None)
+        mod = load_index_module()
+        self.assertEqual(mod.BATCH_SIZE, 8)
+        self.assertEqual(mod.MAX_RETRIES, 5)
+        self.assertEqual(mod.EMBED_BATCH_DELAY, 6)
+
+    def test_env_overrides(self):
+        with mock.patch.dict(os.environ, {
+            "REPO_WIKI_BATCH_SIZE": "4",
+            "REPO_WIKI_MAX_RETRIES": "2",
+            "REPO_WIKI_BATCH_DELAY": "1.5",
+        }):
+            mod = load_index_module()
+        self.assertEqual(mod.BATCH_SIZE, 4)
+        self.assertEqual(mod.MAX_RETRIES, 2)
+        self.assertEqual(mod.EMBED_BATCH_DELAY, 1.5)
+
+
 import numpy as np
 
 
@@ -169,6 +191,12 @@ def load_query_module():
 
 
 class GeminiQueryTests(unittest.TestCase):
+    def test_max_retries_env_override(self):
+        os.environ.pop("GEMINI_API_KEY", None)
+        with mock.patch.dict(os.environ, {"REPO_WIKI_MAX_RETRIES": "2"}):
+            mod = load_query_module()
+        self.assertEqual(mod.MAX_RETRIES, 2)
+
     def test_gemini_query_request_shape(self):
         with mock.patch.dict(os.environ, {"GEMINI_API_KEY": "test-key"}):
             mod = load_query_module()

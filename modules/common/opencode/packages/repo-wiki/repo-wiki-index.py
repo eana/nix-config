@@ -13,6 +13,9 @@ Environment:
   REPO_WIKI_EMBED_MODEL   default qwen3-embedding:0.6b
   REPO_WIKI_MANIFESTS     comma-separated extra manifest filenames,
                           added to the defaults used for unit detection
+  REPO_WIKI_BATCH_SIZE    chunks per embedding request, default 8
+  REPO_WIKI_MAX_RETRIES   retries on HTTP 429 before giving up, default 5
+  REPO_WIKI_BATCH_DELAY   seconds between embedding batches, default 6
 """
 
 import argparse
@@ -39,9 +42,9 @@ GEMINI_API_BASE = os.environ.get(
 )
 GEMINI_API_KEY = os.environ.get("GEMINI_API_KEY", "")
 CACHE_DIR = Path(".wiki-cache")
-BATCH_SIZE = 8           # chunks per /api/embed request, kept low for Gemini's free-tier rate limit
-MAX_RETRIES = 5          # retries on HTTP 429 before giving up
-EMBED_BATCH_DELAY = 6    # seconds between Gemini batches, to stay under free-tier RPM
+BATCH_SIZE = int(os.environ.get("REPO_WIKI_BATCH_SIZE", "8"))  # chunks per /api/embed request
+MAX_RETRIES = int(os.environ.get("REPO_WIKI_MAX_RETRIES", "5"))  # retries on HTTP 429
+EMBED_BATCH_DELAY = float(os.environ.get("REPO_WIKI_BATCH_DELAY", "6"))  # seconds between batches
 MAX_CHUNK_CHARS = 8000   # ~2K tokens, well within 32K context
 MIN_CHUNK_CHARS = 40     # skip tiny chunks
 
@@ -423,7 +426,10 @@ def build_index(units: dict[str, list[str]]):
 
 
 def main():
-    ap = argparse.ArgumentParser()
+    ap = argparse.ArgumentParser(
+        description=__doc__,
+        formatter_class=argparse.RawDescriptionHelpFormatter,
+    )
     ap.add_argument("--repo", default=".", help="repository root")
     args = ap.parse_args()
     os.chdir(args.repo)

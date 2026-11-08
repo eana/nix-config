@@ -14,6 +14,12 @@ Exit codes:
   0  success
   1  no index / empty index
   2  embedding failure
+
+Environment:
+  OLLAMA_URL              default http://localhost:11434
+  GEMINI_API_BASE         default https://generativelanguage.googleapis.com/v1beta
+  GEMINI_API_KEY          required when the index's backend is gemini
+  REPO_WIKI_MAX_RETRIES   retries on HTTP 429 before giving up, default 5
 """
 
 import argparse
@@ -34,7 +40,7 @@ GEMINI_API_KEY = os.environ.get("GEMINI_API_KEY", "")
 DEFAULT_CACHE_DIR = ".wiki-cache"
 DEFAULT_TOP_K = 10
 DEFAULT_MAX_CHARS = 2000
-MAX_RETRIES = 5  # retries on HTTP 429 before giving up
+MAX_RETRIES = int(os.environ.get("REPO_WIKI_MAX_RETRIES", "5"))  # retries on HTTP 429
 
 
 def _post_with_retry(url: str, **kwargs) -> requests.Response:
@@ -132,7 +138,10 @@ def cmd_list_units(chunks: list[dict]):
 
 
 def main():
-    ap = argparse.ArgumentParser()
+    ap = argparse.ArgumentParser(
+        description=__doc__,
+        formatter_class=argparse.RawDescriptionHelpFormatter,
+    )
     ap.add_argument("query", nargs="?", help="natural-language query")
     ap.add_argument("--unit", help="restrict to chunks whose unit contains this substring")
     ap.add_argument("--path", help="restrict to chunks whose file path contains this substring")
