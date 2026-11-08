@@ -6,8 +6,13 @@
 {
   imports = [ ./common.nix ];
 
-  module.aerospace.enable = true;
-  module.aerospace.modifier = "cmd";
+  module = {
+    aerospace = {
+      enable = true;
+      modifier = "cmd";
+    };
+    mpv.enable = true;
+  };
 
   services.ollama = {
     enable = true;

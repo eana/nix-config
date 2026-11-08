@@ -20,6 +20,7 @@ let
   '';
 
   configDir = ../../../assets/.config/mpv;
+  mpvConfName = if pkgs.stdenv.hostPlatform.isDarwin then "mpv-darwin.conf" else "mpv.conf";
 in
 {
   options.module.mpv = {
@@ -40,7 +41,7 @@ in
 
       mpvConf = mkOption {
         type = types.path;
-        default = configDir + "/mpv.conf";
+        default = configDir + "/${mpvConfName}";
         description = "Path to mpv.conf file";
       };
 

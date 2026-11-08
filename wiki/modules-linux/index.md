@@ -1,19 +1,19 @@
 ---
-generated_commit: 4737ab0f03ccc9b97f501a410af65c032bf855d4
-generated_at: 2026-11-02T10:50:49Z
+generated_commit: 62c9eb852c2c83a3be22bcf877b1b126e02bac91
+generated_at: 2026-11-08T09:58:37Z
 source_paths:
   - modules/linux
 ---
 
 # modules/linux
 
-Eleven Linux modules: avizo, foot, fuzzel, gammastep, kanshi, libvirt, mhalo, mpv, openra,
+Ten Linux modules: avizo, foot, fuzzel, gammastep, kanshi, libvirt, mhalo, openra,
 sway, waybar. Each follows the `interface.nix` / `default.nix` split; `mhalo` and `openra`
 also have `package.nix`, and `openra` has `desktop.nix`.
 
 ## How they are imported
 
-`hosts/nixbox/home-manager/default.nix` imports ten of them into Home Manager:
+`hosts/nixbox/home-manager/default.nix` imports nine of them into Home Manager:
 
 ```nix
 ++ builtins.attrValues (lib.eana.modulesFromDir ../../../modules/common)
@@ -25,7 +25,7 @@ also have `package.nix`, and `openra` has `desktop.nix`.
 `libvirt` is a NixOS system module. `hosts/nixbox/default.nix` imports it directly and sets
 `module.libvirt`. No other host imports anything from `modules/linux`.
 
-All ten Home Manager modules are enabled in `home/users/jonas/linux.nix`.
+All nine Home Manager modules are enabled in `home/users/jonas/linux.nix`.
 
 ## Desktop (Wayland)
 
@@ -53,14 +53,6 @@ All ten Home Manager modules are enabled in `home/users/jonas/linux.nix`.
 - `gammastep/` - `services.gammastep`, manual provider at 59.3 / 18.0, 5700K day /
   3600K night, tray, `fade = 1`, `gamma = 0.8`.
 
-## Media
-
-- `mpv/` - the interface builds a wrapper that puts a `python3.withPackages` (python-dateutil,
-  ifaddr, lxml, requests, upnpclient) on `PATH`/`PYTHONPATH` and execs mpv. The default
-  installs it, writes `mpv/input.conf` and `mpv/mpv.conf` (defaults from `assets/.config/mpv`),
-  installs the mpvDLNA script (`chachmu/mpvDLNA` v3.4.1) and generates
-  `script-settings/mpvDLNA.conf` (`dlnaTimeout` default 5, optional server names/addresses).
-
 ## Apps and virtualization
 
 - `openra/` - options `release` (default `release-20250330`) and `variants` (an `attrsOf`
@@ -80,6 +72,8 @@ All ten Home Manager modules are enabled in `home/users/jonas/linux.nix`.
 
 ## Notes
 
+- `mpv` moved to `modules/common/mpv` in commit `62c9eb8` and is now enabled on both
+  nixbox and macbox from there.
 - No `HACK:`, `TODO` or `FIXME` markers in this directory.
 - Declared but unused options: `module.sway.swaylock.enable`, `module.sway.package`,
   `module.kanshi.package`, `module.gammastep.package`. Swaylock is always installed and
