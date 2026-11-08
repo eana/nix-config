@@ -32,6 +32,11 @@ import requests
 OLLAMA_URL = os.environ.get("OLLAMA_URL", "http://localhost:11434")
 EMBED_MODEL = os.environ.get("REPO_WIKI_EMBED_MODEL", "qwen3-embedding:0.6b")
 EMBED_BACKEND = os.environ.get("REPO_WIKI_EMBED_BACKEND", "ollama")
+EMBED_DIM = os.environ.get("REPO_WIKI_EMBED_DIM", "")
+GEMINI_API_BASE = os.environ.get(
+    "GEMINI_API_BASE", "https://generativelanguage.googleapis.com/v1beta"
+)
+GEMINI_API_KEY = os.environ.get("GEMINI_API_KEY", "")
 CACHE_DIR = Path(".wiki-cache")
 BATCH_SIZE = 32          # chunks per /api/embed request
 MAX_CHUNK_CHARS = 8000   # ~2K tokens, well within 32K context
@@ -233,7 +238,10 @@ def _chunk_with_tree_sitter(path, unit, lang_name, text, lines):
 # ---------- embedding ----------
 
 def embed_batch(texts: list[str]) -> np.ndarray:
-    """Embed texts via Ollama's /api/embed. Returns (N, D) float32 array."""
+    """Embed texts via the configured backend. Returns (N, D) float32 array."""
+    if EMBED_BACKEND == "gemini":
+        return _embed_batch_gemini(texts)
+
     resp = requests.post(
         f"{OLLAMA_URL}/api/embed",
         json={"model": EMBED_MODEL, "input": texts},
@@ -244,6 +252,32 @@ def embed_batch(texts: list[str]) -> np.ndarray:
     if "embeddings" not in data:
         raise RuntimeError(f"unexpected Ollama response: {list(data.keys())}")
     return np.array(data["embeddings"], dtype=np.float32)
+
+
+def _embed_batch_gemini(texts: list[str]) -> np.ndarray:
+    if not GEMINI_API_KEY:
+        raise RuntimeError("GEMINI_API_KEY is required for the gemini backend")
+
+    requests_body = []
+    for text in texts:
+        entry = {
+            "model": f"models/{EMBED_MODEL}",
+            "content": {"parts": [{"text": text}]},
+            "taskType": "RETRIEVAL_DOCUMENT",
+        }
+        if EMBED_DIM:
+            entry["outputDimensionality"] = int(EMBED_DIM)
+        requests_body.append(entry)
+
+    resp = requests.post(
+        f"{GEMINI_API_BASE}/models/{EMBED_MODEL}:batchEmbedContents",
+        json={"requests": requests_body},
+        headers={"x-goog-api-key": GEMINI_API_KEY},
+        timeout=300,
+    )
+    resp.raise_for_status()
+    data = resp.json()
+    return np.array([e["values"] for e in data["embeddings"]], dtype=np.float32)
 
 
 # ---------- incremental index ----------
