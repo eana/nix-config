@@ -1,0 +1,101 @@
+name: Wiki Refresh
+
+on:
+  schedule:
+    - cron: "0 4 * * 1"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pull-requests: write
+
+concurrency:
+  group: wiki-refresh
+  cancel-in-progress: false
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    env:
+      GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+      REPO_WIKI_EMBED_BACKEND: gemini
+      REPO_WIKI_EMBED_MODEL: gemini-embedding-2
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          fetch-depth: 0
+
+      - uses: cachix/install-nix-action@75c75c31ebece974e48ebc36b4ad125bd97bd97b # v31
+        with:
+          install_url: https://releases.nixos.org/nix/nix-2.33.0/install
+
+      - name: Build tools
+        run: |
+          nix build .#repo-wiki --out-link "$RUNNER_TEMP/repo-wiki"
+          nix build .#opencode --out-link "$RUNNER_TEMP/opencode"
+          nix build .#d2 --out-link "$RUNNER_TEMP/d2"
+
+      - name: Wire skill and PATH
+        run: |
+          mkdir -p ~/.config/opencode/skills
+          ln -sfn "$RUNNER_TEMP/repo-wiki" ~/.config/opencode/skills/repo-wiki
+          {
+            echo "$RUNNER_TEMP/repo-wiki/bin"
+            echo "$RUNNER_TEMP/opencode/bin"
+            echo "$RUNNER_TEMP/d2/bin"
+          } >> "$GITHUB_PATH"
+
+      - uses: actions/cache/restore@0057852bfaa89a56745cba8c7296529d2fc39830 # v4
+        with:
+          path: .wiki-cache
+          key: wiki-cache-gemini-embedding-2-${{ github.run_id }}
+          restore-keys: |
+            wiki-cache-gemini-embedding-2-
+
+      - name: Refresh wiki
+        run: |
+          repo-wiki-index --repo .
+          opencode run --standalone --auto -m google/gemini-3.8-flash \
+            "Use the repo-wiki skill to refresh this repository's wiki. The semantic index is already built in .wiki-cache. Regenerate only units whose source_paths changed since generated_commit. Do not run git commit or git push, and do not modify .gitignore. Leave all changes in the working tree."
+
+      - uses: actions/cache/save@0057852bfaa89a56745cba8c7296529d2fc39830 # v4
+        if: always()
+        with:
+          path: .wiki-cache
+          key: wiki-cache-gemini-embedding-2-${{ github.run_id }}
+
+      - name: Guardrails
+        run: |
+          find wiki -name '*.svg' -exec chmod 644 {} +
+          if rg -n '[^\x00-\x7F]' wiki; then
+            echo "non-ASCII characters found in wiki/" >&2
+            exit 1
+          fi
+          if git status --porcelain | grep -v '^.. wiki/' | grep -q .; then
+            echo "unexpected changes outside wiki/" >&2
+            git status --porcelain
+            exit 1
+          fi
+
+      - name: Open PR
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          if [ -z "$(git status --porcelain -- wiki)" ]; then
+            echo "wiki unchanged"
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git checkout -B wiki/auto-refresh
+          git add wiki
+          git commit -m "docs: refresh wiki"
+          git push --force origin wiki/auto-refresh
+          if ! gh pr view wiki/auto-refresh >/dev/null 2>&1; then
+            gh pr create \
+              --base master \
+              --head wiki/auto-refresh \
+              --title "docs: refresh wiki" \
+              --body "Automated wiki refresh from the repo-wiki skill."
+          fi
