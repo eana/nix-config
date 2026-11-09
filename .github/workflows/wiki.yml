@@ -1,18 +1,14 @@
 name: Wiki Refresh
-
 on:
   schedule:
     - cron: "0 4 * * 1"
   workflow_dispatch:
-
 permissions:
   contents: write
   pull-requests: write
-
 concurrency:
   group: wiki-refresh
   cancel-in-progress: false
-
 jobs:
   refresh:
     runs-on: ubuntu-latest
@@ -25,17 +21,14 @@ jobs:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
         with:
           fetch-depth: 0
-
       - uses: cachix/install-nix-action@75c75c31ebece974e48ebc36b4ad125bd97bd97b # v31
         with:
           install_url: https://releases.nixos.org/nix/nix-2.33.0/install
-
       - name: Build tools
         run: |
           nix build .#repo-wiki --out-link "$RUNNER_TEMP/repo-wiki"
           nix build .#opencode --out-link "$RUNNER_TEMP/opencode"
           nix build .#d2 --out-link "$RUNNER_TEMP/d2"
-
       - name: Wire skill and PATH
         run: |
           mkdir -p ~/.config/opencode/skills
@@ -45,26 +38,51 @@ jobs:
             echo "$RUNNER_TEMP/opencode/bin"
             echo "$RUNNER_TEMP/d2/bin"
           } >> "$GITHUB_PATH"
-
       - uses: actions/cache/restore@0057852bfaa89a56745cba8c7296529d2fc39830 # v4
         with:
           path: .wiki-cache
           key: wiki-cache-${{ env.REPO_WIKI_EMBED_MODEL }}-${{ github.run_id }}
           restore-keys: |
             wiki-cache-${{ env.REPO_WIKI_EMBED_MODEL }}-
-
       - name: Refresh wiki
+        shell: bash
         run: |
+          set -o pipefail
           repo-wiki-index --repo .
-          opencode run --standalone --auto -m google/gemini-3.8-flash \
-            "Use the repo-wiki skill to refresh this repository's wiki. The semantic index is already built in .wiki-cache. Regenerate only units whose source_paths changed since generated_commit. Do not run git commit or git push, and do not modify .gitignore. Leave all changes in the working tree."
 
+          prompt="Use the repo-wiki skill to refresh this repository's wiki. The semantic index is already built in .wiki-cache. Regenerate only units whose source_paths changed since generated_commit. Do not run git commit or git push, and do not modify .gitignore. Leave all changes in the working tree."
+          max_attempts=15
+          continue_flag=""
+          for attempt in $(seq 1 "$max_attempts"); do
+            out=$(mktemp)
+            # shellcheck disable=SC2086
+            if opencode run --standalone --auto $continue_flag -m google/gemini-3.1-flash-lite "$prompt" 2>&1 | tee "$out"; then
+              exit 0
+            fi
+            if ! grep -qiE "quota|rate limit|429" "$out"; then
+              echo "opencode failed for a reason other than a rate limit" >&2
+              exit 1
+            fi
+            if grep -qiE "per day|requests_per_day|RPD" "$out"; then
+              echo "daily quota exhausted; retrying within this job cannot help" >&2
+              exit 1
+            fi
+            if [ "$attempt" -eq "$max_attempts" ]; then
+              echo "giving up after $max_attempts attempts due to repeated rate limits" >&2
+              exit 1
+            fi
+            wait_s=$(grep -oE 'retry in [0-9.]+s' "$out" | tail -1 | grep -oE '[0-9.]+')
+            wait_s=${wait_s%.*}
+            [ -n "$wait_s" ] || wait_s=65
+            echo "rate limited, waiting ${wait_s}s before resuming (attempt $attempt/$max_attempts)"
+            sleep "$wait_s"
+            continue_flag="--continue"
+          done
       - uses: actions/cache/save@0057852bfaa89a56745cba8c7296529d2fc39830 # v4
         if: always()
         with:
           path: .wiki-cache
           key: wiki-cache-${{ env.REPO_WIKI_EMBED_MODEL }}-${{ github.run_id }}
-
       - name: Guardrails
         run: |
           find wiki -name '*.svg' -exec chmod 644 {} +
@@ -77,7 +95,6 @@ jobs:
             git status --porcelain
             exit 1
           fi
-
       - name: Open PR
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
