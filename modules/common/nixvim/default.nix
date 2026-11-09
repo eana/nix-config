@@ -176,7 +176,6 @@ in
         shfmt
         stylua
         yamlfmt
-        topiary
 
         # --- Multi-tools (Lint + Format) ---
         ruff

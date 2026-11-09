@@ -6,9 +6,6 @@
 }:
 let
   cfg = config.module.nixvim;
-
-  # Shared pin - see modules/common/topiary-nushell.nix
-  nu-scm = pkgs.callPackage ../../topiary-nushell.nix { };
 in
 {
   config = lib.mkIf cfg.enable {
@@ -37,8 +34,6 @@ in
               "gofmt"
               "goimports"
             ];
-
-            nu = [ "topiary_nu" ];
 
             javascript = [ "prettierd" ];
             typescript = [ "prettierd" ];
@@ -72,15 +67,6 @@ in
               "--line-endings"
               "Unix"
             ];
-
-            topiary_nu = {
-              command = "topiary";
-              args = [
-                "format"
-                "--language"
-                "nu"
-              ];
-            };
           };
         };
       };
@@ -96,11 +82,6 @@ in
           options.desc = "Format Injected Langs";
         }
       ];
-    };
-
-    xdg.configFile = {
-      "topiary/languages.ncl".source = "${nu-scm}/languages.ncl";
-      "topiary/languages/nu.scm".source = "${nu-scm}/languages/nu.scm";
     };
   };
 }
