@@ -50,7 +50,7 @@ jobs:
           set -o pipefail
           repo-wiki-index --repo .
 
-          prompt="Use the repo-wiki skill to refresh this repository's wiki. The semantic index is already built in .wiki-cache. Regenerate only units whose source_paths changed since generated_commit. Do not run git commit or git push, and do not modify .gitignore. Leave all changes in the working tree."
+          prompt="Use the repo-wiki skill to refresh this repository's wiki. The semantic index is already built in .wiki-cache. Regenerate only units whose source_paths changed since generated_commit. Do not run git commit or git push, and do not modify .gitignore. Leave all changes in the working tree. This is a NixOS CI runner with only the tools built by the Build tools step on PATH; if you need a command-line tool that is missing, run it via 'nix run nixpkgs#<package> -- <args>' instead of assuming it is unavailable. Write each page as synthesized prose describing the code, never as raw repo-wiki-query search output (no '=== [N] ... score: 0.NN ===' blocks)."
           max_attempts=15
           continue_flag=""
           for attempt in $(seq 1 "$max_attempts"); do
