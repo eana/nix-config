@@ -132,16 +132,16 @@ in
         k = "kubectl";
       };
 
-      plugins = [
-        {
-          name = "zsh-fzf-history-search";
-          src = pkgs.fetchFromGitHub {
-            owner = "joshskidmore";
-            repo = "zsh-fzf-history-search";
-            rev = "35df458f7d9478fa88c74af762dcd296cdfd485d";
-            hash = "sha256-6UWmfFQ9JVyg653bPQCB5M4jJAJO+V85rU7zP4cs1VI=";
-          };
-        }
+    };
+
+    # fzf's own widget re-reads the history entry, so multiline commands keep
+    # their real newlines instead of fc's escaped `\n` listing.
+    programs.fzf = {
+      enable = true;
+      enableZshIntegration = true;
+      defaultOptions = [
+        "--height 80%"
+        "--border"
       ];
     };
   };

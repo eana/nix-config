@@ -36,8 +36,8 @@ macbox) and `hosts/nasbox/nix/default.nix`.
 ### Shell and terminal
 
 - `zsh/` - `programs.zsh` with oh-my-zsh, 10000-line shared history, autosuggestion, syntax
-  highlighting, an AWS `ax` helper, a paste-slowness fix and the `zsh-fzf-history-search`
-  plugin. `p10kConfigFile` defaults to `assets/.p10k.zsh`; when non-null it is installed as
+  highlighting, an AWS `ax` helper, a paste-slowness fix and fzf's built-in history
+  widget (ctrl+r, multiline-safe). `p10kConfigFile` defaults to `assets/.p10k.zsh`; when non-null it is installed as
   `~/.p10k.zsh` and sourced from init content. Keybindings include ctrl+arrows, Home/End
   variants, `\e^?` (backward-kill-word) and `\ed` (kill-word, i.e. alt+d deletes forward).
 - `tmux/` - `programs.tmux` plus a platform clipboard (`pbcopy` on Darwin,
