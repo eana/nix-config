@@ -318,6 +318,15 @@ def update_file(repo_root: Path, result: CheckResult) -> bool:
             replaced_url = True
         updated = updated or replaced_url
 
+        if hash_match := HASH_RE.search(chunk):
+            chunk = chunk[:hash_match.start()] + new_hash + chunk[hash_match.end():]
+            updated = True
+
+        # Splice the block before touching the version attribute: the version
+        # edit sits earlier in the file, so doing it first would shift
+        # start/end and corrupt the fetchurl block.
+        text = text[:start] + chunk + text[end:]
+
         if not replaced_url:
             version_pattern = re.compile(rf'version\s*=\s*"{re.escape(src.current)}"')
             version_spans = [m.span() for m in version_pattern.finditer(text)]
@@ -328,12 +337,6 @@ def update_file(repo_root: Path, result: CheckResult) -> bool:
                     f'version = "{result.latest}"',
                 )
                 updated = updated or replaced_version
-
-        if hash_match := HASH_RE.search(chunk):
-            chunk = chunk[:hash_match.start()] + new_hash + chunk[hash_match.end():]
-            updated = True
-
-        text = text[:start] + chunk + text[end:]
     else:
         if not (gh_span := _select_nearest_span(text, _github_block_spans(text, src), src.line)):
             print(f"    Failed to update target block in {src.file}:{src.line}")
