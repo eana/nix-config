@@ -2,7 +2,7 @@
   enableSnip ? false,
 }:
 let
-  inherit (builtins) attrNames listToAttrs map;
+  inherit (builtins) attrNames listToAttrs;
   baseRules = {
     # age: deny direct invocations to prevent secret exposure; ask on
     # incidental matches where "age" appears as a substring
@@ -76,6 +76,32 @@ let
     "*brew *" = "ask";
     "*pip install*" = "ask";
     "*npm install -g*" = "ask";
+
+    # Filesystem-wide scans: deny walking / or /nix/store, which is slow,
+    # produces huge output and can hit network mounts
+    "*find /" = "deny";
+    "*find / *" = "deny";
+    "*find /nix/store*" = "deny";
+    "*fd * /" = "deny";
+    "*fd * / *" = "deny";
+    "*fd * /nix/store*" = "deny";
+    "*rg * /" = "deny";
+    "*rg * / *" = "deny";
+    "*rg * /nix/store*" = "deny";
+    "*grep -r* /" = "deny";
+    "*grep -r* / *" = "deny";
+    "*du * /" = "deny";
+    "*du /" = "deny";
+    "locate *" = "ask";
+
+    # Destructive recursive ops on root or home
+    "*rm -rf /" = "deny";
+    "*rm -rf / *" = "deny";
+    "*rm -rf ~*" = "deny";
+    "*chmod -R * /" = "deny";
+    "*chown -R * /" = "deny";
+    "*dd *of=/dev/*" = "deny";
+    "*mkfs*" = "deny";
   };
 
   snipRules =
