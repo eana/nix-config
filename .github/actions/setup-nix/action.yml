@@ -1,0 +1,35 @@
+name: Set up Nix
+description: Install Nix and optionally configure Cachix.
+
+inputs:
+  install-url:
+    description: Nix installer URL.
+    default: https://releases.nixos.org/nix/nix-2.33.0/install
+  cachix-name:
+    description: Cachix cache name. Skip Cachix when empty.
+    default: ""
+  cachix-auth-token:
+    description: Cachix auth token.
+    default: ""
+  extra-nix-config:
+    description: Extra nix.conf lines.
+    default: ""
+
+runs:
+  using: composite
+  steps:
+    - name: Install Nix
+      uses: cachix/install-nix-action@3dc140bfc76c49fbd4dd958429132e3746bcb086 # v31
+      with:
+        install_url: ${{ inputs.install-url }}
+        extra_nix_config: |
+          narinfo-cache-negative-ttl = 0
+          ${{ inputs.extra-nix-config }}
+
+    - name: Cache Cachix
+      if: inputs.cachix-name != ''
+      uses: cachix/cachix-action@38b082610b782e7e93e209c35fd730d399dee866 # v17
+      with:
+        useDaemon: true
+        name: ${{ inputs.cachix-name }}
+        authToken: ${{ inputs.cachix-auth-token }}

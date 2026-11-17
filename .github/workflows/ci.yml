@@ -6,17 +6,20 @@ on:
     branches: [master]
   workflow_dispatch:
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   hooks:
     name: Hooks
     runs-on: ubuntu-latest
+    timeout-minutes: 30
     steps:
       - name: Checkout
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
-      - name: Install Nix
-        uses: cachix/install-nix-action@3dc140bfc76c49fbd4dd958429132e3746bcb086 # v31
-        with:
-          install_url: https://releases.nixos.org/nix/nix-2.33.0/install
+      - name: Set up Nix
+        uses: ./.github/actions/setup-nix
       - name: Run hooks
         run: nix develop --command bash -c "prek run --all-files"
       - name: Check version pins
@@ -25,6 +28,7 @@ jobs:
   changes:
     name: Changes
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     outputs:
       dev: ${{ steps.changes.outputs.dev }}
       nixbox: ${{ steps.changes.outputs.nixbox }}
@@ -75,6 +79,7 @@ jobs:
   build-nixbox:
     name: Build nixbox
     runs-on: ubuntu-latest
+    timeout-minutes: 90
     needs:
       - hooks
       - changes
@@ -82,16 +87,11 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
-      - name: Install Nix
-        uses: cachix/install-nix-action@3dc140bfc76c49fbd4dd958429132e3746bcb086 # v31
+      - name: Set up Nix
+        uses: ./.github/actions/setup-nix
         with:
-          install_url: https://releases.nixos.org/nix/nix-2.33.0/install
-      - name: Cache Cachix
-        uses: cachix/cachix-action@38b082610b782e7e93e209c35fd730d399dee866 # v17
-        with:
-          useDaemon: true
-          name: eana
-          authToken: ${{ secrets.CACHIX_AUTH_TOKEN }}
+          cachix-name: eana
+          cachix-auth-token: ${{ secrets.CACHIX_AUTH_TOKEN }}
       - name: Free Disk Space
         uses: jlumbroso/free-disk-space@ceedf095f4ec1a097402bc6bd80831f2e1a6fde6 # v2.0.0
       - name: Build nixbox
@@ -100,6 +100,7 @@ jobs:
   build-macbox:
     name: Build macbox
     runs-on: macos-latest
+    timeout-minutes: 90
     needs:
       - hooks
       - changes
@@ -107,22 +108,18 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
-      - name: Install Nix
-        uses: cachix/install-nix-action@3dc140bfc76c49fbd4dd958429132e3746bcb086 # v31
+      - name: Set up Nix
+        uses: ./.github/actions/setup-nix
         with:
-          install_url: https://releases.nixos.org/nix/nix-2.33.0/install
-      - name: Cache Cachix
-        uses: cachix/cachix-action@38b082610b782e7e93e209c35fd730d399dee866 # v17
-        with:
-          useDaemon: true
-          name: eana
-          authToken: ${{ secrets.CACHIX_AUTH_TOKEN }}
+          cachix-name: eana
+          cachix-auth-token: ${{ secrets.CACHIX_AUTH_TOKEN }}
       - name: Build macbox
         run: nix build --print-build-logs ".#darwinConfigurations.macbox.system"
 
   build-nasbox:
     name: Build nasbox
     runs-on: ubuntu-latest
+    timeout-minutes: 90
     needs:
       - hooks
       - changes
@@ -130,22 +127,18 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
-      - name: Install Nix
-        uses: cachix/install-nix-action@3dc140bfc76c49fbd4dd958429132e3746bcb086 # v31
+      - name: Set up Nix
+        uses: ./.github/actions/setup-nix
         with:
-          install_url: https://releases.nixos.org/nix/nix-2.33.0/install
-      - name: Cache Cachix
-        uses: cachix/cachix-action@38b082610b782e7e93e209c35fd730d399dee866 # v17
-        with:
-          useDaemon: true
-          name: eana
-          authToken: ${{ secrets.CACHIX_AUTH_TOKEN }}
+          cachix-name: eana
+          cachix-auth-token: ${{ secrets.CACHIX_AUTH_TOKEN }}
       - name: Build nasbox
         run: nix build --print-build-logs ".#homeConfigurations.nasbox.activationPackage"
 
   build-devshell-linux:
     name: Build devshell (linux)
     runs-on: ubuntu-latest
+    timeout-minutes: 45
     needs:
       - hooks
       - changes
@@ -153,22 +146,18 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
-      - name: Install Nix
-        uses: cachix/install-nix-action@3dc140bfc76c49fbd4dd958429132e3746bcb086 # v31
+      - name: Set up Nix
+        uses: ./.github/actions/setup-nix
         with:
-          install_url: https://releases.nixos.org/nix/nix-2.33.0/install
-      - name: Cache Cachix
-        uses: cachix/cachix-action@38b082610b782e7e93e209c35fd730d399dee866 # v17
-        with:
-          useDaemon: true
-          name: eana
-          authToken: ${{ secrets.CACHIX_AUTH_TOKEN }}
+          cachix-name: eana
+          cachix-auth-token: ${{ secrets.CACHIX_AUTH_TOKEN }}
       - name: Build devshell
         run: nix build --print-build-logs ".#devShells.x86_64-linux.default"
 
   build-devshell-darwin:
     name: Build devshell (darwin)
     runs-on: macos-latest
+    timeout-minutes: 45
     needs:
       - hooks
       - changes
@@ -176,15 +165,10 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
-      - name: Install Nix
-        uses: cachix/install-nix-action@3dc140bfc76c49fbd4dd958429132e3746bcb086 # v31
+      - name: Set up Nix
+        uses: ./.github/actions/setup-nix
         with:
-          install_url: https://releases.nixos.org/nix/nix-2.33.0/install
-      - name: Cache Cachix
-        uses: cachix/cachix-action@38b082610b782e7e93e209c35fd730d399dee866 # v17
-        with:
-          useDaemon: true
-          name: eana
-          authToken: ${{ secrets.CACHIX_AUTH_TOKEN }}
+          cachix-name: eana
+          cachix-auth-token: ${{ secrets.CACHIX_AUTH_TOKEN }}
       - name: Build devshell
         run: nix build --print-build-logs ".#devShells.aarch64-darwin.default"
