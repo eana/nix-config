@@ -1,6 +1,7 @@
 ---
 name: nix-coding
-description: Call this whenever writing, editing, reviewing, or cleaning up Nix code in a functional style: Home Manager modules, NixOS modules, overlays, or packages. It enforces idiomatic lib usage - prefer lib.pipe for sequential transforms, lib.* over builtins.* (e.g. lib.attrNames over builtins.attrNames), eta-reduced maps (map f xs not map (x: f x) xs), and clean mkOption/mkIf structure instead of clunky nesting. Load it for questions like 'is there a cleaner, more idiomatic way to write this?', or when doing a style review pass over Nix files. Do not use it for running nixfmt, deadnix, statix, or flake check - that is pre-commit validation, a different concern - nor for flake-parts patterns, pinning flake inputs, or debugging eval/build errors.
+description: >-
+  Call this whenever writing, editing, reviewing, or cleaning up Nix code in a functional style: Home Manager modules, NixOS modules, overlays, or packages. It enforces idiomatic lib usage - prefer lib.pipe for sequential transforms, lib.* over builtins.* (e.g. lib.attrNames over builtins.attrNames), eta-reduced maps (map f xs not map (x: f x) xs), and clean mkOption/mkIf structure instead of clunky nesting. Load it for questions like 'is there a cleaner, more idiomatic way to write this?', or when doing a style review pass over Nix files. Do not use it for running nixfmt, deadnix, statix, or flake check - that is pre-commit validation, a different concern - nor for flake-parts patterns, pinning flake inputs, or debugging eval/build errors.
 compatibility: opencode
 ---
 
