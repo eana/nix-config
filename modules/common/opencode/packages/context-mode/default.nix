@@ -12,14 +12,14 @@
 # TODO: replace with pkgs.context-mode once it tracks current upstream releases.
 stdenv.mkDerivation (finalAttrs: {
   pname = "context-mode";
-  version = "2.2.3";
+  version = "2.2.4";
 
   __structuredAttrs = true;
   strictDeps = true;
 
   src = fetchurl {
     url = "https://registry.npmjs.org/context-mode/-/context-mode-${finalAttrs.version}.tgz";
-    hash = "sha256-YiVFxvlhIspmGxyqU1SIebohnIAzmU1oljsDgLYMp+A=";
+    hash = "sha256-RiNmsh1jGtWg2kG3ryJMgxZKHYcnPypIX1WAez7NebU=";
   };
 
   sourceRoot = "package";
