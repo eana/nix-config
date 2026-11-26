@@ -11,7 +11,7 @@
 
     specialArgs = {
       inherit inputs;
-      lib = eanaLib "x86_64-linux";
+      lib = eanaLib;
     };
   };
 }

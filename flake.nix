@@ -87,7 +87,7 @@
     }:
     let
       eana = import ./lib.nix { lib = inputs.nixpkgs.lib; };
-      eanaLib = _system: inputs.nixpkgs.lib.extend (_: _: { inherit eana; });
+      eanaLib = inputs.nixpkgs.lib.extend (_: _: { inherit eana; });
       homeModules = eana.modulesFromDir ./modules/common;
     in
     flake-parts.lib.mkFlake { inherit inputs; } {
@@ -107,6 +107,7 @@
 
       flake = {
         inherit homeModules;
+        lib = eana;
       };
     };
 
