@@ -110,6 +110,10 @@
       };
     };
 
+  # nixConfig values must be literal strings: Nix does not evaluate
+  # expressions here, so this cannot import nix/cache.nix directly.
+  # Keep this in sync with nix/cache.nix (the canonical source used by
+  # modules/common/nix-cache.nix).
   nixConfig = {
     extra-substituters = "https://cache.nixos.org https://eana.cachix.org https://nix-community.cachix.org";
     extra-trusted-public-keys = "cache.nixos.org-1:6NCHdD59X431o0gWypbMrAURkbJ16ZPMQFGspcDShjY= eana.cachix.org-1:3sJHATrL9zjGFGZwAXpECSMR+Ql5k02GgdxfJyzHi84= nix-community.cachix.org-1:mB9FSh9qf2dCimDSUo8Zy7bkq5CX+/rkCWyvRCYg3Fs=";
