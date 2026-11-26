@@ -1,7 +1,7 @@
 { pkgs, ... }:
 
 {
-  imports = [ ../../../modules/common/nix-cache.nix ];
+  imports = [ ../../../modules/shared/nix-cache.nix ];
 
   nix = {
     # home-manager on non-NixOS requires an explicit nix.package.
