@@ -4,11 +4,11 @@
   fetchurl,
 }:
 
-stdenvNoCC.mkDerivation rec {
+stdenvNoCC.mkDerivation (finalAttrs: {
   pname = "opencode-github-copilot-auto-model";
   version = "0.2.0";
   src = fetchurl {
-    url = "https://registry.npmjs.org/${pname}/-/${pname}-${version}.tgz";
+    url = "https://registry.npmjs.org/${finalAttrs.pname}/-/${finalAttrs.pname}-${finalAttrs.version}.tgz";
     hash = "sha256-1IlIrofqGObNMsuV9WzZ10b9sO2RC6x8oQr0kvPSZQk=";
   };
   dontBuild = true;
@@ -59,4 +59,4 @@ stdenvNoCC.mkDerivation rec {
     license = lib.licenses.mit;
     platforms = lib.platforms.all;
   };
-}
+})

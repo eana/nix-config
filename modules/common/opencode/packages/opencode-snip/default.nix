@@ -4,11 +4,11 @@
   fetchurl,
 }:
 
-stdenvNoCC.mkDerivation rec {
+stdenvNoCC.mkDerivation (finalAttrs: {
   pname = "opencode-snip";
   version = "3.0.1";
   src = fetchurl {
-    url = "https://registry.npmjs.org/${pname}/-/${pname}-${version}.tgz";
+    url = "https://registry.npmjs.org/${finalAttrs.pname}/-/${finalAttrs.pname}-${finalAttrs.version}.tgz";
     hash = "sha256-LRR9Xh95M1LK7NxA4YKPMUvShLnVVG0Xt4YQZJt5NkY=";
   };
   dontBuild = true;
@@ -22,4 +22,4 @@ stdenvNoCC.mkDerivation rec {
     license = lib.licenses.mit;
     platforms = lib.platforms.all;
   };
-}
+})
