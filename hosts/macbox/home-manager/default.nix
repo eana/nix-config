@@ -13,13 +13,16 @@
       };
       imports = [
         ../../../home/users/jonas/darwin.nix
-        inputs.nixvim.homeModules.nixvim
         ../../../modules/darwin/aerospace
         ./file-associations.nix
         ./karabiner.nix
         ./nightlight.nix
       ]
-      ++ builtins.attrValues (lib.eana.modulesFromDir ../../../modules/common);
+      ++ import ../../shared/home-manager/base.nix {
+        inherit inputs;
+        modulesFromDir = lib.eana.modulesFromDir;
+        modulesDir = ../../../modules/common;
+      };
       home.stateVersion = "26.05";
       home.enableNixpkgsReleaseCheck = false;
     };
