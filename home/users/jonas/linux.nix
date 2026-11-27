@@ -111,33 +111,33 @@ in
   # Install packages for user.
   # Search for packages here: https://search.nixos.org/packages
   home = {
-    packages = with pkgs; [
+    packages = [
       # File Management
-      gthumb # Image browser and viewer
+      pkgs.gthumb # Image browser and viewer
 
       # Networking
-      iproute2 # Utilities for controlling TCP/IP networking and traffic control in Linux
-      proton-vpn # ProtonVPN
+      pkgs.iproute2 # Utilities for controlling TCP/IP networking and traffic control in Linux
+      pkgs.proton-vpn # ProtonVPN
 
       # Media
-      freetube # YouTube client
+      pkgs.freetube # YouTube client
 
       # Fonts
-      cantarell-fonts # Cantarell font family
+      pkgs.cantarell-fonts # Cantarell font family
 
       # Development Tools
       aws-export-profile # AWS profile exporter
-      awscli2 # AWS command-line interface
-      ollama # Ollama CLI
-      nix-tree # Visualize Nix dependencies
-      oath-toolkit # OATH one-time password tool
+      pkgs.awscli2 # AWS command-line interface
+      pkgs.ollama # Ollama CLI
+      pkgs.nix-tree # Visualize Nix dependencies
+      pkgs.oath-toolkit # OATH one-time password tool
 
       # Emulators
-      fuse-emulator # ZX Spectrum (Z80) emulator
+      pkgs.fuse-emulator # ZX Spectrum (Z80) emulator
 
       # Browsers
-      firefox # Web browser
-      google-chrome # Web browser
+      pkgs.firefox # Web browser
+      pkgs.google-chrome # Web browser
     ];
 
     sessionVariables = {
