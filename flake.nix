@@ -97,6 +97,7 @@
 
       imports = [
         flake-parts.flakeModules.partitions
+        inputs.home-manager.flakeModules.default
         ./configurations/macbox/flake-module.nix
         ./configurations/nasbox/flake-module.nix
         ./configurations/nixbox/flake-module.nix
