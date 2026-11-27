@@ -141,6 +141,7 @@ in
       enableZshIntegration = true;
       defaultOptions = [
         "--height 80%"
+        "--tmux 80%,80%"
         "--border"
       ];
     };
