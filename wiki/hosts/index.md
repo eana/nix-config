@@ -132,7 +132,7 @@ and `system.stateVersion = 6`.
 ## nasbox (Synology NAS, standalone Home Manager)
 
 `default.nix` imports only `./home-manager` and `./nix` and sets
-`home.stateVersion = "26.05"`. No `hosts/shared`, no agenix.
+`home.stateVersion = "26.05"`. Uses only `hosts/shared/home-manager/base.nix`; no agenix.
 
 - `nix/default.nix` - imports `modules/shared/nix-cache.nix`; `nix.package = pkgs.nix`;
   `trusted-users = [ "root" ]`; `extraOptions` from `dev/nix.conf`; `allowUnfree`.

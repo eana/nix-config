@@ -1,5 +1,5 @@
-# Canonical Nix binary cache configuration, shared by flake.nix nixConfig
-# and modules/shared/nix-cache.nix. Keep this the single source of truth.
+# Canonical Nix binary cache configuration, used by modules/shared/nix-cache.nix. flake.nix nixConfig
+# cannot import it and mirrors it by hand - keep both in sync.
 {
   substituters = [
     # keep-sorted start
