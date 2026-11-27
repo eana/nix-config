@@ -3,8 +3,7 @@
   fetchFromGitHub,
 }:
 stdenv.mkDerivation {
-  pname = "aws-export-profile";
-  version = "unstable-2023-01-20";
+  name = "aws-export-profile";
   src = fetchFromGitHub {
     owner = "cytopia";
     repo = "aws-export-profile";
