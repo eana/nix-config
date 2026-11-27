@@ -1,6 +1,6 @@
 ---
-generated_commit: 06cd74bc677d19a9e44814ed8572eab31dbcd7f9
-generated_at: 2026-10-30T09:19:38Z
+generated_commit: c39e3fd0935a3cd6a18a27364a25be89dffec603
+generated_at: 2026-11-27T09:16:33Z
 source_paths:
   - modules/darwin
 ---

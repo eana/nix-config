@@ -1,6 +1,6 @@
 ---
-generated_commit: 4737ab0f03ccc9b97f501a410af65c032bf855d4
-generated_at: 2026-11-02T10:50:49Z
+generated_commit: c39e3fd0935a3cd6a18a27364a25be89dffec603
+generated_at: 2026-11-27T09:16:33Z
 source_paths:
   - modules/common
 ---
@@ -18,8 +18,10 @@ Host wiring: `hosts/nixbox/home-manager/default.nix` and
 `hosts/macbox/home-manager/default.nix` import
 `builtins.attrValues (modulesFromDir ../../../modules/common)` next to their platform module
 dirs; `hosts/nasbox/home-manager/default.nix` imports only `modules/common`.
-`nix-cache.nix` is a system module imported from `hosts/shared/nix/default.nix` (nixbox,
-macbox) and `hosts/nasbox/nix/default.nix`.
+The binary-cache system module no longer lives here: it moved to
+`modules/shared/nix-cache.nix`, which reads its substituters and keys from top-level
+`nix/cache.nix`. It is imported from
+`hosts/shared/nix/default.nix` (nixbox, macbox) and `hosts/nasbox/nix/default.nix`.
 
 ## Module pattern
 
@@ -37,13 +39,15 @@ macbox) and `hosts/nasbox/nix/default.nix`.
 
 - `zsh/` - `programs.zsh` with oh-my-zsh, 10000-line shared history, autosuggestion, syntax
   highlighting, an AWS `ax` helper, a paste-slowness fix and fzf's built-in history
-  widget (ctrl+r, multiline-safe). `p10kConfigFile` defaults to `assets/.p10k.zsh`; when non-null it is installed as
+  widget via `programs.fzf` with zsh integration (ctrl+r, multiline-safe; replaces the
+  `zsh-fzf-history-search` plugin). `p10kConfigFile` defaults to `assets/.p10k.zsh`; when non-null it is installed as
   `~/.p10k.zsh` and sourced from init content. Keybindings include ctrl+arrows, Home/End
   variants, `\e^?` (backward-kill-word) and `\ed` (kill-word, i.e. alt+d deletes forward).
 - `tmux/` - `programs.tmux` plus a platform clipboard (`pbcopy` on Darwin,
   `${pkgs.wl-clipboard}/bin/wl-paste` on Linux, `wl-clipboard` installed on Linux), prefix
-  key from `shortcut` (default `a`), resurrect plugin and a large hand-written keybinding
-  block.
+  key from `shortcut` (default `a`), resurrect plugin, `allow-passthrough on` (lets apps
+  such as opencode send DCS-wrapped OSC 52 to the outer terminal) and a large hand-written
+  keybinding block.
 - `kitty/` - `programs.kitty`; default colors come from `colors/tokyo-night.nix`, font
   defaults from `config.custom.fonts` via `lib.mkDefault`, plus opacity and keybindings.
 
@@ -104,7 +108,8 @@ macbox) and `hosts/nasbox/nix/default.nix`.
   themery-nvim, treesitter, which-key) and enables indent-blankline, trim, web-devicons,
   nvim-autopairs, grug-far, persistence, diffview, trouble and lz-n inline, with undotree as
   an extra plugin.
-- `conform-nvim.nix` uses `topiary-nushell.nix`; `d2.nix` and `treesitter.nix` use
+- `conform-nvim.nix` no longer configures topiary/nushell formatting (`topiary-nushell.nix`
+  and the `topiary` extra package were removed); `d2.nix` and `treesitter.nix` use
   `plugins/d2-grammar-src.nix` (tree-sitter-d2 pinned at revision `7bba282`).
 - `copilot.nix` - copilot-lua with telemetry off and suggestions/panel disabled, copilot-chat,
   a `CopilotToggle` command and a `CopilotGitMessage` command whose prompt reads
@@ -125,7 +130,7 @@ are all gone.
 Options (`interface.nix`): `enable`, `package` (default `pkgs.opencode`), `extraSkills`
 (`attrsOf path`), `contextMode.enable` (default **true**), `contextMode.package` (default
 a locally built `./packages/context-mode`, not `pkgs.context-mode`) / `contextMode.runtime`
-(default `pkgs.bun`), `snip.enable`, `ponytail.enable`, `playwright.enable`, `garmin.enable`,
+(default `pkgs.bun`), `context7.enable`, `snip.enable`, `ponytail.enable`, `playwright.enable`, `garmin.enable`,
 `skills.enabled` (list of catalog names and the `superpowers` / `social` group names),
 `copilotAutoModel.enable` (default **false**, currently unwired - see Plugins) /
 `copilotAutoModel.autos` (currently unwired; two entries: "Auto Planning" preferring
@@ -135,7 +140,7 @@ a locally built `./packages/context-mode`, not `pkgs.context-mode`) / `contextMo
 `github-copilot/claude-sonnet-5`) and `ticket.models.builderLight` (default
 `github-copilot/claude-haiku-4.5`), and `extraContext`.
 
-`copilotAutoModel.enable` defaults to false because its plugin only exports OpenCode's v1 API; see HACK comments below. `contextMode.enable` is now true by default (context-mode 2.0.0 exports v2 API).
+`copilotAutoModel.enable` defaults to false because its plugin only exports OpenCode's v1 API; see HACK comments below. `contextMode.enable` is true by default: context-mode (2.2.4) is loaded as a plugin, not an MCP server, and its old AGENTS.md routing block is no longer appended to `context`.
 
 `default.nix` imports only `./interface.nix`. `plugins.nix`, `skills.nix`, `mcp.nix`,
 `lsp.nix` and `permissions.nix` are called as functions with `import ./x.nix { ... }`.
@@ -167,10 +172,13 @@ Under `cfg.enable` it sets:
 
 #### Plugins
 
-`plugins.nix` takes only `enableSnip` and `enablePonytail` and returns the plugin entries for
-`programs.opencode.settings.plugin`: `opencode-snip`, `ponytail`, and context-mode plugin (when
-`enableContextMode` is true), each only when its flag is set. By default both flags are false, so by default no plugins are enabled
-(jonas enables ponytail in `home/users/jonas/common.nix`, and context-mode is enabled by default).
+`plugins.nix` takes `contextMode`, `enableContextMode`, `enableSnip` and `enablePonytail` and
+returns the plugin entries for `programs.opencode.settings.plugin`: the context-mode package
+directory `${contextMode}/lib/context-mode` (OpenCode V2 only accepts directories; its
+`package.json` exports resolve `./server` to `opencode/plugin.js`), `opencode-snip` and
+`ponytail`, each only when its flag is set. context-mode is never also an MCP server (it then
+serves an empty tool list, upstream #623). context-mode is on by default; snip and ponytail
+are off (jonas enables ponytail in `home/users/jonas/common.nix`).
 The file documents why `opencode-github-copilot-auto-model` is not
 listed here even though its package still exists: it only exports OpenCode's v1 plugin
 API, and OpenCode V2 does not run v1-only plugins. `opencode-github-copilot-auto-model` has no
@@ -179,7 +187,7 @@ adopted (see `github-copilot-auto-model/issues/10`).
 
 #### Skills
 
-- `skills.enabled` is set in `config`, not only as an option default:
+- `skills.enabled` is set both as the option default and in `config`:
   `module.opencode.skills.enabled = catalog.local ++ [ "superpowers" ]`. Because list
   definitions merge, a host setting such as `skills.enabled = [ "social" ]`
   (`home/users/jonas/common.nix`) adds to the baseline instead of replacing it. Removing local
@@ -190,9 +198,9 @@ adopted (see `github-copilot-auto-model/issues/10`).
   `anthropic` (1: skill-creator), `superpowers` (14) and `social` (14).
 - `skills.nix` maps `local` names to `assets/.config/opencode/skills/<name>` (except
   `ticket-task`, rendered by `runCommand` with `ticketsRepo` substituted into `SKILL.md` and
-  `references/workflow.md`), fetches `obra/superpowers` v7.0.1 (installed with a
+  `references/workflow.md`), fetches `obra/superpowers` v7.0.2 (installed with a
   `superpowers-` prefix), `inklate/social-skills` v0.1.0 and `anthropics/skills` at revision
-  `ca45fc4` (installed as `skill-creator`), and expands group names. Unknown names in the
+  `e4bb5d9` (installed as `skill-creator`), and expands group names. Unknown names in the
   option enum fail evaluation.
 - The option enum is `catalog.local ++ ["superpowers-<name>"] ++ catalog.social` plus the
   aliases `superpowers` and `social`. `skills.nix` also builds an `anthropic` group and
@@ -200,27 +208,31 @@ adopted (see `github-copilot-auto-model/issues/10`).
 
 #### MCP servers
 
-`mcp.nix` - six entries: `k8s` (mcp-k8s-go), `opentofu`, `context7`,
-`sequential-thinking` (each only if the package exists in nixpkgs), `playwright` (with
-`playwright.enable`) and `garmin` (with `garmin.enable`); the others are `enabled = false`
-by default. There is no `context-mode` or `codebase-memory` entry.
+`mcp.nix` - three entries: `playwright` (with `playwright.enable` and if
+`pkgs.playwright-mcp` exists, `enabled = false`),
+`context7` (if `pkgs.context7-mcp` exists; `enabled` follows `context7.enable`) and `garmin`
+(with `garmin.enable`, `enabled = false`). The `k8s`, `opentofu` and `sequential-thinking`
+entries were removed. There is no `context-mode` or `codebase-memory` entry.
 
 #### LSP, permissions
 
 - `lsp.nix` - `nixd` (the command is actually `pkgs.nil`), `jsonls`, `yamlls`, `gopls`,
   `bashls`, `biome`.
 - `permissions.nix` - deny: `age *`, `sops *`, agenix/ragenix, `sudo`, `doas`, `git push`,
-  `nix profile`, `nix-env`, `systemctl`, `launchctl`, `terraform`/`tofu`/`tf destroy`;
-  ask: `darwin-rebuild`, `nixos-rebuild`, `nh`, `home-manager`, `git commit`,
+  `nix profile`, `nix-env`, `systemctl`, `launchctl`, `terraform`/`tofu`/`tf destroy`,
+  filesystem-wide scans (`find`/`fd`/`rg`/`grep -r`/`du` on `/` or `/nix/store`) and
+  destructive root/home ops (`rm -rf /`, `rm -rf ~*`, `chmod -R`/`chown -R` on `/`,
+  `dd of=/dev/*`, `mkfs`);
+  ask: `darwin-rebuild`, `nixos-rebuild`, `nh`, `home-manager`, `git commit`, `locate`,
   ssh/scp/sftp/remote rsync, terraform/tofu/tf, docker, podman, kubectl, brew,
   `pip install`, `npm install -g`, and substring matches of age/sops; allow: ssh-keygen,
   ssh-add, ssh-agent. With snip enabled every rule is duplicated with a `snip ` prefix.
 
 #### Packages (`opencode/packages/`)
 
-One directory per package, each with a `default.nix`: `context-mode`,
+One directory per package, each with a `default.nix`: `context-mode` (2.2.4),
 `garmin-mcp` (built with `uv2nix` / `pyproject-nix` / `pyproject-build-systems`),
-`opencode-snip` (3.0.0), `opencode-github-copilot-auto-model` (0.2.0), `ponytail` (5.3.2)
+`opencode-snip` (3.0.1), `opencode-github-copilot-auto-model` (0.2.0), `ponytail` (5.3.2)
 and `repo-wiki` (plus `repo-wiki-index.py` and `repo-wiki-query.py`). The
 `codebase-memory-mcp` and `codebase-memory-opencode` packages were removed in commit
 `603970d`.
@@ -236,33 +248,35 @@ and `repo-wiki` (plus `repo-wiki-index.py` and `repo-wiki-query.py`). The
 
 ## Non-module files
 
-- `nix-cache.nix` - a system module imported from `hosts/{shared,nasbox}/nix/default.nix`;
-  sets `nix.settings.substituters` to `cache.nixos.org`, `eana.cachix.org` and
-  `nix-community.cachix.org` with their `trusted-public-keys`.
-- `topiary-nushell.nix` - a `callPackage` derivation.
+- `colors/tokyo-night.nix` - color data (see above). `nix-cache.nix` moved to
+  `modules/shared/nix-cache.nix` (settings in `nix/cache.nix`); `topiary-nushell.nix` was
+  removed.
 
 ## HACK comments
 
 - `opencode/default.nix` (cli.json): HM's `programs.opencode.tui` writes `tui.json`, which
   OpenCode V2 no longer reads, so `cli.json` is installed via `xdg.configFile` until HM
   exposes a cli option.
-- `opencode/default.nix` (agents): `programs.opencode.agents` only treats Nix path values as
-  file sources, so generated store paths are installed through `xdg.configFile` instead.
 - `opencode/plugins.nix` (copilotAutoModel, default false): the
   `opencode-github-copilot-auto-model` plugin exports only OpenCode's v1 API (`{ server }`)
   instead of v2's `{ setup }`, so OpenCode V2 rejects it at load time; see
   `github.com/m0wer/opencode-github-copilot-auto-model/issues/10` and the open, unmerged
   v2-port PR #13. TODO: re-enable once upstream ships v2 support or a working fork is
   adopted.
-- `opencode/packages/context-mode/default.nix` (2.0.0): built locally because nixpkgs has not
-  yet picked up the 2.0.0 release; the package is a plain copy (no bundler or build step) plus
-  three vendored skills (`ctx-doctor`, `ctx-stats`, `ctx-upgrade`).
+- `opencode/packages/context-mode/default.nix` (2.2.4): `dontInstallAgentSkills = 1`
+  because the `installAgentSkills` auto-glob picks up duplicate `context-mode` skills under
+  other agents' bundles (claude-code/, codex/, pi/) and fails the build; only `skills/*/` is
+  installed by hand. (Separate TODO: built locally because nixpkgs is stuck on 1.0.143,
+  which lacks `opencode/plugin.js`.) The package is a plain copy (`opencode`, `server.mjs`,
+  `cli.mjs`, `hook.mjs`, `hooks`, `skills`, `package.json`) into `lib/context-mode`;
+  `default.nix` links its `ctx-doctor`, `ctx-stats` and `ctx-upgrade` skills.
 - `opencode/packages/opencode-github-copilot-auto-model/default.nix`:
   `workaroundForOpenCodeOptionalHookLoader` adds `server.mjs`, `tui.mjs` and `rpc.mjs` stubs
   for opencode's optional-entrypoint probe (anomalyco/opencode#48122).
 - `opencode/packages/ponytail/default.nix`: `workaroundForOpencodePluginProbe` stubs
-  `tui.mjs`/`rpc.mjs` and re-exports the real entry from `server.mjs` for the same loader
-  bug.
+  `tui.mjs`/`rpc.mjs`, adds a CommonJS `gui-experimental.cjs` no-op, and re-exports the real
+  entry from `server.mjs`; a missing probed entry otherwise aborts the whole plugin reload,
+  including built-in provider plugins such as github-copilot.
 - `opencode/packages/garmin-mcp/default.nix`: upstream `uv.lock` only has a fitparse sdist, so
   setuptools is declared as a build-system requirement; wheel `sourcePreference` keeps
   pydantic-core and cryptography from building from sdist.

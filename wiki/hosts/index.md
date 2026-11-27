@@ -1,6 +1,6 @@
 ---
-generated_commit: 06cd74bc677d19a9e44814ed8572eab31dbcd7f9
-generated_at: 2026-10-30T09:19:38Z
+generated_commit: c39e3fd0935a3cd6a18a27364a25be89dffec603
+generated_at: 2026-11-27T09:16:33Z
 source_paths:
   - hosts
 ---
@@ -8,19 +8,24 @@ source_paths:
 # hosts
 
 Per-host assembly. Each host directory has a `default.nix` that lists its modules.
-`hosts/shared/` is the common base for nixbox and macbox; nasbox does not use it.
+`hosts/shared/` is the common base for nixbox and macbox; nasbox uses only `hosts/shared/home-manager/base.nix`.
 
 ## Shared tree (`hosts/shared/`)
+
+`hosts/shared/home-manager/base.nix` is not imported by `default.nix`; it is a function
+`{ inputs, modulesFromDir, modulesDir }` returning `[ inputs.nixvim.homeModules.nixvim ]`
+plus every module from `modulesDir`. All three hosts' `home-manager/default.nix` call it
+with `modulesDir = modules/common`.
 
 `hosts/shared/default.nix` imports six files:
 
 - `home-manager/default.nix` - `backupFileExtension = "backup"`, `useGlobalPkgs`,
   `useUserPackages`.
-- `nix/default.nix` - imports `modules/shared/nix-cache.nix`; `trusted-users` = root and
+- `nix/default.nix` - imports `modules/shared/nix-cache.nix` (which reads the canonical
+  cache list from top-level `nix/cache.nix`); `trusted-users` = root and
   `userName`, plus `@wheel` on Linux; `extraOptions` from `dev/nix.conf`; GC on Darwin
   `interval.Hour = 3` with `--delete-older-than 14d`, on Linux `dates = "12:12"` with no age
-  option; `allowUnfree`. The `doCheckByDefault` hack was dropped here, so package tests run
-  again on nixbox and macbox; nasbox still keeps its own copy (see below).
+  option; `allowUnfree`. No `doCheckByDefault` hack remains on any host.
 - `secrets.nix` - the agenix secrets (see below).
 - `system/environment.nix` - `EDITOR = nvim`.
 - `system/packages.nix` - a list of 10 fonts.
@@ -76,7 +81,8 @@ and `system.stateVersion = "24.05"`.
 - `system/hardware.nix` - bluetooth profiles, graphics.
 - `system/virtualization.nix` - `nix-ld` with graphics libraries, `zramSwap` 50 percent.
 - `home-manager/default.nix` - sets `_module.args.sshSecretsPath` and `atuinSecretsPath`;
-  imports `home/users/jonas/linux.nix`, the nixvim HM module, all `modules/common`, and all
+  imports `home/users/jonas/linux.nix`, the nixvim HM module and all `modules/common` (via
+  `hosts/shared/home-manager/base.nix`), and all
   `modules/linux` except `libvirt`; `extraSpecialArgs = { inputs; nixvimInput; }`; user
   `jonas` (`isNormalUser`, groups video, wheel, ydotool); `users.defaultUserShell = pkgs.zsh`.
 
@@ -115,8 +121,8 @@ and `system.stateVersion = 6`.
   `HACK`/`TODO` says to restore `zap` if brew ever runs outside the root chain.
 - `system/packages.nix` - home-manager, m-cli, mkalias, nightlight, zsh-powerlevel10k.
 - `home-manager/default.nix` - sets the two agenix `_module.args`; imports
-  `home/users/jonas/darwin.nix`, nixvim, `modules/darwin/aerospace`, `./file-associations.nix`,
-  `./karabiner.nix`, `./nightlight.nix` and all `modules/common`; `home.stateVersion = "26.05"`,
+  `home/users/jonas/darwin.nix`, nixvim and `modules/common` (via `base.nix`), `modules/darwin/aerospace`, `./file-associations.nix`,
+  `./karabiner.nix`, `./nightlight.nix`; `home.stateVersion = "26.05"`,
   `home.enableNixpkgsReleaseCheck = false`.
 - `home-manager/file-associations.nix` - adds `pkgs.duti` and writes `~/.duti.conf` binding
   XnViewMP (`com.xnview.XnView`) as default handler for image UTIs (`public.jpeg`,
@@ -137,7 +143,7 @@ and `system.stateVersion = 6`.
 - `nix/default.nix` - imports `modules/shared/nix-cache.nix`; `nix.package = pkgs.nix`;
   `trusted-users = [ "root" ]`; `extraOptions` from `dev/nix.conf`; `allowUnfree`.
 - `home-manager/default.nix` - imports `home/users/root/ds920p.nix`, nixvim and all
-  `modules/common` (via a locally imported `lib.nix`); `home.username = "root"`,
+  `modules/common` via `base.nix` (passing `modulesFromDir` from a locally imported `lib.nix`); `home.username = "root"`,
   `home.homeDirectory = "/root"`.
 
 ## Secrets (agenix)

@@ -1,6 +1,6 @@
 ---
-generated_commit: 62c9eb852c2c83a3be22bcf877b1b126e02bac91
-generated_at: 2026-11-08T09:58:37Z
+generated_commit: c39e3fd0935a3cd6a18a27364a25be89dffec603
+generated_at: 2026-11-27T09:16:33Z
 source_paths:
   - modules/linux
 ---
@@ -16,7 +16,11 @@ also have `package.nix`, and `openra` has `desktop.nix`.
 `hosts/nixbox/home-manager/default.nix` imports nine of them into Home Manager:
 
 ```nix
-++ builtins.attrValues (lib.eana.modulesFromDir ../../../modules/common)
+++ import ../../shared/home-manager/base.nix {
+  inherit inputs;
+  modulesFromDir = lib.eana.modulesFromDir;
+  modulesDir = ../../../modules/common;
+}
 ++ builtins.attrValues (
   lib.filterAttrs (name: _: name != "libvirt") (lib.eana.modulesFromDir ../../../modules/linux)
 );
@@ -72,7 +76,7 @@ All nine Home Manager modules are enabled in `home/users/jonas/linux.nix`.
 
 ## Notes
 
-- `mpv` moved to `modules/common/mpv` in commit `62c9eb8` and is now enabled on both
+- `mpv` moved to `modules/common/mpv` in commit `45b9621` and is now enabled on both
   nixbox and macbox from there.
 - No `HACK:`, `TODO` or `FIXME` markers in this directory.
 - Declared but unused options: `module.sway.swaylock.enable`, `module.sway.package`,

@@ -1,6 +1,6 @@
 ---
-generated_commit: 4737ab0f03ccc9b97f501a410af65c032bf855d4
-generated_at: 2026-11-02T10:50:49Z
+generated_commit: c39e3fd0935a3cd6a18a27364a25be89dffec603
+generated_at: 2026-11-27T09:16:33Z
 source_paths:
   - dev
 ---
@@ -9,6 +9,16 @@ source_paths:
 
 Development tooling: devshell, formatters, pre-commit hooks, the version-pin checker, the
 repo-wiki tools, and a repl helper.
+
+## dev/flake.nix and dev/flake.lock
+
+A separate dev-only flake ("Dependencies for development purposes") whose only input is
+`dev-flake` (`github:terlar/dev-flake`); `outputs = _: { }`. `dev/flake.lock` pins it.
+The root `flake.nix` imports `flake-parts.flakeModules.partitions` and defines
+`partitions.dev` with `extraInputsFlake = ./dev` and
+`module.imports = [ ./dev/flake-module.nix ]`. `partitionedAttrs` routes `apps`,
+`checks`, `devShells`, `formatter` and `packages` to the `dev` partition, which keeps
+dev-only inputs out of the main flake's eval and lock closure.
 
 ## dev/flake-module.nix
 
@@ -27,8 +37,8 @@ Imports `inputs.dev-flake.flakeModule`, sets `dev.name = "devbox"`, and in `perS
 - `packages`: `agenix` (from the agenix input), `pre-commit`
   (`config.pre-commit.settings.package`), `pre-commit-install`
   (`prek install -f --hook-type pre-commit --hook-type pre-push --hook-type commit-msg`),
-  `version-check`, `repo-wiki`, plus `nixbox` and `nasbox` on x86_64-linux or `macbox`
-  otherwise.
+  `version-check`, `repo-wiki`, plus `nixbox` and `nasbox` on x86_64-linux and `macbox`
+  on aarch64-darwin (each via `lib.optionalAttrs`).
 - `apps.formatter` - runs `${config.treefmt.build.wrapper}/bin/treefmt`, because the
   flake-parts `formatter` output cannot be used with `nix run`.
 - `devshells.default`:
@@ -102,6 +112,9 @@ are not scanned. `EXCLUDES = [("anomalyco", "opencode")]`.
 - Up to 16 concurrent queries; 15 s timeouts.
 - Updates prefetch with `nix-prefetch-github` / `nix-prefetch-url`, convert to SRI with
   `nix hash convert`, then rewrite only the nearest matching rev/version and hash block.
+  For npm pins the hash is replaced and the `fetchurl` block spliced back before the
+  `version` attribute is rewritten, so the earlier version edit cannot shift offsets and
+  corrupt the block.
 - Modes: `--check` (implies dry run, never writes, exit 1 if any pin is outdated),
   `--hook` (writes, exit 1 if it updated anything), `-n/--dry-run` (report only), or no
   flag (writes, exit 0). `--check` and `--hook` are in a mutually exclusive group. Query

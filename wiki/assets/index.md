@@ -1,6 +1,6 @@
 ---
-generated_commit: 4737ab0f03ccc9b97f501a410af65c032bf855d4
-generated_at: 2026-11-02T10:50:49Z
+generated_commit: c39e3fd0935a3cd6a18a27364a25be89dffec603
+generated_at: 2026-11-27T09:16:33Z
 source_paths:
   - assets
 ---
@@ -24,7 +24,7 @@ assets/.local/share/backgrounds/ -> ~/.local/share/backgrounds/
 | `.config/mimeapps.list` | default apps: firefox for http/https/html; added associations list opera first for web, plus gedit, evince, libreoffice, gthumb, code-oss; chromium for `about`/`unknown` | `modules/linux/sway` |
 | `.config/mpv/mpv.conf` | `hwdec=auto`, `audio-device=pipewire`, `ao=pulse`, `save-position-on-quit`, `[benchmark]` profile | `modules/common/mpv` (`config.mpvConf`) |
 | `.config/mpv/input.conf` | mpvDLNA bindings (`ctrl+b`, `;`, `:`), `b apply-profile benchmark` | `modules/common/mpv` (`config.inputConf`) |
-| `.config/mpv/mpv-darwin.conf` | darwin variant without PulseAudio/PipeWire audio lines, no vulkan-swap-mode/opengl-swapinterval | `modules/common/mpv` (`config.mpvConf` default on darwin) |
+| `.config/mpv/mpv-darwin.conf` | darwin variant: only `hwdec=auto`, `save-position-on-quit` and the `[benchmark]` profile; no audio lines | `modules/common/mpv` (`config.mpvConf` default on darwin) |
 | `.config/snip/config.toml` | `[display] quiet_no_filter = true` | `modules/common/opencode` when `snip.enable` |
 | `.local/share/backgrounds/*.jpg` | six wallpapers (binary) | `modules/linux/sway` (whole directory) |
 | `.config/opencode/skills/<name>/` | thirteen opencode skills (see below) | `modules/common/opencode` |
@@ -33,8 +33,8 @@ The sway default background is `hannah-grace-dSqWwzrLJaQ-unsplash.jpg`, set in
 `modules/linux/sway/interface.nix` (`defaultBackground`) and again in
 `home/users/jonas/linux.nix`. The other images are not referenced by name.
 
-All text files here are ASCII-only; commit 4133f0f normalized non-ASCII characters. The
-`.jpg` wallpapers are binaries and exempt.
+Commit 4133f0f normalized non-ASCII characters to ASCII. Exceptions: `.p10k.zsh` keeps
+its nerdfont/powerline glyphs, and the `.jpg` wallpapers are binaries.
 
 ## opencode skills
 
@@ -42,7 +42,7 @@ All text files here are ASCII-only; commit 4133f0f normalized non-ASCII characte
 | ----- | ----- |
 | flake-parts | flake-parts and dev-flake |
 | ghq-lookup | reading source via ghq |
-| git-commit | conventional commits, staging, signing |
+| git-commit | conventional commits, non-interactive git, staging, signing; scopes taken from the repo (conform/commitlint/git log) |
 | gitlab-cli-tool | glab usage (with `references/commands.md`) |
 | linkedin-profile-editor | editing a LinkedIn profile through Playwright |
 | nix-check | validation commands for this repo |
@@ -76,7 +76,7 @@ All text files here are ASCII-only; commit 4133f0f normalized non-ASCII characte
 - `ticket-workflow.d2` renders to the sibling `.svg` through the `d2-render` hook; commit
   both files.
 - Not in `assets/`: `skill-creator` comes from `anthropics/skills`, `superpowers-*` from
-  `obra/superpowers`, `social-*` from `inklate/social-skills`, and three context-mode skills
+  `obra/superpowers`, `social-*` and `idk` from `inklate/social-skills`, and three context-mode skills
   (ctx-doctor, ctx-stats, ctx-upgrade) from the context-mode package. All are fetched or built in `skills.nix` and
   `default.nix`.
 - Adding a local skill means adding `<name>/SKILL.md` here and the name to the catalog's

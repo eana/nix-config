@@ -1,6 +1,6 @@
 ---
-generated_commit: 4737ab0f03ccc9b97f501a410af65c032bf855d4
-generated_at: 2026-11-02T10:50:49Z
+generated_commit: c39e3fd0935a3cd6a18a27364a25be89dffec603
+generated_at: 2026-11-27T09:16:33Z
 source_paths:
   - flake.nix
   - flake.lock
@@ -13,6 +13,9 @@ source_paths:
   - .envrc
   - .gitignore
   - .conform.yaml
+  - nix
+  - packages
+  - modules/shared
 ---
 
 # nix-config architecture
@@ -29,13 +32,17 @@ Manager configuration for the root user on a Synology NAS, x86_64-linux). It is 
 
 | File | Role |
 | ---- | ---- |
-| `flake.nix` | Declares inputs (with `nixpkgs` as a `nixos-unstable-small` tarball), `systems = [ "x86_64-linux" "aarch64-darwin" ]`, imports `./dev/flake-module.nix` and the three `configurations/<host>/flake-module.nix`, sets `_module.args.eanaLib`, exports `flake.homeModules` (from `modules/common`), and sets `nixConfig.extra-substituters` / `extra-trusted-public-keys` for `cache.nixos.org`, `eana.cachix.org` and `nix-community.cachix.org`. |
-| `flake.lock` | Locked input revisions (maintained by Renovate lockfile maintenance). The root `nixpkgs` node records the `nixos-unstable-small` tarball URL and revision. |
+| `flake.nix` | Declares inputs (with `nixpkgs` as a `nixos-unstable-small` tarball), `systems = [ "x86_64-linux" "aarch64-darwin" ]`, imports `flake-parts.flakeModules.partitions`, `home-manager.flakeModules.default` and the three `configurations/<host>/flake-module.nix`. A `dev` partition (`extraInputsFlake = ./dev`, `module.imports = [ ./dev/flake-module.nix ]`) owns `apps`, `checks`, `devShells`, `formatter` and `packages`, keeping `dev-flake` out of the main lock. Sets `_module.args.eanaLib` (nixpkgs `lib` extended with `eana`), exports `flake.homeModules` (from `modules/common`, plus a `default` that imports all of them) and `flake.lib` (`lib.nix`), and sets `nixConfig.extra-substituters` / `extra-trusted-public-keys` for `cache.nixos.org`, `eana.cachix.org` and `nix-community.cachix.org` as literal strings mirrored by hand from `nix/cache.nix`. |
+| `flake.lock` | Locked input revisions for the main flake (`dev-flake` is locked in `dev/flake.lock`) (maintained by Renovate lockfile maintenance). The root `nixpkgs` node records the `nixos-unstable-small` tarball URL and revision. |
 | `lib.nix` | `modulesFromDir dir`: lists `dir` recursively and keeps only `<dir>/<name>/default.nix` (not the top-level `default.nix`, not deeper paths). Kebab-case directory names become camelCase attribute names; values are `import <path>`. |
 | `secrets.nix` | agenix recipients: five `jonas-*` user keys and five host keys (macbox, nasbox, newbox, nixbox, oldbox). Each of the four secrets (`home-ssid`, `home-gateway-mac`, `ssh-hosts`, `atuin`) is encrypted to `allUsers ++ allSystems`. `newbox` and `oldbox` have no configuration in this flake. |
 | `secrets/*.age` | The four encrypted secret files. |
 | `renovate.json5` | See "Dependency updates" below. |
 | `.github/workflows/ci.yml` | See "CI" below. |
+| `.github/actions/setup-nix/action.yml` | Composite action used by every CI job: installs Nix (default installer 2.33.0, `narinfo-cache-negative-ttl = 0` plus optional `extra-nix-config`) and, when `cachix-name` is set, configures Cachix with `useDaemon: true`. |
+| `nix/cache.nix` | Canonical binary-cache lists (`substituters`, `trusted-public-keys`; same three caches as `nixConfig`). Imported by `modules/shared/nix-cache.nix`, which `hosts/shared/nix/default.nix` and `hosts/nasbox/nix/default.nix` import. |
+| `modules/shared/nix-cache.nix` | Plain system Nix module (not a Home Manager `module.<name>` module), moved from `modules/common/nix-cache.nix`. Imports `../../nix/cache.nix` and sets `nix.settings.substituters` and `nix.settings.trusted-public-keys` from it. Imported explicitly by `hosts/shared/nix/default.nix` (nixbox, macbox) and `hosts/nasbox/nix/default.nix`; `modulesFromDir` does not discover it. |
+| `packages/aws-export-profile/default.nix` | `stdenv.mkDerivation` packaging `cytopia/aws-export-profile` (pinned `fetchFromGitHub` rev), installed as `bin/aws-export-profile.sh`. Built via `pkgs.callPackage` in `home/users/jonas/linux.nix`. Not exported as a flake output. |
 | `.envrc` | `use flake`, then `unset IN_NIX_SHELL`. |
 | `.gitignore` | `/.worktrees`, `/.direnv`, `/.pre-commit-config.yaml`, `/result*`, `secrets/*` except `!secrets/*.age`, `__pycache__/`, and `.wiki-cache*`. |
 | `.conform.yaml` | Commit-message policy for `conform`: conventional commits with a lowercase imperative header of at most 60 characters and no trailing period; allowed types `feat`, `fix`, `build`, `chore`, `ci`, `docs`, `perf`, `refactor`, `style`, `test`; allowed scopes `module`, `deps`, `devshell`, `configurations`, `home`, `hosts`, `secrets`, `assets`, `flake`; description also capped at 60 characters. |
@@ -47,10 +54,12 @@ Manager configuration for the root user on a Synology NAS, x86_64-linux). It is 
 (`tarball+https://channels.nixos.org/nixos-unstable-small/nixexprs.tar.zst`), not a
 `github:NixOS/nixpkgs` ref.
 
-- Follow `nixpkgs` (`nixos-unstable-small`): `dev-flake`, `agenix`, `home-manager`,
+- Follow `nixpkgs` (`nixos-unstable-small`): `agenix`, `home-manager`,
   `nix-darwin`, `nix-index-database`, `pyproject-nix`, `uv2nix`,
   `pyproject-build-systems`.
-- Further follows: `dev-flake` follows `flake-parts`; `uv2nix` follows `pyproject-nix`;
+- `dev-flake` is not a root input: it lives in `dev/flake.nix` (`extraInputsFlake` of the
+  `dev` partition) with its own `dev/flake.lock`.
+- Further follows: `uv2nix` follows `pyproject-nix`;
   `pyproject-build-systems` follows `pyproject-nix` and `uv2nix`.
 - `pyproject-nix`, `uv2nix` and `pyproject-build-systems` exist only to build the
   `garmin-mcp` package (`modules/common/opencode/packages/garmin-mcp/default.nix`).
@@ -66,7 +75,8 @@ The repo defines no global `nixpkgs.overlays`. Overlays in use:
 
 ## How a change reaches a host
 
-1. `flake.nix` imports `dev/flake-module.nix` and the three configuration modules. Each
+1. `flake.nix` imports the three configuration modules (and `dev/flake-module.nix` through
+   the `dev` partition). Each
    configuration module defines a separate flake attribute.
 1. `configurations/<host>/flake-module.nix` instantiates the host
    (`nixosConfigurations.nixbox`, `darwinConfigurations.macbox`,
@@ -80,7 +90,7 @@ The repo defines no global `nixpkgs.overlays`. Overlays in use:
 1. Module directories: `modules/common` is imported on every host via `modulesFromDir`;
    `modules/linux` (minus `libvirt`) is imported into Home Manager on nixbox, and `libvirt`
    is imported at system level; `modules/darwin/aerospace` is imported by hand on macbox.
-1. `dev/flake-module.nix` exposes `packages.x86_64-linux.{nixbox,nasbox}` and
+1. `dev/flake-module.nix` (dev partition) exposes `packages.x86_64-linux.{nixbox,nasbox}` and
    `packages.aarch64-darwin.macbox`, so `nix build .#<host>` only works on the matching
    system.
 
@@ -99,7 +109,10 @@ The repo defines no global `nixpkgs.overlays`. Overlays in use:
 ## CI
 
 `.github/workflows/ci.yml` runs on pull requests targeting `master`, pushes to `master`,
-and `workflow_dispatch`. Nix is installed at version 2.33.0.
+and `workflow_dispatch`, with a per-ref `concurrency` group that cancels in-progress runs.
+Every job sets `timeout-minutes` (hooks 30, changes 10, host builds 90, devshell builds 45)
+and every job except `changes` installs Nix 2.33.0 through the local
+`./.github/actions/setup-nix` action.
 
 - `hooks` job (ubuntu): `nix develop --command bash -c "prek run --all-files"` and
   `version-check --check`. Runs on every trigger.
@@ -114,10 +127,11 @@ and `workflow_dispatch`. Nix is installed at version 2.33.0.
   - `nasbox`: `flake.nix`, `flake.lock`, `home/users/shared.nix`,
     `home/users/root/{common,ds920p}.nix`, `hosts/nasbox/**`, `modules/common/**`, and
     `modules/linux/**` (which nasbox does not import).
-- Gaps: no filter covers `lib.nix`, `configurations/**`, `assets/**` or `secrets/**`. A
+- Gaps: no filter covers `lib.nix`, `configurations/**`, `assets/**`, `secrets/**`,
+  `nix/**`, `modules/shared/**` or `packages/**`. A
   change to `assets/**` (p10k, mpv configs, sway files, opencode skills), `lib.nix` or a
   `configurations/<host>/flake-module.nix` triggers no host build.
-- Build jobs (Cachix cache `eana`) run when `hooks` passed and the relevant filter matched,
+- Build jobs (Cachix cache `eana`, passed to `setup-nix` as `cachix-name`) run when `hooks` passed and the relevant filter matched,
   or always on `workflow_dispatch`:
   - Build nixbox on ubuntu, after `free-disk-space`:
     `.#nixosConfigurations.nixbox.config.system.build.toplevel`
@@ -157,9 +171,13 @@ GitHub Actions are grouped and automerged. Lockfile maintenance runs weekly with
 | ---- | ------- |
 | [configurations](configurations/index.md) | Per-host flake-parts modules that instantiate the systems. |
 | [hosts](hosts/index.md) | Shared base plus per-host system and Home Manager trees. |
-| [modules/common](modules-common/index.md) | Shared Home Manager modules (shell, git/ssh/atuin, podman, nixvim, opencode). |
-| [modules/linux](modules-linux/index.md) | Linux modules (sway desktop, media, openra, mhalo, libvirt). |
+| [modules/common](modules-common/index.md) | Shared Home Manager modules (shell, tmux, git/ssh/atuin, kitty, mpv, podman, nixvim, opencode). |
+| [modules/linux](modules-linux/index.md) | Linux modules (sway desktop with waybar, foot, fuzzel, kanshi, avizo, gammastep; openra, mhalo, libvirt). |
 | [modules/darwin](modules-darwin/index.md) | Darwin module `aerospace`, imported by hand. |
 | [home](home/index.md) | Per-user Home Manager wiring ([diagram](diagrams/home-wiring.svg)). |
 | [dev](dev/index.md) | Devshell, treefmt, pre-commit hooks, version-check, repo-wiki, repl. |
 | [assets](assets/index.md) | Dotfiles and vendored opencode skills. |
+
+`nix/` (binary-cache data), `modules/shared/` (`nix-cache.nix` system module) and
+`packages/` (`aws-export-profile`) have no unit page; see
+"Root files" above.

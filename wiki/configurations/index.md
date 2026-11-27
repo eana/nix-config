@@ -1,6 +1,6 @@
 ---
-generated_commit: 06cd74bc677d19a9e44814ed8572eab31dbcd7f9
-generated_at: 2026-10-30T09:19:38Z
+generated_commit: c39e3fd0935a3cd6a18a27364a25be89dffec603
+generated_at: 2026-11-27T09:16:33Z
 source_paths:
   - configurations
 ---
@@ -30,7 +30,7 @@ configuration as a flake attribute. They contain no host logic; system assembly 
 - Modules: `../../hosts/nixbox/default.nix`, `inputs.disko.nixosModules.disko`,
   `inputs.agenix.nixosModules.default`, `inputs.home-manager.nixosModules.home-manager`,
   `inputs.nix-index-database.nixosModules.nix-index`.
-- `specialArgs = { inherit inputs; lib = eanaLib "x86_64-linux"; }`.
+- `specialArgs = { inherit inputs; lib = eanaLib; }`.
 
 ## macbox
 
@@ -44,7 +44,7 @@ configuration as a flake attribute. They contain no host logic; system assembly 
   `inputs.home-manager.darwinModules.home-manager`,
   `inputs.nix-homebrew.darwinModules.nix-homebrew`, and an inline
   `users.users.jonas = { name = "jonas"; home = "/Users/jonas"; }`.
-- `specialArgs = { inherit inputs; lib = eanaLib "aarch64-darwin"; }`.
+- `specialArgs = { inherit inputs; lib = eanaLib; }`.
 
 ## nasbox
 
@@ -60,10 +60,9 @@ configuration as a flake attribute. They contain no host logic; system assembly 
 ## eanaLib
 
 `flake.nix` defines `eana = import ./lib.nix { lib = inputs.nixpkgs.lib; }` and
-`eanaLib = _system: inputs.nixpkgs.lib.extend (_: _: { inherit eana; })`, and exposes it to
+`eanaLib = inputs.nixpkgs.lib.extend (_: _: { inherit eana; })`, and exposes it to
 flake modules with `_module.args.eanaLib`. nixbox and macbox pass the extended lib as
-`specialArgs.lib`, which makes `lib.eana.modulesFromDir` available in host modules. The
-`_system` argument is unused.
+`specialArgs.lib`, which makes `lib.eana.modulesFromDir` available in host modules.
 
 ## Outputs
 
@@ -71,14 +70,14 @@ flake modules with `_module.args.eanaLib`. nixbox and macbox pass the extended l
 
 - x86_64-linux: `nixbox = self.nixosConfigurations.nixbox.config.system.build.toplevel`,
   `nasbox = self.homeConfigurations.nasbox.activationPackage`.
-- otherwise (aarch64-darwin): `macbox = self.darwinConfigurations.macbox.system`.
+- aarch64-darwin: `macbox = self.darwinConfigurations.macbox.system`.
 
 ## Notes
 
 - `allowUnfree`: macbox sets it in the `pkgs` import; nasbox sets it in the `pkgs` import and
   again inline; nixbox sets it through `hosts/shared/nix/default.nix`.
 - macbox is the only configuration with a package overlay: the atuin `doCheck = false`
-  workaround described above. It was added by `fix(configurations): disable atuin checks on macbox`, the only commit touching this directory since the previous wiki run.
+  workaround described above.
 - nasbox is a Home Manager configuration, so its buildable output is `activationPackage`.
 - `nixvimInput = inputs.nixvim` is passed as a special argument on all three hosts (here for
   nasbox, in `hosts/{nixbox,macbox}/home-manager/default.nix` for the others), but no module

@@ -1,6 +1,6 @@
 ---
-generated_commit: 62c9eb852c2c83a3be22bcf877b1b126e02bac91
-generated_at: 2026-11-08T09:58:37Z
+generated_commit: c39e3fd0935a3cd6a18a27364a25be89dffec603
+generated_at: 2026-11-27T09:16:33Z
 source_paths:
   - home
 ---
@@ -45,7 +45,8 @@ The host files also import the nixvim HM module and the module directories (see
   `TERM = xterm-256color`. `custom.theme = "gruvbox"`. Modules:
   - `atuin` - sync to `https://atuin.eana.win`, `credentialsFile = atuinSecretsPath`,
     `sync_frequency = "10m"`, `search_mode = "fuzzy"`.
-  - `kitty` - font size 14 and PC-style keybindings matching the Karabiner remap:
+  - `kitty` - font size 15; shift+enter and ctrl+enter send CSI-u sequences
+    (`\x1b[13;2u`, `\x1b[13;5u`); PC-style keybindings matching the Karabiner remap:
     opt+left/right and cmd+left/right send readline start/end sequences, opt+d and
     opt+delete kill a word forward (`\ed`), opt+backspace sends ESC DEL (word back),
     opt+cmd+s unbinds the macOS secure keyboard entry toggle.
@@ -58,16 +59,19 @@ The host files also import the nixvim HM module and the module directories (see
 - `jonas/linux.nix` (nixbox) - `systemd.user.startServices = "sd-switch"`; user services
   copyq, telegram, `bluetooth-applet` (blueman), swaynag-battery; GTK theme Yaru
   prussiangreen and dconf font settings; packages including firefox, google-chrome, ollama,
-  awscli2, proton-vpn, freetube, nix-tree and an inline `aws-export-profile` derivation
-  (pinned `fetchFromGitHub`); `LIBGL_ALWAYS_INDIRECT = 1`,
+  awscli2, proton-vpn, freetube, gthumb, iproute2, cantarell-fonts, oath-toolkit,
+  fuse-emulator, nix-tree and `aws-export-profile` (built via `pkgs.callPackage` from
+  `packages/aws-export-profile`); `LIBGL_ALWAYS_INDIRECT = 1`,
   `OLLAMA_HOST = "macbox.local:11434"`. Enables the nine Home Manager modules from
-  `modules/linux` (mhalo bound to `Mod4+Shift+m`, openra `red-alert`, sway with
-  `swaylock.settings.indicator-radius = 45`, waybar `systemdIntegration`) plus
-  `module.mpv` from `modules/common`.
+  `modules/linux` (avizo, foot, fuzzel, gammastep, kanshi, mhalo bound to
+  `Mod4+Shift+m`, openra `red-alert` with pinned AppImage and icon hashes, sway with a
+  background image and `swaylock.settings.indicator-radius = 45`, waybar `systemdIntegration`) plus
+  `module.mpv` from `modules/common` (mpv with the mpvDLNA script).
   `cachix` is no longer a user package; it comes from the devshell
   (`dev/flake-module.nix`).
 - `jonas/darwin.nix` (macbox) - `module.aerospace` with `modifier = "cmd"` and
-  `module.mpv.enable = true` (the mpv module lives in `modules/common`); Home Manager's
+  `module.mpv.enable = true` (the mpv module lives in `modules/common` and always bundles
+  the mpvDLNA script); Home Manager's
   own `services.ollama` (there is no repo ollama module) with `OLLAMA_FLASH_ATTENTION`,
   `OLLAMA_KV_CACHE_TYPE = q8_0`, `OLLAMA_NUM_PARALLEL = 1` and
   `OLLAMA_MAX_LOADED_MODELS = 1`; packages cmake, mas, maccy, procps, iproute2mac.
@@ -77,7 +81,8 @@ The host files also import the nixvim HM module and the module directories (see
 - `root/common.nix` - only imports `../shared.nix`.
 - `root/ds920p.nix` - `programs.home-manager.enable`; `module.atuin` with sync to
   `https://atuin.eana.win` and credentials at
-  `~/.local/share/atuin/atuin-credentials`; `module.git.identities.default` with
+  `~/.local/share/atuin/atuin-credentials` (`sync_frequency = "10m"`,
+  `search_mode = "fuzzy"`); `module.git.identities.default` with
   `sshKey = "~/.ssh/id_ed25519_git"` and `pathPatterns = [ "~/repos/**" ]`; 15 NAS tools
   (for example iftop, iotop, nethogs, iperf, sysstat, zmap, dnsutils, lsof). `cachix` is
   no longer listed here either.
