@@ -61,6 +61,11 @@ let
     "*nix profile *" = "deny";
     "*nix-env *" = "deny";
 
+    # Pre-commit: deny whole-repo hook runs, which are slow and redundant;
+    # agents should run hooks only on files they changed
+    "*prek run --all-files*" = "deny";
+    "*pre-commit run --all-files*" = "deny";
+
     # Service management: deny direct daemon/service manipulation
     "*launchctl *" = "deny";
     "*systemctl *" = "deny";
