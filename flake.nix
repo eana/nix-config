@@ -85,7 +85,7 @@
       homeModules = eana.modulesFromDir ./modules/common;
       homeModulesWithDefault = homeModules // {
         default = {
-          imports = builtins.attrValues homeModules;
+          imports = inputs.nixpkgs.lib.attrValues homeModules;
         };
       };
     in

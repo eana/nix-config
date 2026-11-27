@@ -33,8 +33,8 @@
         lib.concatStrings (map kebabToCamel segments);
     in
     lib.pipe (lib.filesystem.listFilesRecursive dir) [
-      (builtins.filter isModuleEntry)
+      (lib.filter isModuleEntry)
       (map (p: lib.nameValuePair (toName p) (import p)))
-      builtins.listToAttrs
+      lib.listToAttrs
     ];
 }
