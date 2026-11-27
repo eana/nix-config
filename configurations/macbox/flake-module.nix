@@ -32,7 +32,7 @@ in
 
     specialArgs = {
       inherit inputs;
-      lib = eanaLib "aarch64-darwin";
+      lib = eanaLib;
     };
   };
 }

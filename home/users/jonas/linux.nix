@@ -8,20 +8,7 @@ let
     name = "Yaru-prussiangreen";
   };
 
-  aws-export-profile = pkgs.stdenv.mkDerivation {
-    name = "aws-export-profile";
-    src = pkgs.fetchFromGitHub {
-      owner = "cytopia";
-      repo = "aws-export-profile";
-      rev = "a08ed774a36e5a7386adf645652a4af7b972e208"; # specific commit/tag
-      sha256 = "sha256-hvQzKXHfeyN4qm6kEAG/xuIqmHhL8GKpvn8aE+gTMDE=";
-    };
-    installPhase = ''
-      mkdir -p $out/bin
-      cp aws-export-profile $out/bin/aws-export-profile.sh
-      chmod +x $out/bin/aws-export-profile.sh
-    '';
-  };
+  aws-export-profile = pkgs.callPackage ../../../packages/aws-export-profile { };
 in
 {
   imports = [ ./common.nix ];
@@ -111,33 +98,33 @@ in
   # Install packages for user.
   # Search for packages here: https://search.nixos.org/packages
   home = {
-    packages = with pkgs; [
+    packages = [
       # File Management
-      gthumb # Image browser and viewer
+      pkgs.gthumb # Image browser and viewer
 
       # Networking
-      iproute2 # Utilities for controlling TCP/IP networking and traffic control in Linux
-      proton-vpn # ProtonVPN
+      pkgs.iproute2 # Utilities for controlling TCP/IP networking and traffic control in Linux
+      pkgs.proton-vpn # ProtonVPN
 
       # Media
-      freetube # YouTube client
+      pkgs.freetube # YouTube client
 
       # Fonts
-      cantarell-fonts # Cantarell font family
+      pkgs.cantarell-fonts # Cantarell font family
 
       # Development Tools
       aws-export-profile # AWS profile exporter
-      awscli2 # AWS command-line interface
-      ollama # Ollama CLI
-      nix-tree # Visualize Nix dependencies
-      oath-toolkit # OATH one-time password tool
+      pkgs.awscli2 # AWS command-line interface
+      pkgs.ollama # Ollama CLI
+      pkgs.nix-tree # Visualize Nix dependencies
+      pkgs.oath-toolkit # OATH one-time password tool
 
       # Emulators
-      fuse-emulator # ZX Spectrum (Z80) emulator
+      pkgs.fuse-emulator # ZX Spectrum (Z80) emulator
 
       # Browsers
-      firefox # Web browser
-      google-chrome # Web browser
+      pkgs.firefox # Web browser
+      pkgs.google-chrome # Web browser
     ];
 
     sessionVariables = {

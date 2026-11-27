@@ -4,13 +4,13 @@
   fetchFromGitHub,
 }:
 
-stdenvNoCC.mkDerivation rec {
+stdenvNoCC.mkDerivation (finalAttrs: {
   pname = "ponytail";
   version = "5.3.2";
   src = fetchFromGitHub {
     owner = "DietrichGebert";
     repo = "ponytail";
-    rev = "v${version}";
+    rev = "v${finalAttrs.version}";
     hash = "sha256-IJlhfkdXI6pMZZCZO7XBRg88LBiNfzc5Gnm4ofGybL8=";
   };
 
@@ -54,4 +54,4 @@ stdenvNoCC.mkDerivation rec {
     license = lib.licenses.mit;
     platforms = lib.platforms.all;
   };
-}
+})

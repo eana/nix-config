@@ -146,40 +146,40 @@ in
         ps.tiktoken_core
       ];
 
-      extraPackages = with pkgs; [
+      extraPackages = [
         # --- LSPs (Logic & Intelligence) ---
-        bash-language-server
-        gopls
-        jsonnet-language-server
-        lua-language-server
-        nil
-        terraform-ls
-        yaml-language-server
+        pkgs.bash-language-server
+        pkgs.gopls
+        pkgs.jsonnet-language-server
+        pkgs.lua-language-server
+        pkgs.nil
+        pkgs.terraform-ls
+        pkgs.yaml-language-server
 
         # --- Linters (Style & Safety) ---
-        actionlint
-        deadnix
-        statix
-        selene
-        tflint
-        yamllint
-        markdownlint-cli
-        shellcheck
+        pkgs.actionlint
+        pkgs.deadnix
+        pkgs.statix
+        pkgs.selene
+        pkgs.tflint
+        pkgs.yamllint
+        pkgs.markdownlint-cli
+        pkgs.shellcheck
 
         # --- Formatters (Code cleanup) ---
-        d2
-        go
-        gotools
-        nixfmt
-        opentofu
-        prettierd
-        shfmt
-        stylua
-        yamlfmt
+        pkgs.d2
+        pkgs.go
+        pkgs.gotools
+        pkgs.nixfmt
+        pkgs.opentofu
+        pkgs.prettierd
+        pkgs.shfmt
+        pkgs.stylua
+        pkgs.yamlfmt
 
         # --- Multi-tools (Lint + Format) ---
-        ruff
-        jq
+        pkgs.ruff
+        pkgs.jq
       ];
 
       # Support WSL clipboard integration

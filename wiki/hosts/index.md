@@ -16,7 +16,7 @@ Per-host assembly. Each host directory has a `default.nix` that lists its module
 
 - `home-manager/default.nix` - `backupFileExtension = "backup"`, `useGlobalPkgs`,
   `useUserPackages`.
-- `nix/default.nix` - imports `modules/common/nix-cache.nix`; `trusted-users` = root and
+- `nix/default.nix` - imports `modules/shared/nix-cache.nix`; `trusted-users` = root and
   `userName`, plus `@wheel` on Linux; `extraOptions` from `dev/nix.conf`; GC on Darwin
   `interval.Hour = 3` with `--delete-older-than 14d`, on Linux `dates = "12:12"` with no age
   option; `allowUnfree`. The `doCheckByDefault` hack was dropped here, so package tests run
@@ -132,12 +132,10 @@ and `system.stateVersion = 6`.
 ## nasbox (Synology NAS, standalone Home Manager)
 
 `default.nix` imports only `./home-manager` and `./nix` and sets
-`home.stateVersion = "26.05"`. No `hosts/shared`, no agenix.
+`home.stateVersion = "26.05"`. Uses only `hosts/shared/home-manager/base.nix`; no agenix.
 
-- `nix/default.nix` - imports `modules/common/nix-cache.nix`; `nix.package = pkgs.nix`;
-  `trusted-users = [ "root" ]`; `extraOptions` from `dev/nix.conf`; `allowUnfree`;
-  `doCheckByDefault = false` (marked TEMPORARY/TODO, so package tests are skipped here
-  only; the shared tree no longer sets it).
+- `nix/default.nix` - imports `modules/shared/nix-cache.nix`; `nix.package = pkgs.nix`;
+  `trusted-users = [ "root" ]`; `extraOptions` from `dev/nix.conf`; `allowUnfree`.
 - `home-manager/default.nix` - imports `home/users/root/ds920p.nix`, nixvim and all
   `modules/common` (via a locally imported `lib.nix`); `home.username = "root"`,
   `home.homeDirectory = "/root"`.

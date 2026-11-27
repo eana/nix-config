@@ -14,9 +14,12 @@
       };
       imports = [
         ../../../home/users/jonas/linux.nix
-        inputs.nixvim.homeModules.nixvim
       ]
-      ++ builtins.attrValues (lib.eana.modulesFromDir ../../../modules/common)
+      ++ import ../../shared/home-manager/base.nix {
+        inherit inputs;
+        modulesFromDir = lib.eana.modulesFromDir;
+        modulesDir = ../../../modules/common;
+      }
       ++ builtins.attrValues (
         lib.filterAttrs (name: _: name != "libvirt") (lib.eana.modulesFromDir ../../../modules/linux)
       );

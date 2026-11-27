@@ -3,8 +3,6 @@
   modulesFromDir =
     dir:
     let
-      allFiles = lib.filesystem.listFilesRecursive dir;
-
       isModuleEntry =
         p:
         let
@@ -14,8 +12,6 @@
         lib.hasSuffix "/default.nix" full
         && rel != "default.nix"
         && !(lib.hasInfix "/" (lib.removeSuffix "/default.nix" rel));
-
-      moduleFiles = builtins.filter isModuleEntry allFiles;
 
       toName =
         p:
@@ -36,10 +32,9 @@
         in
         lib.concatStrings (map kebabToCamel segments);
     in
-    builtins.listToAttrs (
-      map (p: {
-        name = toName p;
-        value = import p;
-      }) moduleFiles
-    );
+    lib.pipe (lib.filesystem.listFilesRecursive dir) [
+      (lib.filter isModuleEntry)
+      (map (p: lib.nameValuePair (toName p) (import p)))
+      lib.listToAttrs
+    ];
 }

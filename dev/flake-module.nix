@@ -44,17 +44,13 @@
         '';
         inherit version-check repo-wiki;
       }
-      // (
-        if system == "x86_64-linux" then
-          {
-            nasbox = self.homeConfigurations.nasbox.activationPackage;
-            nixbox = self.nixosConfigurations.nixbox.config.system.build.toplevel;
-          }
-        else
-          {
-            macbox = self.darwinConfigurations.macbox.system;
-          }
-      );
+      // lib.optionalAttrs (system == "x86_64-linux") {
+        nasbox = self.homeConfigurations.nasbox.activationPackage;
+        nixbox = self.nixosConfigurations.nixbox.config.system.build.toplevel;
+      }
+      // lib.optionalAttrs (system == "aarch64-darwin") {
+        macbox = self.darwinConfigurations.macbox.system;
+      };
 
       # flake-parts' `formatter.<system>` is a package output group, so
       # `nix run .#formatter` cannot resolve it (nix run only accepts

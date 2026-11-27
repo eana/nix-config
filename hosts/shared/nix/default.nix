@@ -5,7 +5,7 @@
   ...
 }:
 {
-  imports = [ ../../../modules/common/nix-cache.nix ];
+  imports = [ ../../../modules/shared/nix-cache.nix ];
 
   nix = {
     settings = {
