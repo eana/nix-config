@@ -4,12 +4,6 @@
   inputs = {
     nixpkgs.url = "tarball+https://channels.nixos.org/nixos-unstable-small/nixexprs.tar.zst";
 
-    dev-flake = {
-      url = "github:terlar/dev-flake";
-      inputs.nixpkgs.follows = "nixpkgs";
-      inputs.flake-parts.follows = "flake-parts";
-    };
-
     disko.url = "github:nix-community/disko";
 
     flake-parts = {
@@ -102,11 +96,26 @@
       ];
 
       imports = [
-        ./dev/flake-module.nix
+        flake-parts.flakeModules.partitions
         ./configurations/macbox/flake-module.nix
         ./configurations/nasbox/flake-module.nix
         ./configurations/nixbox/flake-module.nix
       ];
+
+      # Keeps dev-only inputs (dev-flake) out of the main flake's eval/lock
+      # closure; dev/flake.nix carries them instead.
+      partitionedAttrs = {
+        apps = "dev";
+        checks = "dev";
+        devShells = "dev";
+        formatter = "dev";
+        packages = "dev";
+      };
+
+      partitions.dev = {
+        extraInputsFlake = ./dev;
+        module.imports = [ ./dev/flake-module.nix ];
+      };
 
       _module.args.eanaLib = eanaLib;
 
